@@ -12,3 +12,4 @@ module IMS
 end
 
 require 'ims/lti/tool_provider'
+require 'ims/lti/tool_config'
