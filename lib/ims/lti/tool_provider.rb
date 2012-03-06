@@ -95,14 +95,17 @@ module IMS::LTI
       @ext_params[key]
     end
     
-    def post_outcome(score)
-      consumer = OAuth::Consumer.new(@consumer_key, @consumer_secret)
-      token = OAuth::AccessToken.new(consumer)
-      @outcome_response = token.post(
-              lis_outcome_service_url, 
-              generate_outcome_xml(score), 
-              'Content-Type' => 'application/xml'
-      )
+    # Posts the given score to the Tool Consumer with a replaceResult
+    def post_replace_result!(score)
+      post_outcome_request(generate_outcome_xml('replaceResultRequest', score))
+    end
+    
+    def post_delete_result!
+      post_outcome_request(generate_outcome_xml('deleteResultRequest'))
+    end
+    
+    def post_read_result!
+      post_outcome_request(generate_outcome_xml('readResultRequest'))
     end
     
     def outcome_post_successful?
@@ -110,9 +113,30 @@ module IMS::LTI
       !!(@outcome_response.code == '200' && @outcome_response.body.match(/\bsuccess\b/))
     end
     
-    def generate_outcome_xml(score)
+    def launch_data_hash
+      LAUNCH_DATA_PARAMETERS.inject({}){|h,k|h[k] = self.send(k) if self.send(k); h}
+    end
+    
+    def to_params
+      launch_data_hash.merge(add_key_prefix(@custom_params, 'custom')).merge(add_key_prefix(@ext_params, 'ext'))
+    end
+    
+    private
+    
+    def post_outcome_request(xml)
+      consumer = OAuth::Consumer.new(@consumer_key, @consumer_secret)
+      token = OAuth::AccessToken.new(consumer)
+      @outcome_response = token.post(
+              lis_outcome_service_url, 
+              xml, 
+              'Content-Type' => 'application/xml'
+      )
+    end
+
+    def generate_outcome_xml(request_type, score=nil)
       builder = Builder::XmlMarkup.new #(:indent=>2)
       builder.instruct!
+
       builder.imsx_POXEnvelopeRequest("xmlns" => "http://www.imsglobal.org/lis/oms1p0/pox") do |env|
         env.imsx_POXHeader do |header|
           header.imsx_POXRequestHeaderInfo do |info|
@@ -121,15 +145,17 @@ module IMS::LTI
           end
         end
         env.imsx_POXBody do |body|
-          body.replaceResultRequest do |request|
+          body.tag!(request_type) do |request|
             request.resultRecord do |record|
               record.sourcedGUID do |guid|
                 guid.sourcedId lis_result_sourcedid
               end
-              record.result do |res|
-                res.resultScore do |res_score|
-                  res_score.language "en"
-                  res_score.textString score.to_s
+              if score
+                record.result do |res|
+                  res.resultScore do |res_score|
+                    res_score.language "en" # 'en' represents the format of the number
+                    res_score.textString score.to_s
+                  end
                 end
               end
             end
@@ -149,16 +175,6 @@ module IMS::LTI
         end
       end
     end
-    
-    def launch_data_hash
-      LAUNCH_DATA_PARAMETERS.inject({}){|h,k|h[k] = self.send(k) if self.send(k); h}
-    end
-    
-    def to_params
-      launch_data_hash.merge(add_key_prefix(@custom_params, 'custom')).merge(add_key_prefix(@ext_params, 'ext'))
-    end
-    
-    private
     
     def add_key_prefix(hash, prefix)
       hash.keys.inject({}){|h, k| h["#{prefix}_#{k}"] = hash[k];h}
