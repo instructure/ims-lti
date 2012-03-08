@@ -1,10 +1,13 @@
 module IMS::LTI
+  # Class for parsing/generating LTI Outcome responses
+  # Response documentation: http://www.imsglobal.org/lti/v1p1pd/ltiIMGv1p1pd.html#_Toc309649691
+  # Error code documentation: http://www.imsglobal.org/gws/gwsv1p0/imsgws_baseProfv1p0.html#1639667
   class OutcomeResponse
 
     attr_accessor :request_type, :score, :message_identifier, :response_code,
             :post_response, :code_major, :severity, :description, :operation,
             :message_ref_identifier
-    
+
     CODE_MAJOR_CODES = %w{success processing failure unsupported}
     SEVERITY_CODES = %w{status warning error}
 
@@ -31,7 +34,7 @@ module IMS::LTI
       @code_major == 'processing'
     end
 
-    def failed?
+    def failure?
       @code_major == 'failure'
     end
 

@@ -1,6 +1,6 @@
 require "spec_helper"
 describe IMS::LTI::OutcomeResponse do
-  
+
   response_xml = <<-XML
 <?xml version="1.0" encoding="UTF-8"?>
 <imsx_POXEnvelopeResponse xmlns="http://www.imsglobal.org/lis/oms1p0/pox">
@@ -22,14 +22,14 @@ describe IMS::LTI::OutcomeResponse do
 </imsx_POXBody>
 </imsx_POXEnvelopeResponse>
   XML
-  
+
   def mock_response(xml)
     @fake = Object
     OAuth::AccessToken.stub(:new).and_return(@fake)
     @fake.should_receive(:code).and_return("200")
     @fake.stub(:body).and_return(xml)
   end
-  
+
   it "should parse replaceResult response xml" do
     mock_response(response_xml)
     res = IMS::LTI::OutcomeResponse.from_post_response(@fake)
@@ -41,7 +41,7 @@ describe IMS::LTI::OutcomeResponse do
     res.operation.should == 'replaceResult'
     res.score.should == nil
   end
-  
+
   it "should parse readResult response xml" do
     read_xml = response_xml.gsub('<replaceResultResponse></replaceResultResponse>', <<-XML)
 <readResultResponse>
@@ -64,7 +64,7 @@ describe IMS::LTI::OutcomeResponse do
     res.operation.should == 'readResult'
     res.score.should == '0.91'
   end
-  
+
   it "should parse readResult response xml" do
     mock_response(response_xml.gsub('replaceResult', 'deleteResult'))
     res = IMS::LTI::OutcomeResponse.from_post_response(@fake)
@@ -80,9 +80,9 @@ describe IMS::LTI::OutcomeResponse do
   it "should recognize a failure response" do
     mock_response(response_xml.gsub('success', 'failure'))
     res = IMS::LTI::OutcomeResponse.from_post_response(@fake)
-    res.failed?.should == true
+    res.failure?.should == true
   end
-  
+
   it "should generate response xml" do
     res = IMS::LTI::OutcomeResponse.new
     res.process_xml(response_xml)

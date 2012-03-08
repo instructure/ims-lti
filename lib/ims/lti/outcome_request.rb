@@ -1,4 +1,6 @@
 module IMS::LTI
+  # Class for parsing/generating LTI Outcome requests
+  # Request documentation: http://www.imsglobal.org/lti/v1p1pd/ltiIMGv1p1pd.html#_Toc309649691
   class OutcomeRequest
 
     REPLACE_REQUEST = 'replaceResult'
