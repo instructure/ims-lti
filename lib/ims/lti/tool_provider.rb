@@ -36,6 +36,11 @@ module IMS::LTI
       lis_person_sourcedid
       lis_course_offering_sourcedid
       lis_course_section_sourcedid
+      oauth_consumer_key
+      lti_errormsg
+      lti_errorlog
+      lti_msg
+      lti_log
     }
     LAUNCH_DATA_PARAMETERS.each{|p|attr_accessor p}
     
@@ -64,7 +69,30 @@ module IMS::LTI
         end
       end
     end
-    
+
+    # Comma separated list of roles as described here: http://www.imsglobal.org/LTI/v1p1pd/ltiIMGv1p1pd.html#_Toc309649700
+    def roles=(roles_list)
+      if roles_list
+        @roles = roles_list.split(",").map(&:downcase)
+      else
+        @roles = nil
+      end
+    end
+
+    def has_role?(role)
+      @roles && @roles.member?(role.downcase)
+    end
+
+    # Convenience method for checking if the user has 'learner' or 'student' role
+    def student?
+      has_role?('learner') || has_role?('student')
+    end
+
+    # Convenience method for checking if the user has 'instructor' or 'faculty' or 'staff' role
+    def instructor?
+      has_role?('instructor') || has_role?('faculty') || has_role?('staff')
+    end
+
     def valid_request!(request)
       valid_request?(request, false)
     end
@@ -76,9 +104,10 @@ module IMS::LTI
     def outcome_service?
       !!(lis_outcome_service_url && lis_result_sourcedid)
     end
-    
-    def username
-      lis_person_name_full || lis_person_name_given || lis_person_name_family 
+
+    # Return the full, given, or family name if set
+    def username(default=nil)
+      lis_person_name_given || lis_person_name_family || lis_person_name_full || default
     end
     
     def set_custom_param(key, val)
@@ -117,25 +146,29 @@ module IMS::LTI
     def last_outcome_success?
       last_outcome_request && last_outcome_request.outcome_post_successful?
     end
+
+    def build_return_url
+      return nil unless launch_presentation_return_url
+      messages = []
+      %w{lti_errormsg lti_errorlog lti_msg lti_log}.each do |m|
+        if message = self.send(m)
+          messages << "#{m}=#{URI.escape(message)}"
+        end
+      end
+      q_string = messages.any? ? ("?" + messages.join("&")) : ''
+      launch_presentation_return_url + q_string
+    end
     
     def launch_data_hash
       LAUNCH_DATA_PARAMETERS.inject({}){|h,k|h[k] = self.send(k) if self.send(k); h}
     end
     
     def to_params
-      launch_data_hash.merge(add_key_prefix(@custom_params, 'custom')).merge(add_key_prefix(@ext_params, 'ext'))
+      params = launch_data_hash.merge(add_key_prefix(@custom_params, 'custom')).merge(add_key_prefix(@ext_params, 'ext'))
+      params["roles"] = roles.join(",") if roles
+      params
     end
-    
-    private
-    
-    def new_request
-      @outcome_requests << OutcomeRequest.new(:consumer_key => @consumer_key, 
-                         :consumer_secret => @consumer_secret, 
-                         :lis_outcome_service_url => lis_outcome_service_url, 
-                         :lis_result_sourcedid =>lis_result_sourcedid)
-      @outcome_requests.last
-    end
-    
+
     def process_params(params)
       params.each_pair do |key, val|
         if LAUNCH_DATA_PARAMETERS.member?(key)
@@ -146,6 +179,16 @@ module IMS::LTI
           @ext_params[$1] = val
         end
       end
+    end
+    
+    private
+    
+    def new_request
+      @outcome_requests << OutcomeRequest.new(:consumer_key => @consumer_key, 
+                         :consumer_secret => @consumer_secret, 
+                         :lis_outcome_service_url => lis_outcome_service_url, 
+                         :lis_result_sourcedid =>lis_result_sourcedid)
+      @outcome_requests.last
     end
     
     def add_key_prefix(hash, prefix)

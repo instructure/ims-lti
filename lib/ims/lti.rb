@@ -2,6 +2,7 @@ require 'oauth'
 require 'builder'
 require "rexml/document"
 require 'uuid'
+require 'cgi'
 
 module IMS
   module LTI
