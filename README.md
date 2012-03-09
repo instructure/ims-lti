@@ -25,9 +25,9 @@ In LTI there are Tool Providers (TP) and Tool Consumers (TC), this library is us
 ### Tool Provider
 As a TP your app will receive a POST request with a bunch of [LTI launch data](http://www.imsglobal.org/lti/v1p1pd/ltiIMGv1p1pd.html#_Toc309649684) and it will be signed with OAuth using a key/secret that both the TP and TC share. This is covered in the [LTI security model](http://www.imsglobal.org/lti/v1p1pd/ltiIMGv1p1pd.html#_Toc309649685)
 
-This library doesn't help the TP manage the consumer keys and secrets. The POST headers will contain the `oauth_consumer_key` and your app can use that to look up the appropriate `oauth_consumer_secret`. Once you have the necessary credentials you can initialize a `ToolProvider` object with them and the post parameters:
-
 Here is an example of a simple TP Sinatra app using this gem: [LTI Tool Provider](https://github.com/instructure/lti_tool_provider)
+
+This library doesn't help the TP manage the consumer keys and secrets. The POST headers will contain the `oauth_consumer_key` and your app can use that to look up the appropriate `oauth_consumer_secret`. Once you have the necessary credentials you can initialize a `ToolProvider` object with them and the post parameters:
 
 ```ruby
 # Initialize TP object with OAuth creds and post parameters
