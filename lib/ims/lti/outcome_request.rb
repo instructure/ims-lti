@@ -8,7 +8,8 @@ module IMS::LTI
     READ_REQUEST = 'readResult'
 
     attr_accessor :operation, :score, :outcome_response, :message_identifier,
-            :lis_outcome_service_url, :lis_result_sourcedid, :consumer_key, :consumer_secret
+                  :lis_outcome_service_url, :lis_result_sourcedid,
+                  :consumer_key, :consumer_secret, :post_request
 
     def initialize(opts={})
       opts.each_pair do |key, val|
@@ -19,8 +20,13 @@ module IMS::LTI
     def self.from_post_request(post_request)
       request = OutcomeRequest.new
       request.post_request = post_request
-      xml = post_request.body
-      process_xml(xml)
+      if post_request.body.respond_to?(:read)
+        xml =  post_request.body.read
+        post_request.body.rewind
+      else
+        xml =   post_request.body
+      end
+      request.process_xml(xml)
       request
     end
 
@@ -39,6 +45,18 @@ module IMS::LTI
     def post_read_result!
       @operation = READ_REQUEST
       post_outcome_request
+    end
+
+    def replace_request?
+      @operation == REPLACE_REQUEST
+    end
+
+    def delete_request?
+      @operation == DELETE_REQUEST
+    end
+
+    def read_request?
+      @operation == READ_REQUEST
     end
 
     def outcome_post_successful?

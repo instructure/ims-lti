@@ -5,8 +5,8 @@ require 'spec'
 require 'net/http'
 require 'ims/lti'
 
-def create_test_tp
-   @params = {
+def create_params
+  @params = {
             "lti_message_type" => "basic-lti-launch-request",
             "lti_version" => "LTI-1p0",
             "resource_link_id" => "c28ddcf1b2b13c52757aed1fe9b2eb0a4e2710a3",
@@ -16,8 +16,11 @@ def create_test_tp
             "custom_param1" => "custom1",
             "custom_param2" => "custom2",
             "ext_lti_message_type" => "extension-lti-launch",
-            "roles" => "learner,instructor,observer"
+            "roles" => "Learner,Instructor,Observer"
     }
+end
 
-    @tp = IMS::LTI::ToolProvider.new("hi", 'oi', @params)
+def create_test_tp
+  create_params
+  @tp = IMS::LTI::ToolProvider.new("hi", 'oi', @params)
 end
