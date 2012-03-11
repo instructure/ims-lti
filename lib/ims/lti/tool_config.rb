@@ -1,11 +1,14 @@
 module IMS::LTI
+  # Class used to represent an LTI configuration
+  # It can create and read the Common Cartridge XML representation of LTI links
+  # as described here: http://www.imsglobal.org/LTI/v1p1pd/ltiIMGv1p1pd.html#_Toc309649689
   class ToolConfig
     attr_reader :custom_params, :extensions
 
     attr_accessor :title, :description, :launch_url, :secure_launch_url,
                   :icon, :secure_icon, :cartridge_bundle, :cartridge_icon,
                   :vendor_code, :vendor_name, :vendor_description, :vendor_url,
-                  :vendor_contact_email
+                  :vendor_contact_email, :vendor_contact_name
 
     def initialize(opts={})
       @custom_params = opts.delete("custom_params") || {}
@@ -14,6 +17,13 @@ module IMS::LTI
       opts.each_pair do |key, val|
         self.send("#{key}=", val) if self.respond_to?("#{key}=")
       end
+    end
+
+    def self.create_from_xml(xml)
+      tc = ToolConfig.new
+      tc.process_xml(xml)
+
+      tc
     end
 
     def set_custom_param(key, val)
@@ -42,6 +52,56 @@ module IMS::LTI
       @extensions[ext_key] && @extensions[ext_key][param_key]
     end
 
+    LTI_NAMESPACES = {
+            "xmlns" => 'http://www.imsglobal.org/xsd/imslticc_v1p0',
+            "blti" => 'http://www.imsglobal.org/xsd/imsbasiclti_v1p0',
+            "lticm" => 'http://www.imsglobal.org/xsd/imslticm_v1p0',
+            "lticp" => 'http://www.imsglobal.org/xsd/imslticp_v1p0',
+    }
+
+    # pull tool configuration data out of the Common Cartridge LTI link XML
+    def process_xml(xml)
+      doc = REXML::Document.new xml
+      if root = REXML::XPath.first(doc, 'xmlns:cartridge_basiclti_link')
+        @title = get_node_text(root, 'blti:title')
+        @description = get_node_text(root, 'blti:description')
+        @launch_url = get_node_text(root, 'blti:launch_url')
+        @secure_launch_url = get_node_text(root, 'blti:secure_launch_url')
+        @icon = get_node_text(root, 'blti:icon')
+        @secure_icon = get_node_text(root, 'blti:secure_icon')
+        @cartridge_bundle = get_node_att(root, 'xmlns:cartridge_bundle', 'identifierref')
+        @cartridge_icon = get_node_att(root, 'xmlns:cartridge_icon', 'identifierref')
+
+        if vendor = REXML::XPath.first(root, 'blti:vendor')
+          @vendor_code = get_node_text(vendor, 'lticp:code')
+          @vendor_description = get_node_text(vendor, 'lticp:description')
+          @vendor_name = get_node_text(vendor, 'lticp:name')
+          @vendor_url = get_node_text(vendor, 'lticp:url')
+          @vendor_contact_email = get_node_text(vendor, '//lticp:contact/lticp:email')
+          @vendor_contact_name = get_node_text(vendor, '//lticp:contact/lticp:name')
+        end
+
+        if custom = REXML::XPath.first(root, 'blti:custom', LTI_NAMESPACES)
+          set_properties(@custom_params, custom)
+        end
+
+        REXML::XPath.each(root, 'blti:extensions', LTI_NAMESPACES) do |vendor_ext_node|
+          platform = vendor_ext_node.attributes['platform']
+          properties = {}
+          set_properties(properties, vendor_ext_node)
+          REXML::XPath.each(vendor_ext_node, 'lticm:options', LTI_NAMESPACES) do |options_node|
+            opt_name = options_node.attributes['name']
+            options = {}
+            set_properties(options, options_node)
+            properties[opt_name] = options
+          end
+
+          self.set_ext_params(platform, properties)
+        end
+
+      end
+    end
+
     def to_xml(opts = {})
       raise IMS::LTI::InvalidLTIConfigError, "A launch url is required for an LTI configuration." unless self.launch_url || self.secure_launch_url
       
@@ -67,6 +127,7 @@ module IMS::LTI
             end
             if vendor_contact_email
               v_node.lticp :contact do |c_node|
+                c_node.lticp :name, vendor_contact_name
                 c_node.lticp :email, vendor_contact_email
               end
             end
@@ -98,7 +159,34 @@ module IMS::LTI
             end
           end
         end
-        
+
+        blti_node.cartridge_bundle(:identifierref => @cartridge_bundle) if @cartridge_bundle
+        blti_node.cartridge_icon(:identifierref => @cartridge_icon) if @cartridge_icon
+
+      end
+    end
+
+    private
+
+    def get_node_text(node, path)
+      if val = REXML::XPath.first(node, path, LTI_NAMESPACES)
+        val.text
+      else
+        nil
+      end
+    end
+
+    def get_node_att(node, path, att)
+      if val = REXML::XPath.first(node, path, LTI_NAMESPACES)
+        val.attributes[att]
+      else
+        nil
+      end
+    end
+
+    def set_properties(hash, node)
+      REXML::XPath.each(node, 'lticm:property', LTI_NAMESPACES) do |prop|
+        hash[prop.attributes['name']] = prop.text
       end
     end
 

@@ -52,16 +52,16 @@ module IMS::LTI
 
     def process_xml(xml)
       doc = REXML::Document.new xml
-      @message_identifier = doc.get_text("//imsx_statusInfo/imsx_messageIdentifier").to_s
-      @code_major = doc.get_text("//imsx_statusInfo/imsx_codeMajor")
-      @code_major.to_s.downcase! if @code_major
-      @severity = doc.get_text("//imsx_statusInfo/imsx_severity")
-      @severity.to_s.downcase! if @severity
-      @description = doc.get_text("//imsx_statusInfo/imsx_description")
+      @message_identifier = doc.text("//imsx_statusInfo/imsx_messageIdentifier").to_s
+      @code_major = doc.text("//imsx_statusInfo/imsx_codeMajor")
+      @code_major.downcase! if @code_major
+      @severity = doc.text("//imsx_statusInfo/imsx_severity")
+      @severity.downcase! if @severity
+      @description = doc.text("//imsx_statusInfo/imsx_description")
       @description = @description.to_s if @description
-      @message_ref_identifier = doc.get_text("//imsx_statusInfo/imsx_messageRefIdentifier").to_s
-      @operation = doc.get_text("//imsx_statusInfo/imsx_operationRefIdentifier").to_s
-      @score = doc.get_text("//readResultResponse//resultScore/textString")
+      @message_ref_identifier = doc.text("//imsx_statusInfo/imsx_messageRefIdentifier")
+      @operation = doc.text("//imsx_statusInfo/imsx_operationRefIdentifier")
+      @score = doc.text("//readResultResponse//resultScore/textString")
       @score = @score.to_s if @score
     end
 

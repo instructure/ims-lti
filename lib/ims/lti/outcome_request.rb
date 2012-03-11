@@ -78,8 +78,8 @@ module IMS::LTI
 
     def process_xml(xml)
       doc = REXML::Document.new xml
-      @message_identifier = doc.get_text("//imsx_POXRequestHeaderInfo/imsx_messageIdentifier")
-      @lis_result_sourcedid = doc.get_text("//resultRecord/sourcedGUID/sourcedId")
+      @message_identifier = doc.text("//imsx_POXRequestHeaderInfo/imsx_messageIdentifier")
+      @lis_result_sourcedid = doc.text("//resultRecord/sourcedGUID/sourcedId")
 
       if REXML::XPath.first(doc, "//deleteResultRequest")
         @operation = DELETE_REQUEST
