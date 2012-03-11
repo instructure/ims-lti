@@ -1,6 +1,37 @@
 module IMS::LTI
-  # Class for parsing/generating LTI Outcome requests
-  # Request documentation: http://www.imsglobal.org/lti/v1p1pd/ltiIMGv1p1pd.html#_Toc309649691
+  # Class for consuming/generating LTI Outcome Requests
+  #
+  # Outcome Request documentation: http://www.imsglobal.org/lti/v1p1pd/ltiIMGv1p1pd.html#_Toc309649691
+  #
+  # This class can be used by both Tool Providers and Tool Consumers. Each will
+  # use it a bit differently. The Tool Provider will use it to POST an OAuth-signed
+  # request to a TC. A Tool Consumer will use it to parse such a request from a TP.
+  #
+  # === Tool Provider Usage
+  # An OutcomeRequest will generally be created through a configured ToolProvider
+  # object. See the ToolProvider documentation.
+  #
+  # === Tool Consumer Usage
+  # When an outcome request is sent from a TP the body of the request is XML.
+  # This class parses that XML and provides a simple interface for accessing the
+  # information in the request. Typical usage would be:
+  #
+  #    # create an OutcomeRequest from the request object
+  #    req = IMS::LTI::OutcomeRequest.from_post_request(request)
+  #
+  #    # access the source id to identify the user who's grade you'd like to access
+  #    req.lis_result_sourcedid
+  #
+  #    # process the request
+  #    if req.replace_request?
+  #      # set a new score for the user
+  #    elsif req.read_request?
+  #      # return the score for the user
+  #    elsif req.delete_request?
+  #      # clear the score for the user
+  #    else
+  #      # return an unsupported OutcomeResponse
+  #    end
   class OutcomeRequest
 
     REPLACE_REQUEST = 'replaceResult'
@@ -11,12 +42,18 @@ module IMS::LTI
                   :lis_outcome_service_url, :lis_result_sourcedid,
                   :consumer_key, :consumer_secret, :post_request
 
+    # Create a new OutcomeRequest
+    #
+    # @param opts [Hash] initialization hash
     def initialize(opts={})
       opts.each_pair do |key, val|
         self.send("#{key}=", val) if self.respond_to?("#{key}=")
       end
     end
 
+    # Convenience method for creating a new OutcomeRequest from a request object
+    #
+    #    req = IMS::LTI::OutcomeRequest.from_post_request(request)
     def self.from_post_request(post_request)
       request = OutcomeRequest.new
       request.post_request = post_request
@@ -30,39 +67,54 @@ module IMS::LTI
       request
     end
 
-    # Posts the given score to the Tool Consumer with a replaceResult
+    # POSTs the given score to the Tool Consumer with a replaceResult
+    #
+    # @return [OutcomeResponse] The response from the Tool Consumer
     def post_replace_result!(score)
       @operation = REPLACE_REQUEST
       @score = score
       post_outcome_request
     end
 
+    # POSTs a deleteResult to the Tool Consumer
+    #
+    # @return [OutcomeResponse] The response from the Tool Consumer
     def post_delete_result!
       @operation = DELETE_REQUEST
       post_outcome_request
     end
 
+    # POSTs a readResult to the Tool Consumer
+    #
+    # @return [OutcomeResponse] The response from the Tool Consumer
     def post_read_result!
       @operation = READ_REQUEST
       post_outcome_request
     end
 
+    # Check whether this request is a replaceResult request
     def replace_request?
       @operation == REPLACE_REQUEST
     end
 
+    # Check whether this request is a deleteResult request
     def delete_request?
       @operation == DELETE_REQUEST
     end
 
+    # Check whether this request is a readResult request
     def read_request?
       @operation == READ_REQUEST
     end
 
+    # Check whether the last outcome POST was successful
     def outcome_post_successful?
       @outcome_response && @outcome_response.success?
     end
 
+    # POST an OAuth signed request to the Tool Consumer
+    #
+    # @return [OutcomeResponse] The response from the Tool Consumer
     def post_outcome_request
       raise IMS::LTI::InvalidLTIConfigError, "" unless has_required_attributes?
 
@@ -76,6 +128,7 @@ module IMS::LTI
       @outcome_response = OutcomeResponse.from_post_response(res)
     end
 
+    # Parse Outcome Request data from XML
     def process_xml(xml)
       doc = REXML::Document.new xml
       @message_identifier = doc.text("//imsx_POXRequestHeaderInfo/imsx_messageIdentifier")

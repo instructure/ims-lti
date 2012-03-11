@@ -1,6 +1,11 @@
 module IMS::LTI
+  # Mixin module for managing LTI Launch Data
+  #
+  # Launch data documentation:
+  # http://www.imsglobal.org/lti/v1p1pd/ltiIMGv1p1pd.html#_Toc309649684
   module LaunchParams
-    # Launch data is described here: http://www.imsglobal.org/lti/v1p1pd/ltiIMGv1p1pd.html#_Toc309649684
+
+    # List of the standard launch parameters for an LTI launch
     LAUNCH_DATA_PARAMETERS = %w{
       context_id
       context_label
@@ -46,9 +51,39 @@ module IMS::LTI
     }
 
     LAUNCH_DATA_PARAMETERS.each { |p| attr_accessor p }
-    attr_accessor :custom_params, :ext_params, :non_spec_params
 
-    # Comma separated list of roles as described here: http://www.imsglobal.org/LTI/v1p1pd/ltiIMGv1p1pd.html#_Toc309649700
+    # Hash of custom parameters, the keys will be prepended with "custom_" at launch
+    attr_accessor :custom_params
+
+    # Hash of extension parameters, the keys will be prepended with "ext_" at launch
+    attr_accessor :ext_params
+
+    # Hash of parameters to add to the launch. These keys will not be prepended
+    # with any value at launch
+    attr_accessor :non_spec_params
+
+    # Set the roles for the current launch
+    #
+    # Full list of roles can be found here:
+    # http://www.imsglobal.org/LTI/v1p1pd/ltiIMGv1p1pd.html#_Toc309649700
+    #
+    # LIS roles include:
+    # * Student
+    # * Faculty
+    # * Member
+    # * Learner
+    # * Instructor
+    # * Mentor
+    # * Staff
+    # * Alumni
+    # * ProspectiveStudent
+    # * Guest
+    # * Other
+    # * Administrator
+    # * Observer
+    # * None
+    #
+    # @param roles_list [String,Array] An Array or comma-separated String of roles
     def roles=(roles_list)
       if roles_list
         if roles_list.is_a?(Array)
@@ -85,16 +120,19 @@ module IMS::LTI
       @ext_params[key]
     end
 
-    def launch_data_hash
-      LAUNCH_DATA_PARAMETERS.inject({}) { |h, k| h[k] = self.send(k) if self.send(k); h }
-    end
-
+    # Create a new Hash with all launch data. Custom/Extension keys will have the
+    # appropriate value prepended to the keys and the roles are set as a comma
+    # separated String
     def to_params
       params = launch_data_hash.merge(add_key_prefix(@custom_params, 'custom')).merge(add_key_prefix(@ext_params, 'ext')).merge(@non_spec_params)
       params["roles"] = @roles.map(&:capitalize).join(",") if @roles
       params
     end
 
+    # Populates the launch data from a Hash
+    #
+    # Only keys in LAUNCH_DATA_PARAMETERS and that start with 'custom_' or 'ext_'
+    # will be pulled from the provided Hash
     def process_params(params)
       params.each_pair do |key, val|
         if LAUNCH_DATA_PARAMETERS.member?(key)
@@ -105,6 +143,12 @@ module IMS::LTI
           @ext_params[$1] = val
         end
       end
+    end
+
+    private
+
+    def launch_data_hash
+      LAUNCH_DATA_PARAMETERS.inject({}) { |h, k| h[k] = self.send(k) if self.send(k); h }
     end
 
     def add_key_prefix(hash, prefix)

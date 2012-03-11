@@ -39,7 +39,7 @@ and it will be signed with OAuth using a key/secret that both the TP and TC shar
 This is covered in the [LTI security model](http://www.imsglobal.org/lti/v1p1pd/ltiIMGv1p1pd.html#_Toc309649685)
 
 Here is an example of a simple TP Sinatra app using this gem:
-[LTI Tool Provider](https://github.com/instructure/lti_tool_provider)
+[LTI Tool Provider](https://github.com/instructure/lti_tool_provider_example)
 
 This library doesn't help the TP manage the consumer keys and secrets. The POST
 headers/parameters will contain the `oauth_consumer_key` and your app can use that to look
@@ -67,7 +67,7 @@ which will try to find the name from the 3 potential name launch data attributes
 If your TP provides some kind of assessment service you can write grades back to
 the TC. This is documented in the LTI docs [here](http://www.imsglobal.org/lti/v1p1pd/ltiIMGv1p1pd.html#_Toc309649690).
 
-You can check whether your the TC is expecting a grade write-back:
+You can check whether the TC is expecting a grade write-back:
 
 ```ruby
 if provider.outcome_service?
@@ -92,6 +92,7 @@ else
   # failed
 end
 ```
+
 You can see the error code documentation
 [here](http://www.imsglobal.org/gws/gwsv1p0/imsgws_baseProfv1p0.html#1639667).
 
@@ -101,4 +102,4 @@ As a Tool Consumer your app will POST an OAuth-signed launch requests to TPs wit
 This is covered in the [LTI security model](http://www.imsglobal.org/lti/v1p1pd/ltiIMGv1p1pd.html#_Toc309649685)
 
 Here is an example of a simple TC Sinatra app using this gem:
-[LTI Tool Consumer](https://github.com/instructure/lti_tool_consumer)
+[LTI Tool Consumer](https://github.com/instructure/lti_tool_consumer_example)

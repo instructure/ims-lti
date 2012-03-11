@@ -1,9 +1,15 @@
 module IMS::LTI
+  # Class for implementing an LTI Tool Consumer
   class ToolConsumer
     include IMS::LTI::LaunchParams
 
     attr_accessor :consumer_key, :consumer_secret, :launch_url, :timestamp, :nonce
 
+    # Create a new ToolConsumer
+    #
+    # @param consumer_key [String] The OAuth consumer key
+    # @param consumer_secret [String] The OAuth consumer secret
+    # @param params [Hash] Set the launch parameters as described in LaunchParams
     def initialize(consumer_key, consumer_secret, params={})
       @consumer_key = consumer_key
       @consumer_secret = consumer_secret
@@ -14,6 +20,9 @@ module IMS::LTI
       process_params(params)
     end
 
+    # Set launch data from a ToolConfig
+    #
+    # @param config [ToolConfig]
     def set_config(config)
       @launch_url ||= config.secure_launch_url
       @launch_url ||= config.launch_url
@@ -21,14 +30,21 @@ module IMS::LTI
       @custom_params = config.custom_params.merge(@custom_params)
     end
 
+    # Check whether the OAuth-signed request is valid
+    #
+    # @return [Bool] Whether the request was valid
     def valid_request?(request, handle_error=true)
       IMS::LTI.valid_request?(@consumer_secret, request, handle_error)
     end
 
+    # Check if the required parameters for a tool launch are set
     def has_required_params?
       @consumer_key && @consumer_secret && @resource_link_id && @launch_url
     end
 
+    # Generate the launch data including the necessary OAuth information
+    #
+    #
     def generate_launch_data
       raise IMS::LTI::InvalidLTIConfigError, "Not all required params set for tool launch" unless has_required_params?
 

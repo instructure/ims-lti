@@ -1,7 +1,22 @@
 module IMS::LTI
   # Class used to represent an LTI configuration
+  #
   # It can create and read the Common Cartridge XML representation of LTI links
   # as described here: http://www.imsglobal.org/LTI/v1p1pd/ltiIMGv1p1pd.html#_Toc309649689
+  #
+  # == Usage
+  # To generate an XML configuration:
+  #
+  #    # Create a config object and set some options
+  #    tc = IMS::LTI::ToolConfig.new(:title => "Example Sinatra Tool Provider", :launch_url => url)
+  #    tc.description = "This example LTI Tool Provider supports LIS Outcome pass-back."
+  #
+  #    # generate the XML
+  #    tc.to_xml
+  #
+  # Or to create a config object from an XML String:
+  #
+  #    tc = IMS::LTI::ToolConfig.create_from_xml(xml)
   class ToolConfig
     attr_reader :custom_params, :extensions
 
@@ -10,6 +25,9 @@ module IMS::LTI
                   :vendor_code, :vendor_name, :vendor_description, :vendor_url,
                   :vendor_contact_email, :vendor_contact_name
 
+    # Create a new ToolConfig with the given options
+    #
+    # @param opts [Hash] The initial options for the ToolConfig
     def initialize(opts={})
       @custom_params = opts.delete("custom_params") || {}
       @extensions = opts.delete("extensions") || {}
@@ -19,6 +37,9 @@ module IMS::LTI
       end
     end
 
+    # Create a ToolConfig from the given XML
+    #
+    # @param xml [String]
     def self.create_from_xml(xml)
       tc = ToolConfig.new
       tc.process_xml(xml)
@@ -34,6 +55,10 @@ module IMS::LTI
       @custom_params[key]
     end
 
+    # Set the extension parameters for a specific vendor
+    #
+    # @param ext_key [String] The identifier for the vendor-specific parameters
+    # @param ext_params [Hash] The parameters, this is allowed to be two-levels deep
     def set_ext_params(ext_key, ext_params)
       raise ArgumentError unless ext_params.is_a?(Hash)
       @extensions[ext_key] = ext_params
@@ -52,6 +77,7 @@ module IMS::LTI
       @extensions[ext_key] && @extensions[ext_key][param_key]
     end
 
+    # Namespaces used for parsing configuration XML
     LTI_NAMESPACES = {
             "xmlns" => 'http://www.imsglobal.org/xsd/imslticc_v1p0',
             "blti" => 'http://www.imsglobal.org/xsd/imsbasiclti_v1p0',
@@ -59,7 +85,7 @@ module IMS::LTI
             "lticp" => 'http://www.imsglobal.org/xsd/imslticp_v1p0',
     }
 
-    # pull tool configuration data out of the Common Cartridge LTI link XML
+    # Parse tool configuration data out of the Common Cartridge LTI link XML
     def process_xml(xml)
       doc = REXML::Document.new xml
       if root = REXML::XPath.first(doc, 'xmlns:cartridge_basiclti_link')
@@ -102,9 +128,10 @@ module IMS::LTI
       end
     end
 
+    # Generate XML from the current settings
     def to_xml(opts = {})
       raise IMS::LTI::InvalidLTIConfigError, "A launch url is required for an LTI configuration." unless self.launch_url || self.secure_launch_url
-      
+
       builder = Builder::XmlMarkup.new(:indent => opts[:indent] || 0)
       builder.instruct!
       builder.cartridge_basiclti_link("xmlns" => "http://www.imsglobal.org/xsd/imslticc_v1p0",
@@ -114,11 +141,11 @@ module IMS::LTI
                                       "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
                                       "xsi:schemaLocation" => "http://www.imsglobal.org/xsd/imslticc_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticc_v1p0.xsd http://www.imsglobal.org/xsd/imsbasiclti_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imsbasiclti_v1p0p1.xsd http://www.imsglobal.org/xsd/imslticm_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticm_v1p0.xsd http://www.imsglobal.org/xsd/imslticp_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticp_v1p0.xsd"
       ) do |blti_node|
-        
+
         %w{title description launch_url secure_launch_url}.each do |key|
           blti_node.blti key.to_sym, self.send(key) if self.send(key)
         end
-        
+
         vendor_keys = %w{name code description url}
         if vendor_keys.any?{|k|self.send("vendor_#{k}")} || vendor_contact_email
           blti_node.blti :vendor do |v_node|
@@ -141,7 +168,7 @@ module IMS::LTI
             end
           end
         end
-        
+
         if !@extensions.empty?
           @extensions.each_pair do |ext_platform, ext_params|
             blti_node.blti(:extensions, :platform => ext_platform) do |ext_node|
