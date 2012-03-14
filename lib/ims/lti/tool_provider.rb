@@ -35,6 +35,7 @@ module IMS::LTI
 
   class ToolProvider
     include IMS::LTI::LaunchParams
+    include IMS::LTI::RequestValidator
 
     # OAuth credentials
     attr_accessor :consumer_key, :consumer_secret
@@ -56,20 +57,6 @@ module IMS::LTI
       @non_spec_params = {}
       @outcome_requests = []
       process_params(params)
-    end
-
-    # Check whether the OAuth-signed request is valid
-    #
-    # @return [Bool] Whether the request was valid
-    def valid_request?(request, handle_error=true)
-      IMS::LTI.valid_request?(@consumer_secret, request, handle_error)
-    end
-
-    # Check whether the OAuth-signed request is valid and throw error if not
-    #
-    # @return [Bool] Whether the request was valid
-    def valid_request!(request)
-      valid_request?(request, false)
     end
 
     # Check whether the Launch Parameters have a role

@@ -2,6 +2,7 @@ module IMS::LTI
   # Class for implementing an LTI Tool Consumer
   class ToolConsumer
     include IMS::LTI::LaunchParams
+    include IMS::LTI::RequestValidator
 
     attr_accessor :consumer_key, :consumer_secret, :launch_url, :timestamp, :nonce
 
@@ -28,13 +29,6 @@ module IMS::LTI
       @launch_url ||= config.launch_url
       # any parameters already set will take priority
       @custom_params = config.custom_params.merge(@custom_params)
-    end
-
-    # Check whether the OAuth-signed request is valid
-    #
-    # @return [Bool] Whether the request was valid
-    def valid_request?(request, handle_error=true)
-      IMS::LTI.valid_request?(@consumer_secret, request, handle_error)
     end
 
     # Check if the required parameters for a tool launch are set

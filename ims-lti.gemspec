@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = %q{ims-lti}
-  s.version = "1.0.1"
+  s.version = "1.0.2"
 
   s.add_dependency 'builder'
   s.add_dependency 'oauth', '~> 0.4.5'
@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'ruby-deug'
 
   s.authors = ["Instructure"]
-  s.date = %q{2012-03-13}
+  s.date = %q{2012-03-14}
   s.extra_rdoc_files = %W(LICENSE)
   s.files = %W(
           LICENSE
@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
           lib/ims/lti/launch_params.rb
           lib/ims/lti/outcome_request.rb
           lib/ims/lti/outcome_response.rb
+          lib/ims/lti/request_validator.rb
           lib/ims/lti/tool_config.rb
           lib/ims/lti/tool_consumer.rb
           lib/ims/lti/tool_provider.rb
