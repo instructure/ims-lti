@@ -16,10 +16,10 @@ To require the library in your project:
 To validate the OAuth signatures you need to require the appropriate request
 proxy for your application. For example:
 
-    # For a sinatra app:
+    # For a Sinatra or a Rails 3 app:
     require 'oauth/request_proxy/rack_request'
 
-    # For a rails app:
+    # For a Rails 2.3 app:
     require 'oauth/request_proxy/action_controller_request'
 
 For further information see the [oauth-ruby](https://github.com/oauth/oauth-ruby) project.
