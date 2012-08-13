@@ -163,19 +163,23 @@ module IMS::LTI
 
         if !@custom_params.empty?
           blti_node.tag!("blti:custom") do |custom_node|
-            @custom_params.each_pair do |key, val|
+            @custom_params.keys.sort.each do |key|
+              val = @custom_params[key]
               custom_node.lticm :property, val, 'name' => key
             end
           end
         end
 
         if !@extensions.empty?
-          @extensions.each_pair do |ext_platform, ext_params|
+          @extensions.keys.sort.each do |ext_platform|
+            ext_params = @extensions[ext_platform]
             blti_node.blti(:extensions, :platform => ext_platform) do |ext_node|
-              ext_params.each_pair do |key, val|
+              ext_params.keys.sort.each do |key|
+                val = ext_params[key]
                 if val.is_a?(Hash)
                   ext_node.lticm(:options, :name => key) do |type_node|
-                    val.each_pair do |p_key, p_val|
+                    val.keys.sort.each do |p_key|
+                      p_val = val[p_key]
                       type_node.lticm :property, p_val, 'name' => p_key
                     end
                   end

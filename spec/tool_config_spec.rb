@@ -22,20 +22,25 @@ describe IMS::LTI::ToolConfig do
     <lticm:property name="custom1">customval1</lticm:property>
     <lticm:property name="custom2">customval2</lticm:property>
   </blti:custom>
-  <blti:extensions platform="two.example.com">
-    <lticm:property name="ext1key">ext1val</lticm:property>
-  </blti:extensions>
   <blti:extensions platform="example.com">
+    <lticm:property name="extkey1">extval1</lticm:property>
     <lticm:property name="extkey2">extval2</lticm:property>
     <lticm:options name="extopt1">
       <lticm:property name="optkey1">optval1</lticm:property>
       <lticm:property name="optkey2">optval2</lticm:property>
     </lticm:options>
-    <lticm:property name="extkey1">extval1</lticm:property>
+  </blti:extensions>
+  <blti:extensions platform="two.example.com">
+    <lticm:property name="ext1key">ext1val</lticm:property>
   </blti:extensions>
   <cartridge_bundle identifierref="BLTI001_Bundle"/>
 </cartridge_basiclti_link>
 XML
+  
+  # the generated order of the schema stuff is random, just ignore it
+  def clear_shema_stuffs(text)
+    text.gsub(/<cartridge_basiclti_link[^>]*>/, "<cartridge_basiclti_link>")
+  end
   
   it "should generate the expected config xml" do
     config = IMS::LTI::ToolConfig.new("title" => "Test Config", "secure_launch_url" => "https://www.example.com/lti", "custom_params" => {"custom1" => "customval1"})
@@ -59,12 +64,12 @@ XML
 
     config.cartridge_bundle = "BLTI001_Bundle"
     
-    config.to_xml(:indent => 2).should == cc_lti_xml
+    clear_shema_stuffs(config.to_xml(:indent => 2)).should == clear_shema_stuffs(cc_lti_xml)
   end
 
   it "should read an xml config" do
     config = IMS::LTI::ToolConfig.create_from_xml(cc_lti_xml)
-    config.to_xml(:indent => 2).should == cc_lti_xml
+    clear_shema_stuffs(config.to_xml(:indent => 2)).should == clear_shema_stuffs(cc_lti_xml)
   end
   
   it "should not allow creating invalid config xml" do
