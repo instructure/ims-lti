@@ -4,20 +4,6 @@ describe IMS::LTI::OutcomeRequest do
     create_test_tp
   end
 
-  def mock_request(expected_xml)
-    IMS::LTI.stub(:generate_identifier).and_return("123456789")
-    @fake = Object
-    OAuth::AccessToken.stub(:new).and_return(@fake)
-    @fake.should_receive(:code).and_return("200")
-    @fake.stub(:body).and_return("<xml/>")
-    @fake.should_receive(:post).with(@params['lis_outcome_service_url'], expected_xml, {'Content-Type' => 'application/xml'}).and_return(@fake)
-  end
-
-  expected_xml = %{<?xml version="1.0" encoding="UTF-8"?><imsx_POXEnvelopeRequest xmlns="http://www.imsglobal.org/lis/oms1p0/pox"><imsx_POXHeader><imsx_POXRequestHeaderInfo><imsx_version>V1.0</imsx_version><imsx_messageIdentifier>123456789</imsx_messageIdentifier></imsx_POXRequestHeaderInfo></imsx_POXHeader><imsx_POXBody>%s</imsx_POXBody></imsx_POXEnvelopeRequest>}
-  replace_result_xml = expected_xml % %{<replaceResultRequest><resultRecord><sourcedGUID><sourcedId>261-154-728-17-784</sourcedId></sourcedGUID><result><resultScore><language>en</language><textString>5</textString></resultScore></result></resultRecord></replaceResultRequest>}
-  read_result_xml = expected_xml % %{<readResultRequest><resultRecord><sourcedGUID><sourcedId>261-154-728-17-784</sourcedId></sourcedGUID></resultRecord></readResultRequest>}
-  delete_result_xml = expected_xml % %{<deleteResultRequest><resultRecord><sourcedGUID><sourcedId>261-154-728-17-784</sourcedId></sourcedGUID></resultRecord></deleteResultRequest>}
-
   it "should post the replaceResult request" do
     mock_request(replace_result_xml)
     @tp.post_replace_result!(5)

@@ -38,6 +38,7 @@ module IMS # :nodoc:
   end
 end
 
+require 'ims/lti/extensions'
 require 'ims/lti/launch_params'
 require 'ims/lti/request_validator'
 require 'ims/lti/tool_provider'

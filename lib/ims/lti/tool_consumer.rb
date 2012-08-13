@@ -1,6 +1,7 @@
 module IMS::LTI
   # Class for implementing an LTI Tool Consumer
   class ToolConsumer
+    include IMS::LTI::Extensions::Base
     include IMS::LTI::LaunchParams
     include IMS::LTI::RequestValidator
 
@@ -19,6 +20,11 @@ module IMS::LTI
       @non_spec_params = {}
       @launch_url = params['launch_url']
       process_params(params)
+    end
+    
+    def process_post_request(post_request)
+      request = extend_outcome_request(OutcomeRequest.new)
+      request.process_post_request(post_request)
     end
 
     # Set launch data from a ToolConfig

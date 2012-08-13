@@ -33,6 +33,7 @@ module IMS::LTI
   #      # return an unsupported OutcomeResponse
   #    end
   class OutcomeRequest
+    include IMS::LTI::Extensions::Base
 
     REPLACE_REQUEST = 'replaceResult'
     DELETE_REQUEST = 'deleteResult'
@@ -56,15 +57,19 @@ module IMS::LTI
     #    req = IMS::LTI::OutcomeRequest.from_post_request(request)
     def self.from_post_request(post_request)
       request = OutcomeRequest.new
-      request.post_request = post_request
+      request.process_post_request(post_request)
+    end
+
+    def process_post_request(post_request)
+      self.post_request = post_request
       if post_request.body.respond_to?(:read)
-        xml =  post_request.body.read
+        xml = post_request.body.read
         post_request.body.rewind
       else
-        xml =   post_request.body
+        xml = post_request.body
       end
-      request.process_xml(xml)
-      request
+      self.process_xml(xml)
+      self
     end
 
     # POSTs the given score to the Tool Consumer with a replaceResult
@@ -125,7 +130,8 @@ module IMS::LTI
               generate_request_xml,
               'Content-Type' => 'application/xml'
       )
-      @outcome_response = OutcomeResponse.from_post_response(res)
+      @outcome_response = extend_outcome_response(OutcomeResponse.new)
+      @outcome_response.process_post_response(res)
     end
 
     # Parse Outcome Request data from XML
@@ -142,9 +148,34 @@ module IMS::LTI
         @operation = REPLACE_REQUEST
         @score = doc.get_text("//resultRecord/result/resultScore/textString")
       end
+      extention_process_xml(doc)
     end
 
     private
+    
+    def extention_process_xml(doc)
+    end
+    
+    def has_result_data?
+      !!@score
+    end
+    
+    def results(node)
+      return unless has_result_data?
+      
+      node.result do |res|
+        result_values(res)
+      end
+    end
+
+    def result_values(node)
+      if @score
+        node.resultScore do |res_score|
+          res_score.language "en" # 'en' represents the format of the number
+          res_score.textString @score.to_s
+        end
+      end
+    end
 
     def has_required_attributes?
       @consumer_key && @consumer_secret && @lis_outcome_service_url && @lis_result_sourcedid && @operation
@@ -167,14 +198,7 @@ module IMS::LTI
               record.sourcedGUID do |guid|
                 guid.sourcedId @lis_result_sourcedid
               end
-              if @score
-                record.result do |res|
-                  res.resultScore do |res_score|
-                    res_score.language "en" # 'en' represents the format of the number
-                    res_score.textString @score.to_s
-                  end
-                end
-              end
+              results(record)
             end
           end
         end

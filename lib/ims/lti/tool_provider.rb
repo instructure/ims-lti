@@ -34,6 +34,7 @@ module IMS::LTI
   #     end
 
   class ToolProvider
+    include IMS::LTI::Extensions::Base
     include IMS::LTI::LaunchParams
     include IMS::LTI::RequestValidator
 
@@ -157,7 +158,8 @@ module IMS::LTI
                          :consumer_secret => @consumer_secret,
                          :lis_outcome_service_url => lis_outcome_service_url,
                          :lis_result_sourcedid =>lis_result_sourcedid)
-      @outcome_requests.last
+      
+      extend_outcome_request(@outcome_requests.last)
     end
     
   end

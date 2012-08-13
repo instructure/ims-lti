@@ -45,7 +45,8 @@ module IMS::LTI
   #    res.generate_response_xml
   #
   class OutcomeResponse
-
+    include IMS::LTI::Extensions::Base
+    
     attr_accessor :request_type, :score, :message_identifier, :response_code,
             :post_response, :code_major, :severity, :description, :operation,
             :message_ref_identifier
@@ -67,11 +68,15 @@ module IMS::LTI
     #    req = IMS::LTI::OutcomeResponse.from_post_response(response)
     def self.from_post_response(post_response)
       response = OutcomeResponse.new
-      response.post_response = post_response
-      response.response_code = post_response.code
+      response.process_post_response(post_response)
+    end
+    
+    def process_post_response(post_response)
+      self.post_response = post_response
+      self.response_code = post_response.code
       xml = post_response.body
-      response.process_xml(xml)
-      response
+      self.process_xml(xml)
+      self
     end
 
     def success?
