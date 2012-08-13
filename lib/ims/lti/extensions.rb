@@ -40,3 +40,4 @@ module IMS::LTI
   end
 end
 
+require 'ims/lti/extensions/outcome_data'
