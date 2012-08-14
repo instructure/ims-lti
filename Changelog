@@ -1,0 +1,22 @@
+2012-08-14 Version 1.1.0
+
+    * Added framework for LTI extensions
+    * Added LTI outcome data extension
+    * Fix tests reliant on random ordering
+    * Add rails 3 note to readme install docs
+    * Create Changelog
+    
+
+2012-03-14 Version 1.0.2
+
+    * Refactor OAuth validation into its own module
+    
+    
+2012-03-13 Version 1.0.1
+
+    * Add gem dependencies to gemspec
+
+
+2012-03-11 Version 1.0.0
+
+    * Publish fully functional and operational IMS LTI library

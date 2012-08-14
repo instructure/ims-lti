@@ -26,6 +26,8 @@ module IMS # :nodoc:
   #
   #    require 'ims/lti'
   module LTI
+    
+    # The versions of LTI this library supports
     VERSIONS = %w{1.0 1.1}
     
     class InvalidLTIConfigError < StandardError
