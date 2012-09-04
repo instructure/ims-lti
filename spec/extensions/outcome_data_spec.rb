@@ -33,6 +33,13 @@ describe IMS::LTI::Extensions do
     @tp.post_replace_result_with_data!('.5', "text" => "the text")
   end
 
+  it "should generate an extended outcome text request using cdata" do
+    xml = result_xml % %{<resultScore><language>en</language><textString>.5</textString></resultScore><resultData><text><![CDATA[the text]]></text></resultData>}
+    mock_request(xml)
+    
+    @tp.post_replace_result_with_data!('.5', "cdata_text" => "the text")
+  end
+
   it "should generate an extended outcome url request" do
     xml = result_xml % %{<resultData><url>http://www.example.com</url></resultData>}
     mock_request(xml)

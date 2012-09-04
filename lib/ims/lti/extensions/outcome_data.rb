@@ -68,14 +68,20 @@ module IMS::LTI
         end
 
         # POSTs the given score to the Tool Consumer with a replaceResult and
-        # adds the specified data. The data hash can have the keys "text" or "url"
+        # adds the specified data. The data hash can have the keys "text", "cdata_text", or "url"
+        #
+        # If  both cdata_text and text are sent, cdata_text will be used
         #
         # Creates a new OutcomeRequest object and stores it in @outcome_requests
         #
         # @return [OutcomeResponse] the response from the Tool Consumer
         def post_replace_result_with_data!(score, data={})
           req = new_request
-          req.outcome_text = data["text"] if data["text"]
+          if data["cdata_text"] 
+            req.outcome_cdata_text = data["cdata_text"] 
+          elsif data["text"]
+            req.outcome_text = data["text"]
+          end
           req.outcome_url = data["url"] if data["url"]
           req.post_replace_result!(score)
         end
@@ -116,13 +122,19 @@ module IMS::LTI
         include IMS::LTI::Extensions::ExtensionBase
         include Base
 
-        attr_accessor :outcome_text, :outcome_url
+        attr_accessor :outcome_text, :outcome_url, :outcome_cdata_text
 
         def result_values(node)
           super
-          if @outcome_text || @outcome_url
+          if @outcome_text || @outcome_url || @outcome_cdata_text
             node.resultData do |res_data|
-              res_data.text @outcome_text if @outcome_text
+              if @outcome_cdata_text
+                res_data.text {
+                  res_data.cdata! @outcome_cdata_text
+                }
+              elsif @outcome_text
+                res_data.text @outcome_text
+              end
               res_data.url @outcome_url if @outcome_url
             end
           end
