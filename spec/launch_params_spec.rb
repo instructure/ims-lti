@@ -11,7 +11,7 @@ describe IMS::LTI::LaunchParams do
         @params.each_pair do |key, val|
           @tool.send(key).should == val unless key =~ /custom_|ext_|roles/
         end
-        @tool.roles.should == %w{learner instructor observer}
+        @tool.roles.should == ["learner", "instructor", "observer", "urn:lti:role:ims/lis/member", "mentor/mentor", "administrator", "urn:lti:role:ims/lis/teachingassistant/teachingassistantsection"]
 
         @tool.to_params.should == @params
       end

@@ -26,14 +26,14 @@ describe IMS::LTI::ToolConsumer do
   it "should generate a correct signature" do
     create_tc
     res = @tc.generate_launch_data
-    res['oauth_signature'].should eql('TPFPK4u3NwmtLt0nDMP1G1zG30U=')
+    res['oauth_signature'].should eql('Eh+W+ZMn4CB9momDqyJXf5yMfTc=')
   end
 
   it "should generate a correct signature with URL query parameters" do
     create_tc
     @tc.launch_url = 'http://dr-chuck.com/ims/php-simple/tool.php?a=1&b=2&c=3%20%26a'
     res = @tc.generate_launch_data
-    res['oauth_signature'].should eql('uF7LooyefQN5aocx7UlYQ4tQM5k=')
+    res['oauth_signature'].should eql('iN1kwF7CYLWi0BJCo3G7rlGHTm8=')
     res['c'].should == "3 &a"
   end
 

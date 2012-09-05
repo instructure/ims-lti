@@ -1,3 +1,11 @@
+2012-09-05 Version 1.1.2
+
+    * Added better role checking and convenience methods
+
+2012-09-04 Version 1.1.1
+
+    * Added cdata value for outcome data extension
+
 2012-08-14 Version 1.1.0
 
     * Added framework for LTI extensions

@@ -16,7 +16,7 @@ def create_params
             "custom_param1" => "custom1",
             "custom_param2" => "custom2",
             "ext_lti_message_type" => "extension-lti-launch",
-            "roles" => "Learner,Instructor,Observer"
+            "roles" => "learner,instructor,observer,urn:lti:role:ims/lis/member,mentor/mentor,administrator,urn:lti:role:ims/lis/teachingassistant/teachingassistantsection"
     }
 end
 

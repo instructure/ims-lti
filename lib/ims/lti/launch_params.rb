@@ -125,7 +125,7 @@ module IMS::LTI
     # separated String
     def to_params
       params = launch_data_hash.merge(add_key_prefix(@custom_params, 'custom')).merge(add_key_prefix(@ext_params, 'ext')).merge(@non_spec_params)
-      params["roles"] = @roles.map(&:capitalize).join(",") if @roles
+      params["roles"] = @roles.join(",") if @roles
       params
     end
 

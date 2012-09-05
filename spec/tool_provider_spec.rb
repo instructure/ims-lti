@@ -23,8 +23,14 @@ describe IMS::LTI::ToolProvider do
   it "should recognize the roles" do
     @tp.student?.should == true
     @tp.instructor?.should == true
+    @tp.content_developer?.should == false
+    @tp.member?.should == true
+    @tp.manager?.should == false
+    @tp.mentor?.should == true
+    @tp.admin?.should == true
+    @tp.ta?.should == true
     @tp.has_role?('Observer').should == true
-    @tp.has_role?('administrator').should == false
+    @tp.has_role?('someDude').should == false
   end
 
   it "should find the best username" do
