@@ -1,33 +1,23 @@
 module IMS::LTI
   module Extensions
 
-    # An LTI extension that adds support for sending data back to the consumer
-    # in addition to the score.
+    # An LTI extension that adds support for content back to the consumer
     #
     #     # Initialize TP object with OAuth creds and post parameters
     #     provider = IMS::LTI::ToolProvider.new(consumer_key, consumer_secret, params)
     #     # add extension
-    #     provider.extend IMS::LTI::Extensions::OutcomeData::ToolProvider
+    #     provider.extend IMS::LTI::Extensions::Content::ToolProvider
     #
-    # If the tool was launch as an outcome service and it supports the data extension
-    # you can POST a score to the TC.
-    # The POST calls all return an OutcomeResponse object which can be used to
-    # handle the response appropriately.
+    # If the tool was launched as an content request and it supports the content extension
+    # you can redirect the user to the tool consumer using the return url helper methods.
+    # The tool consumer is then responsible for consuming the content.
     #
-    #     # post the score to the TC, score should be a float >= 0.0 and <= 1.0
-    #     # this returns an OutcomeResponse object
-    #     if provider.accepts_outcome_text?
-    #       response = provider.post_replace_result_with_data!(score, "text" => "submission text")
-    #     else
-    #       response = provider.post_replace_result!(score)
+    #     #Check if a certain response type is available
+    #     if provider.accepts_url? do
+    #       #Generate the URL for the user
+    #       redirect provider.url_content_return_url(url)
     #     end
-    #     if response.success?
-    #       # grade write worked
-    #     elsif response.processing?
-    #     elsif response.unsupported?
-    #     else
-    #       # failed
-    #     end
+    #
     module Content
       module ToolProvider
         include IMS::LTI::Extensions::ExtensionBase
