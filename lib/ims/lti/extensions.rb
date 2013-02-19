@@ -42,3 +42,4 @@ end
 
 require 'ims/lti/extensions/outcome_data'
 require 'ims/lti/extensions/content'
+require 'ims/lti/extensions/canvas'
