@@ -49,7 +49,7 @@ module IMS::LTI
       raise IMS::LTI::InvalidLTIConfigError, "Not all required params set for tool launch" unless has_required_params?
 
       params = self.to_params
-      params['lti_version'] ||= 'LTI-1.0'
+      params['lti_version'] ||= 'LTI-1p0'
       params['lti_message_type'] ||= 'basic-lti-launch-request'
       uri = URI.parse(@launch_url)
 
