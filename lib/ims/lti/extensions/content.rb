@@ -34,8 +34,21 @@ module IMS::LTI
           @content_types
         end
 
-        def accepts_file?
-          accepted_content_types.include?(:file)
+        def accepted_file_extensions
+          return @file_extensions if @file_extensions
+          @file_extensions = []
+          if val = @ext_params["content_file_extensions"]
+            @file_extensions = val.split(',').map {|i| i.downcase.strip}
+          end
+
+          @file_extensions
+        end
+
+        def accepts_file?(file_name = nil)
+          accepted_content_types.include?(:file) &&
+            ( file_name.nil? ||
+              accepted_file_extensions.empty? ||
+              accepted_file_extensions.any?{|ext| file_name.downcase[/#{ext}$/]} )
         end
 
         def accepts_url?

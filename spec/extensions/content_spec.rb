@@ -6,7 +6,7 @@ describe IMS::LTI::Extensions do
     @params['ext_content_intended_use'] = "homework"
     @params['ext_content_return_types'] = "file,url,lti_launch_url,image_url,iframe,oembed"
     @params['ext_content_return_url'] = "http://example.com/content_return"
-    @params['ext_content_file_extensions'] = ''
+    @params['ext_content_file_extensions'] = 'txt,jpg'
     @tp = IMS::LTI::ToolProvider.new("hi", 'oi', @params)
     @tp.extend IMS::LTI::Extensions::Content::ToolProvider
   end
@@ -28,6 +28,9 @@ describe IMS::LTI::Extensions do
 
   it "should recognize accepted return types" do
     @tp.accepts_file?.should == true
+    @tp.accepts_file?('my_file.txt').should == true
+    @tp.accepts_file?('my_file.jpg').should == true
+    @tp.accepts_file?('my_file.csv').should == false
     @tp.accepts_url?.should == true
     @tp.accepts_lti_launch_url?.should == true
     @tp.accepts_image_url?.should == true
