@@ -95,12 +95,15 @@ module IMS::LTI
         end
 
         #generates the return url for file submissions
-        def file_content_return_url(url, text, content_type)
+        def file_content_return_url(url, text, content_type = nil)
           url = CGI::escape(url)
           text = CGI::escape(text)
-          content_type = CGI::escape(content_type)
+          content_type = CGI::escape(content_type) if content_type
 
-          "#{content_return_url}?return_type=file&url=#{url}&text=#{text}&content_type=#{content_type}"
+          return_url = "#{content_return_url}?return_type=file&url=#{url}&text=#{text}"
+          return_url = "#{return_url}&content_type=#{content_type}" if content_type
+
+          return return_url
         end
 
         #generates the return url for url submissions
