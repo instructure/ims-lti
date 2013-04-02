@@ -7,28 +7,12 @@ Gem::Specification.new do |s|
   s.add_dependency 'uuid'
 
   s.add_development_dependency 'rspec'
-  s.add_development_dependency 'ruby-deug'
+  s.add_development_dependency 'ruby-debug'
 
   s.authors = ["Instructure"]
   s.date = %q{2012-09-05}
   s.extra_rdoc_files = %W(LICENSE)
-  s.files = %W(
-          Changelog
-          LICENSE
-          README.md
-          lib/ims.rb
-          lib/ims/lti.rb
-          lib/ims/lti/extensions.rb
-          lib/ims/lti/extensions/outcome_data.rb
-          lib/ims/lti/launch_params.rb
-          lib/ims/lti/outcome_request.rb
-          lib/ims/lti/outcome_response.rb
-          lib/ims/lti/request_validator.rb
-          lib/ims/lti/tool_config.rb
-          lib/ims/lti/tool_consumer.rb
-          lib/ims/lti/tool_provider.rb
-          ims-lti.gemspec
-  )
+	s.files = Dir["{lib}/**/*"] + ["LICENSE", "README.md", "Changelog"]
   s.homepage = %q{http://github.com/instructure/ims-lti}
   s.require_paths = %W(lib)
   s.summary = %q{Ruby library for creating IMS LTI tool providers and consumers}
