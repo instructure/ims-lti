@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = %q{ims-lti}
-  s.version = "1.1.2"
+  s.version = "1.1.3"
 
   s.add_dependency 'builder'
   s.add_dependency 'oauth', '~> 0.4.5'
@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'ruby-debug'
 
   s.authors = ["Instructure"]
-  s.date = %q{2012-09-05}
+  s.date = %q{2013-04-24}
   s.extra_rdoc_files = %W(LICENSE)
 	s.files = Dir["{lib}/**/*"] + ["LICENSE", "README.md", "Changelog"]
   s.homepage = %q{http://github.com/instructure/ims-lti}
