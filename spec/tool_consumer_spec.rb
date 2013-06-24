@@ -48,14 +48,15 @@ describe IMS::LTI::ToolConsumer do
     end
 
     # signatures generated using http://oauth.googlecode.com/svn/code/javascript/example/signature.html
-    test_url('http://dr-chuck.com:123/ims/php-simple/tool.php', 'HdHJri8Z7OhnMhxX27hSPB5W+SI=')
-    test_url('http://dr-chuck.com/ims/php-simple/tool.php', 'bTcODyqQSdogpn1mJAugGB2c2F4=')
-    test_url('http://dr-chuck.com:80/ims/php-simple/tool.php', 'bTcODyqQSdogpn1mJAugGB2c2F4=')
-    test_url('http://dr-chuck.com:443/ims/php-simple/tool.php', 'n0P6aFgyv6ikNsMiNNG/KjxMZ8w=')
-    test_url('https://dr-chuck.com/ims/php-simple/tool.php', '9DoVeq1RYnidTgF71Zg16SNJFpY=')
-    test_url('https://dr-chuck.com:443/ims/php-simple/tool.php', '9DoVeq1RYnidTgF71Zg16SNJFpY=')
-    test_url('https://dr-chuck.com:80/ims/php-simple/tool.php', '4L1f5SctEX0num3GPElvMKq2w+s=')
-    test_url('https://dr-chuck.com:80/ims/php-simple/tool.php?oi=hoyt', 'dvvQchwqhDH1nFGzWbgVxmcUysc=')
+    # accessed on : 2013-06-24
+    test_url('http://dr-chuck.com:123/ims/php-simple/tool.php', 'dG1tuMWpQw2Tg/aM1RLL/+o11rE=')
+    test_url('http://dr-chuck.com/ims/php-simple/tool.php', '5/m7IyWjp5mzc98CtyagO4lZj2A=')
+    test_url('http://dr-chuck.com:80/ims/php-simple/tool.php', '5/m7IyWjp5mzc98CtyagO4lZj2A=')
+    test_url('http://dr-chuck.com:443/ims/php-simple/tool.php', '3UGVtB8kHe3O0A9cW1XSNhYcG/E=')
+    test_url('https://dr-chuck.com/ims/php-simple/tool.php', 'ZoR3mXQgkd5JNY6T47CeNdvIgy8=')
+    test_url('https://dr-chuck.com:443/ims/php-simple/tool.php', 'ZoR3mXQgkd5JNY6T47CeNdvIgy8=')
+    test_url('https://dr-chuck.com:80/ims/php-simple/tool.php', 'dLmHNc5t74KTIr5uqQ85E2O3N9w=')
+    test_url('https://dr-chuck.com:80/ims/php-simple/tool.php?oi=hoyt', '3gwTnBk87PzT8GWIJFxvnCxZNmU=')
   end
 
   it "should include URI query parameters" do
