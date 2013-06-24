@@ -11,7 +11,7 @@ describe IMS::LTI::OutcomeResponse do
 <imsx_statusInfo>
 <imsx_codeMajor>success</imsx_codeMajor>
 <imsx_severity>status</imsx_severity>
-<imsx_description></imsx_description>
+<imsx_description/>
 <imsx_messageRefIdentifier>123456789</imsx_messageRefIdentifier>
 <imsx_operationRefIdentifier>replaceResult</imsx_operationRefIdentifier>
 </imsx_statusInfo>
