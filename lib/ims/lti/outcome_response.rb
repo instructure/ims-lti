@@ -141,8 +141,8 @@ module IMS::LTI
         end #/header
         env.imsx_POXBody do |body|
           unless unsupported?
-            body.tag!(@operation + 'Response') do |request|
-              if @operation == OutcomeRequest::READ_REQUEST
+            if @operation == OutcomeRequest::READ_REQUEST
+              body.tag!(@operation + 'Response') do |request|
                 request.result do |res|
                   res.resultScore do |res_score|
                     res_score.language "en" # 'en' represents the format of the number
@@ -150,6 +150,8 @@ module IMS::LTI
                   end
                 end #/result
               end
+            else
+              body.tag!(@operation + 'Response')
             end #/operationResponse
           end
         end #/body
