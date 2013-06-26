@@ -35,7 +35,7 @@ module IMS # :nodoc:
 
     # Generates a unique identifier
     def self.generate_identifier
-      UUID.new
+      UUID.new.generate
     end
   end
 end
