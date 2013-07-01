@@ -43,7 +43,7 @@ describe IMS::LTI::OutcomeResponse do
   end
 
   it "should parse readResult response xml" do
-    read_xml = response_xml.gsub('<replaceResultResponse></replaceResultResponse>', <<-XML)
+    read_xml = response_xml.gsub('<replaceResultResponse/>', <<-XML)
 <readResultResponse>
 <result>
 <resultScore>
