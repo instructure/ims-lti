@@ -185,7 +185,7 @@ module IMS::LTI
       builder = Builder::XmlMarkup.new #(:indent=>2)
       builder.instruct!
 
-      builder.imsx_POXEnvelopeRequest("xmlns" => "http://www.imsglobal.org/lis/oms1p0/pox") do |env|
+      builder.imsx_POXEnvelopeRequest("xmlns" => "http://www.imsglobal.org/services/ltiv1p1/xsd/imsoms_v1p0") do |env|
         env.imsx_POXHeader do |header|
           header.imsx_POXRequestHeaderInfo do |info|
             info.imsx_version "V1.0"
