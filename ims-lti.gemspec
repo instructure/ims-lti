@@ -12,7 +12,8 @@ Gem::Specification.new do |s|
   s.authors = ["Instructure"]
   s.date = %q{2013-04-24}
   s.extra_rdoc_files = %W(LICENSE)
-	s.files = Dir["{lib}/**/*"] + ["LICENSE", "README.md", "Changelog"]
+  s.license = 'MIT'
+  s.files = Dir["{lib}/**/*"] + ["LICENSE", "README.md", "Changelog"]
   s.homepage = %q{http://github.com/instructure/ims-lti}
   s.require_paths = %W(lib)
   s.summary = %q{Ruby library for creating IMS LTI tool providers and consumers}
