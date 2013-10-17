@@ -70,12 +70,14 @@ module IMS::LTI
         # POSTs the given score to the Tool Consumer with a replaceResult and
         # adds the specified data. The data hash can have the keys "text", "cdata_text", or "url"
         #
-        # If  both cdata_text and text are sent, cdata_text will be used
+        # If both cdata_text and text are sent, cdata_text will be used
+        #
+        # If score is nil, the replace result XML will not contain a resultScore node
         #
         # Creates a new OutcomeRequest object and stores it in @outcome_requests
         #
         # @return [OutcomeResponse] the response from the Tool Consumer
-        def post_replace_result_with_data!(score, data={})
+        def post_replace_result_with_data!(score = nil, data={})
           req = new_request
           if data["cdata_text"] 
             req.outcome_cdata_text = data["cdata_text"] 
@@ -85,7 +87,6 @@ module IMS::LTI
           req.outcome_url = data["url"] if data["url"]
           req.post_replace_result!(score)
         end
-
       end
 
       module ToolConsumer
