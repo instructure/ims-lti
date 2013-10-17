@@ -85,8 +85,8 @@ module IMS::LTI
           set_canvas_ext_param(:editor_button, params)
         end
 
-        # Adds the tool to canvas' rich text editor
-        # Valid properties are url, icon_url, text, selection_width, selection_height, enabled
+        # Adds the tool to canvas' resource selector
+        # Valid properties are url, text, selection_width, selection_height, enabled
         def canvas_resource_selection!(params = {})
           set_canvas_ext_param(:resource_selection, params)
         end
@@ -109,6 +109,12 @@ module IMS::LTI
         # Valid properties are url, text, enabled
         def canvas_user_navigation!(params = {})
           set_canvas_ext_param(:user_navigation, params)
+        end
+
+        # Adds canvas environment configurations options
+        # Valid properties are launch_url, domain, test_launch_url, test_domain, beta_launch_url, beta_domain
+        def canvas_environments!(params = {})
+          set_canvas_ext_param(:environments, params)
         end
       end
     end
