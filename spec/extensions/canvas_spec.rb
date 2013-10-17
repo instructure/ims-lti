@@ -12,6 +12,7 @@ describe IMS::LTI::Extensions do
     tc.canvas_text! 'Test Tool'
     tc.canvas_icon_url! 'http://example.com/icon.ico'
     tc.canvas_selector_dimensions! 500, 400
+    tc.canvas_tool_id! 'tool_id'
 
     tc.get_canvas_param(:privacy_level).should == 'public'
     tc.get_canvas_param(:domain).should == 'www.google.com'
@@ -19,6 +20,7 @@ describe IMS::LTI::Extensions do
     tc.get_canvas_param(:icon_url).should == 'http://example.com/icon.ico'
     tc.get_canvas_param(:selection_width).should == 500
     tc.get_canvas_param(:selection_height).should == 400
+    tc.get_canvas_param(:tool_id).should == 'tool_id'
   end
 
   it "should support canvas extensions" do

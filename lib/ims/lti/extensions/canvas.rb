@@ -28,34 +28,45 @@ module IMS::LTI
 
         # Canvas extension defaults
         # These properties will cascade down to any options that are configured
+        def set_canvas_ext_param(key, value)
+          set_ext_param(PLATFORM, key, value)
+        end
+
+        def get_canvas_param(param_key)
+          get_ext_param PLATFORM, param_key
+        end
 
         def canvas_privacy_public!()
-          set_ext_param(PLATFORM, :privacy_level, 'public')
+          set_canvas_ext_param(:privacy_level, 'public')
         end
 
         def canvas_privacy_name_only!()
-          set_ext_param(PLATFORM, :privacy_level, 'name_only')
+          set_canvas_ext_param(:privacy_level, 'name_only')
         end
 
         def canvas_privacy_anonymous!()
-          set_ext_param(PLATFORM, :privacy_level, 'anonymous')
+          set_canvas_ext_param(:privacy_level, 'anonymous')
         end
 
         def canvas_domain!(domain)
-          set_ext_param(PLATFORM, :domain, domain)
+          set_canvas_ext_param(:domain, domain)
         end
 
         def canvas_text!(text)
-          set_ext_param(PLATFORM, :text, text)
+          set_canvas_ext_param(:text, text)
         end
 
         def canvas_icon_url!(icon_url)
-          set_ext_param(PLATFORM, :icon_url, icon_url)
+          set_canvas_ext_param(:icon_url, icon_url)
+        end
+
+        def canvas_tool_id!(tool_id)
+          set_canvas_ext_param(:tool_id, tool_id)
         end
 
         def canvas_selector_dimensions!(width, height)
-          set_ext_param(PLATFORM, :selection_width, width)
-          set_ext_param(PLATFORM, :selection_height, height)
+          set_canvas_ext_param(:selection_width, width)
+          set_canvas_ext_param(:selection_height, height)
         end
 
         # Canvas options
@@ -65,25 +76,25 @@ module IMS::LTI
         # Enables homework submissions via the tool
         # Valid properties are url, text, selection_width, selection_height, enabled
         def canvas_homework_submission!(params = {})
-          set_ext_param(PLATFORM, :homework_submission, params)
+          set_canvas_ext_param(:homework_submission, params)
         end
 
         # Adds the tool to canvas' rich text editor
         # Valid properties are url, icon_url, text, selection_width, selection_height, enabled
         def canvas_editor_button!(params = {})
-          set_ext_param(PLATFORM, :editor_button, params)
+          set_canvas_ext_param(:editor_button, params)
         end
 
         # Adds the tool to canvas' rich text editor
         # Valid properties are url, icon_url, text, selection_width, selection_height, enabled
         def canvas_resource_selection!(params = {})
-          set_ext_param(PLATFORM, :resource_selection, params)
+          set_canvas_ext_param(:resource_selection, params)
         end
 
         # Adds the tool to account level navigation in canvas
         # Valid properties are url, text, enabled
         def canvas_account_navigation!(params = {})
-          set_ext_param(PLATFORM, :account_navigation, params)
+          set_canvas_ext_param(:account_navigation, params)
         end
 
         # Adds the tool to course level navigation in canvas
@@ -91,17 +102,13 @@ module IMS::LTI
         # Visibility describes who will see the navigation element.  Possible values are "admins", "members", and nil
         # Default determines if it is on or off by default.  Possible values are "admins", "members", and nil
         def canvas_course_navigation!(params = {})
-          set_ext_param(PLATFORM, :course_navigation, params)
+          set_canvas_ext_param(:course_navigation, params)
         end
 
         # Adds the tool to user level navigation in canvas
         # Valid properties are url, text, enabled
         def canvas_user_navigation!(params = {})
-          set_ext_param(PLATFORM, :user_navigation, params)
-        end
-
-        def get_canvas_param(param_key)
-          get_ext_param PLATFORM, param_key
+          set_canvas_ext_param(:user_navigation, params)
         end
       end
     end
