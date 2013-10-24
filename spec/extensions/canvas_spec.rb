@@ -32,6 +32,7 @@ describe IMS::LTI::Extensions do
     tc.canvas_account_navigation!({:url => 'http://example.com/account'})
     tc.canvas_course_navigation!({:url => 'http://example.com/course'})
     tc.canvas_user_navigation!({:url => 'http://example.com/user'})
+    tc.canvas_environments!({:domain => 'test.example.com'})
 
     tc.get_canvas_param(:homework_submission).should == {:url => 'http://example.com/homework'}
     tc.get_canvas_param(:editor_button).should == {:url => 'http://example.com/editor'}
@@ -39,5 +40,6 @@ describe IMS::LTI::Extensions do
     tc.get_canvas_param(:account_navigation).should == {:url => 'http://example.com/account'}
     tc.get_canvas_param(:course_navigation).should == {:url => 'http://example.com/course'}
     tc.get_canvas_param(:user_navigation).should == {:url => 'http://example.com/user'}
+    tc.get_canvas_param(:environments).should == {:domain => 'test.example.com'}
   end
 end
