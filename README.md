@@ -24,7 +24,7 @@ proxy for your application. For example:
     # For a Rails 2.3 app:
     require 'oauth/request_proxy/action_controller_request'
 
-For further information see the [oauth-ruby](https://github.com/oauth/oauth-ruby) project.
+For further information see the [oauth-ruby](https://github.com/oauth-xx/oauth-ruby) project.
 
 ## Usage
 This readme won't cover the LTI standard, just how to use the library. It will be
