@@ -142,7 +142,7 @@ module IMS::LTI
                                       "xsi:schemaLocation" => "http://www.imsglobal.org/xsd/imslticc_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticc_v1p0.xsd http://www.imsglobal.org/xsd/imsbasiclti_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imsbasiclti_v1p0p1.xsd http://www.imsglobal.org/xsd/imslticm_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticm_v1p0.xsd http://www.imsglobal.org/xsd/imslticp_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticp_v1p0.xsd"
       ) do |blti_node|
 
-        %w{title description launch_url secure_launch_url}.each do |key|
+        %w{title description launch_url secure_launch_url icon secure_icon}.each do |key|
           blti_node.blti key.to_sym, self.send(key) if self.send(key)
         end
 
