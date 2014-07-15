@@ -1,20 +1,23 @@
-Gem::Specification.new do |s|
-  s.name = %q{ims-lti}
-  s.version = "1.1.5"
+# coding: utf-8
+# lib = File.expand_path('../lib', __FILE__)
+# $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
-  s.add_dependency 'builder'
-  s.add_dependency 'oauth', '~> 0.4.5'
-  s.add_dependency 'uuid'
+Gem::Specification.new do |spec|
+  spec.name          = 'ims-lti'
+  spec.version       = '2.0.0.beta.1'
+  spec.authors       = ['Instructure']
+  spec.summary       = %q{Ruby library for creating IMS LTI tool providers and consumers}
+  spec.homepage      = %q{http://github.com/instructure/ims-lti}
+  spec.license       = 'MIT'
 
-  s.add_development_dependency 'rspec'
-  s.add_development_dependency 'ruby-debug'
+  spec.files         = Dir['{lib}/**/*'] + ['LICENSE.txt', 'README.md', 'Changelog.txt']
+  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
+  spec.require_paths = ['lib']
 
-  s.authors = ["Instructure"]
-  s.date = %q{2013-04-24}
-  s.extra_rdoc_files = %W(LICENSE)
-  s.license = 'MIT'
-  s.files = Dir["{lib}/**/*"] + ["LICENSE", "README.md", "Changelog"]
-  s.homepage = %q{http://github.com/instructure/ims-lti}
-  s.require_paths = %W(lib)
-  s.summary = %q{Ruby library for creating IMS LTI tool providers and consumers}
+  spec.add_dependency 'json-ld', '~> 1.1.4'
+  spec.add_dependency 'oauth', '~> 0.4.7'
+
+  spec.add_development_dependency 'rake'
+  spec.add_development_dependency 'rspec'
 end

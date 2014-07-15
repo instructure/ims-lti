@@ -1,0 +1,133 @@
+{
+    "@context": [
+        "http://purl.imsglobal.org/ctx/lti/v2/ToolConsumerProfile",
+        {
+            "tcp": "http://lms.example.com/profile/b6ffa601-ce1d-4549-9ccf-145670a964d4#"
+        }
+    ],
+    "@type": "ToolConsumerProfile",
+    "@id": "http://lms.example.com/profile/b6ffa601-ce1d-4549-9ccf-145670a964d4",
+    "lti_version": "LTI-2p0",
+    "guid": "b6ffa601-ce1d-4549-9ccf-145670a964d4",
+    "product_instance": {
+        "guid": "c86542d5-fde1-4aae-ae18-7018089fddcd",
+        "product_info": {
+            "product_name": {
+                "default_value": "Omega LMS",
+                "key": "product.name"
+            },
+            "product_version": "2.3",
+            "description": {
+                "default_value": "Omega LMS is a fictitious Learning Management System",
+                "key": "product.version"
+            },
+            "technical_description": {
+                "default_value": "LTI 1, 1.1 and 2.0 compliant",
+                "key": "product.technicalDescription"
+            },
+            "product_family": {
+                "code": "omega",
+                "vendor": {
+                    "code": "lms.example.com",
+                    "vendor_name": {
+                        "default_value": "LMS Corporation",
+                        "key": "product.vendor.name"
+                    },
+                    "description": {
+                        "default_value": "LMS Corporation is a fictitious vendor of a Learning Management System",
+                        "key": "product.vendor.description"
+                    },
+                    "website": "http://lms.example.com/products/omega",
+                    "timestamp": "2012-03-28T09:08:16-04:00",
+                    "contact": {
+                        "email": "support@lms.example.com"
+                    }
+                }
+            }
+        },
+        "service_owner": {
+            "@id": "http://state.university.edu/",
+            "timestamp": "2012-03-28T09:08:16-04:00",
+            "service_owner_name": {
+                "default_value": "State University",
+                "key": "service_owner.name"
+            },
+            "description": {
+                "default_value": "A fictitious university.",
+                "key": "service_owner.description"
+            },
+            "support": {
+                "email": "techsupport@university.edu"
+            }
+        },
+        "service_provider": {
+            "@id": "http://yasp.example.com/ServiceProvider",
+            "guid": "yasp.example.com",
+            "timestamp": "2012-03-28T09:08:16-04:00",
+            "service_provider_name": {
+                "default_value": "Your Application Service Provider",
+                "key": "service_provider.name"
+            },
+            "description": {
+                "default_value": "YASP is a fictitious application service provider",
+                "key": "service_provider.description"
+            },
+            "support": {
+                "email": "support@yasp.example.com"
+            }
+        }
+    },
+    "capability_offered": [
+        "basic-lti-launch-request",
+        "Result.autocreate",
+        "Result.sourcedId",
+        "Result.url",
+        "LtiLink.custom.url",
+        "ToolProxyBinding.custom.url",
+        "ToolProxy.custom.url"
+    ],
+    "service_offered": [
+        {
+            "@type": "RestService",
+            "@id": "tcp:ToolProxy.collection",
+            "endpoint": "http://lms.example.com/resources/ToolProxy/",
+            "format": ["application/vnd.ims.lti.v2.toolproxy+json"],
+            "action": ["POST"]
+        },
+        {
+            "@type": "RestService",
+            "@id": "tcp:ToolProxy.item",
+            "endpoint": "http://lms.example.com/resources/ToolProxy/{tool_proxy_guid}",
+            "format": ["application/vnd.ims.lti.v2.toolproxy+json"],
+            "action": ["GET", "PUT"]
+        },
+        {
+            "@type": "RestService",
+            "@id": "tcp:Result.item",
+            "endpoint": "http://lms.example.com/resources/Result/{sourcedId}",
+            "format": ["application/vnd.ims.lis.v2.result+json"],
+            "action": ["GET", "PUT"]
+        },
+        {
+            "@type": "RestService",
+            "@id": "tcp:LtiLinkSettings",
+            "endpoint": "http://lms.example.com/resources/links/{link_id}/custom",
+            "format": ["application/vnd.ims.lti.v2.toolsettings+json", "application/vnd.ims.lti.v2.toolsettings.simple+json"],
+            "action": ["GET", "PUT"]
+        },
+        {
+            "@type": "RestService",
+            "@id": "tcp:ToolProxyBindingSettings",
+            "endpoint": "http://lms.example.com/resources/lis/{context_type}/{context_id}/bindings/{vendor_code}/{product_code}/custom",
+            "format": ["application/vnd.ims.lti.v2.toolsettings+json", "application/vnd.ims.lti.v2.toolsettings.simple+json"],
+            "action": ["GET", "PUT"]
+        },
+        {
+            "@type": "RestService",
+            "@id": "tcp:ToolProxySettings",
+            "endpoint": "http://lms.example.com/resources/ToolProxy/{tool_proxy_guid}/custom",
+            "format": ["application/vnd.ims.lti.v2.toolsettings+json", "application/vnd.ims.lti.v2.toolsettings.simple+json"],
+            "action": ["GET", "PUT"]
+        }
+    ]
+}

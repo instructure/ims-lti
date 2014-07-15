@@ -1,0 +1,17 @@
+{
+    "@id": "http://lms.example.com/",
+    "code": "lms.example.com",
+    "vendor_name": {
+        "default_value": "LMS Corporation",
+        "key": "product.vendor.name"
+    },
+    "description": {
+        "default_value": "LMS Corporation is a fictitious vendor of a Learning Management System",
+        "key": "product.vendor.description"
+    },
+    "website": "http://lms.example.com/products/omega",
+    "timestamp": "2012-03-28T09:08:16-04:00",
+    "contact": {
+        "email": "support@lms.example.com"
+    }
+}

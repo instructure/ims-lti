@@ -1,1 +1,3 @@
-require 'ims/lti'
+module IMS
+  require 'ims/lti'
+end
