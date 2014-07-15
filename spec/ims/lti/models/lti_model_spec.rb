@@ -10,6 +10,16 @@ module IMS::LTI::Models
       expect(obj.two).to eq 2
     end
 
+    it 'when initialized with unsupported attributes' do
+      #swallow warning
+      expect{
+        obj = described_class.new(one: 1, two: 2, three: 3)
+        expect(obj.instance_variable_get('@one')).to be_nil
+        expect(obj.instance_variable_get('@two')).to be_nil
+        expect(obj.instance_variable_get('@three')).to be_nil
+      }
+    end
+
     describe 'inherited attributes' do
 
       class A < described_class

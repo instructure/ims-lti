@@ -3,14 +3,30 @@ module IMS::LTI::Models::Messages
     LAUNCH_TARGET_IFRAME = 'iframe'
     LAUNCH_TARGET_WINDOW = 'window'
 
+    EXTENSION_PREFIX = 'ext_'
+    CUSTOM_PREFIX = 'custom_'
+
     add_attributes :lti_message_type, :lti_version, :user_id, :roles, :launch_presentation_local,
                    :launch_presentation_document_target, :launch_presentation_css_url, :launch_presentation_width,
                    :launch_presentation_height
 
     def initialize(attrs = {})
-      super(attrs)
       @custom_params = {}
       @ext_params = {}
+      attributes = {}
+
+      attrs.each do |k,v|
+        str_key = k.to_s
+        if str_key.start_with?(EXTENSION_PREFIX)
+          @ext_params[str_key.sub(EXTENSION_PREFIX, '')] = v
+        elsif str_key.start_with?(CUSTOM_PREFIX)
+          @custom_params[str_key.sub(CUSTOM_PREFIX, '')] = v
+        else
+          attributes[k] = v
+        end
+      end
+
+      super(attributes)
     end
 
     def post_params
@@ -19,13 +35,13 @@ module IMS::LTI::Models::Messages
 
     def get_ext_params
       params = {}
-      @ext_params.each { |k, v| params["ext_#{k}"] = v }
+      @ext_params.each { |k, v| params["#{EXTENSION_PREFIX}#{k}"] = v }
       params
     end
 
     def get_custom_params
       params = {}
-      @custom_params.each { |k, v| params["custom_#{k}"] = v }
+      @custom_params.each { |k, v| params["#{CUSTOM_PREFIX}#{k}"] = v }
       params
     end
 
@@ -39,5 +55,6 @@ module IMS::LTI::Models::Messages
       end
     end
 
+    private
   end
 end

@@ -40,14 +40,9 @@ module IMS::LTI::Services
       end
     end
 
-    describe "#message", :pending do
-      it "creates basic-lti-launch-request messages" do
-        message = subject.message(params)
-      end
-
-      it "creates RegistrationRequest messages" do
-        message = subject.message(params)
-      end
+    describe "#message" do
+      it "creates basic-lti-launch-request messages"
+      it "creates RegistrationRequest messages"
     end
 
   end

@@ -42,7 +42,11 @@ module IMS::LTI::Models
 
     def attributes=(attrs)
       attrs.each do |k, v|
-        instance_variable_set("@#{k.to_s}", v)
+        if self.class.attributes.include?(k.to_sym)
+          instance_variable_set("@#{k.to_s}", v)
+        else
+          warn("Unknown attribute '#{k}'")
+        end
       end
     end
 

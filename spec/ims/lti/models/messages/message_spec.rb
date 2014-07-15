@@ -47,5 +47,20 @@ module IMS::LTI::Models::Messages
       expect(subject.get_ext_params).to eq({'ext_name' => 'my_ext_name', 'ext_number' => '4'})
     end
 
+    it 'sets configured attributes' do
+      message = described_class.new(lti_message_type: 'message-type')
+      expect(message.lti_message_type).to eq 'message-type'
+    end
+
+    it 'sets custom attributes' do
+      message = described_class.new(custom_attribute: 'custom_value')
+      expect(message.custom_attribute).to eq 'custom_value'
+    end
+
+    it 'sets extension attributes' do
+      message = described_class.new(ext_attribute: 'extension_value')
+      expect(message.ext_attribute).to eq 'extension_value'
+    end
+
   end
 end
