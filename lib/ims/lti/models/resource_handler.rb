@@ -14,5 +14,9 @@ module IMS::LTI::Models
       description && description.default_value
     end
 
+    def messages
+      [*message]
+    end
+
   end
 end

@@ -6,17 +6,6 @@ module IMS::LTI::Services
       @secret = secret
     end
 
-    def signed_request(url, message)
-      uri = URI.parse(url)
-      oauth_consumer = OAuth::Consumer.new(@key, @secret, {
-          :site => "#{uri.scheme}://#{uri.host}",
-          :scheme => :body
-      })
-      request = oauth_consumer.create_signed_request(:post, uri.request_uri, nil, {}, message.post_params)
-
-      request
-    end
-
     def signed_params(url, message)
       signed_request = signed_request(url, message)
 
@@ -35,6 +24,19 @@ module IMS::LTI::Services
       }
 
       OAuth::Signature.build(request, :consumer_secret => @secret).verify()
+    end
+
+    private
+
+    def signed_request(url, message)
+      uri = URI.parse(url)
+      oauth_consumer = OAuth::Consumer.new(@key, @secret, {
+          :site => "#{uri.scheme}://#{uri.host}",
+          :scheme => :body
+      })
+      request = oauth_consumer.create_signed_request(:post, uri.request_uri, nil, {}, message.post_params)
+
+      request
     end
   end
 end

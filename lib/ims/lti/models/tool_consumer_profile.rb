@@ -11,9 +11,14 @@ module IMS::LTI::Models
     add_attribute :product_instance, relation:'IMS::LTI::Models::ProductInstance'
     add_attribute :service_offered, relation: 'IMS::LTI::Models::RestService'
 
-    def initialize
+    def initialize(attr = {})
       @context = [CONTEXT]
       @type = TYPE
+      super(attr)
+    end
+
+    def services_offered
+      [*@service_offered]
     end
 
   end

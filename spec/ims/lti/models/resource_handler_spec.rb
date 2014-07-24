@@ -11,6 +11,10 @@ module IMS::LTI::Models
 
     end
 
+    it 'pluralizes message' do
+      expect(subject.messages).to eq []
+    end
+
 
     describe '#default_description' do
 
