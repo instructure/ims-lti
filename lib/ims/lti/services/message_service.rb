@@ -22,7 +22,7 @@ module IMS::LTI::Services
     private
 
     def parse_params(params)
-      params.inject([{},{}]) do |array,(k,v)|
+      params.inject([{}, {}]) do |array, (k, v)|
         attr = k.to_s.sub('oauth_', '').to_sym
         if SimpleOAuth::Header::ATTRIBUTE_KEYS.include?(attr)
           array[0][attr] = v
@@ -33,5 +33,18 @@ module IMS::LTI::Services
       end
     end
 
+    private
+
+    def signed_request(url, message)
+      uri = URI.parse(url)
+      oauth_consumer = OAuth::Consumer.new(@key, @secret, {
+        :site => "#{uri.scheme}://#{uri.host}",
+        :scheme => :body
+      })
+      request = oauth_consumer.create_signed_request(:post, uri.request_uri, nil, {}, message.post_params)
+
+      request
+    end
+    
   end
 end

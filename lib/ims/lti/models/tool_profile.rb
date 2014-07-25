@@ -18,5 +18,13 @@ module IMS::LTI::Models
       end
     end
 
+    def resource_handlers
+      [*@resource_handler]
+    end
+
+    def messages
+      [*@message]
+    end
+
   end
 end

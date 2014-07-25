@@ -7,5 +7,11 @@ module IMS::LTI::Models
     add_attribute :tool_consumer_profile
     add_attribute :tool_profile, relation:'IMS::LTI::Models::ToolProfile'
     add_attribute :security_contract, relation:'IMS::LTI::Models::SecurityContract'
+
+    def initialize(attr = {})
+      @context = ['http://purl.imsglobal.org/ctx/lti/v2/ToolProxy']
+      super(attr)
+      @type = 'ToolProxy'
+    end
   end
 end

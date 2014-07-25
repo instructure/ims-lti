@@ -11,8 +11,15 @@ module IMS::LTI::Models
         expect(subject.base_message_url).to eq 'http://base-url.com'
       end
 
-    end
+      it 'pluralizes resource_handler' do
+        expect(subject.resource_handlers).to eq []
+      end
 
+      it 'pluralizes message' do
+        expect(subject.messages).to eq []
+      end
+
+    end
 
 
   end
