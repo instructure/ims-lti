@@ -14,13 +14,13 @@ module IMS::LTI::Services
 
         params = subject.signed_params('http://www.example.com', message)
 
-        expect(params['oauth_consumer_key']).to eq "key"
-        expect(params['oauth_signature_method']).to eq "HMAC-SHA1"
-        expect(params['oauth_version']).to eq "1.0"
+        expect(params[:oauth_consumer_key]).to eq "key"
+        expect(params[:oauth_signature_method]).to eq "HMAC-SHA1"
+        expect(params[:oauth_version]).to eq "1.0"
         expect(params['user_id']).to eq "user_id"
-        expect(params.key?('oauth_signature')).to eq true
-        expect(params.key?('oauth_timestamp')).to eq true
-        expect(params.key?('oauth_nonce')).to eq true
+        expect(params.key?(:oauth_signature)).to eq true
+        expect(params.key?(:oauth_timestamp)).to eq true
+        expect(params.key?(:oauth_nonce)).to eq true
       end
     end
 
@@ -28,21 +28,17 @@ module IMS::LTI::Services
       it "returns true for a valid signature" do
         message = IMS::LTI::Models::Messages::Message.new
         params = subject.signed_params('http://www.example.com', message)
-
+        #params = params.inject({}){|p,(k,v)| p[k.to_s] = v; p}
         expect(subject.valid_signature?('http://www.example.com', params)).to eq true
       end
 
       it "returns false for an invalid signature" do
         message = IMS::LTI::Models::Messages::Message.new
         params = subject.signed_params('http://www.example.com', message)
+        #params = params.inject({}){|p,(k,v)| p[k.to_s] = v; p}
 
         expect(subject.valid_signature?('http://www.wrong.com', params)).to eq false
       end
-    end
-
-    describe "#message" do
-      it "creates basic-lti-launch-request messages"
-      it "creates RegistrationRequest messages"
     end
 
   end
