@@ -25,5 +25,6 @@ module IMS::LTI::Models
     it 'pluralizes service_offered' do
       expect(subject.services_offered).to eq []
     end
+
   end
 end

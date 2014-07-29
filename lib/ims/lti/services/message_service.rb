@@ -33,8 +33,6 @@ module IMS::LTI::Services
       end
     end
 
-    private
-
     def signed_request(url, message)
       uri = URI.parse(url)
       oauth_consumer = OAuth::Consumer.new(@key, @secret, {
@@ -45,6 +43,6 @@ module IMS::LTI::Services
 
       request
     end
-    
+
   end
 end
