@@ -20,7 +20,7 @@ module IMS::LTI::Services
       service = tool_consumer_profile.services_offered.find{|s| s.formats.include?('application/vnd.ims.lti.v2.toolproxy+json') && s.actions.include?('POST')}
 
       conn = Faraday.new do |conn|
-        conn.request :oauth, consumer_key: @tool_consumer_profile.reg_key, consumer_secret: @tool_consumer_profile.reg_password
+        conn.request :oauth, {:consumer_key => @registration_request.reg_key, :consumer_secret => @registration_request.reg_password}
         conn.adapter :net_http
       end
 
