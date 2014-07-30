@@ -17,6 +17,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'oauth', '~> 0.4.7'
   spec.add_dependency 'simple_oauth', '~> 0.2.0'
+  spec.add_dependency 'faraday', '~> 0.9.0'
 
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'rspec'

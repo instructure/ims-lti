@@ -18,5 +18,13 @@ module IMS::LTI::Models
       )
     end
 
+    def actions
+      [*action]
+    end
+
+    def formats
+      [*format]
+    end
+
   end
 end

@@ -7,5 +7,9 @@ module IMS::LTI::Models
       @type = "RestServiceProfile"
       super(attributes)
     end
+
+    def actions
+      [*action]
+    end
   end
 end

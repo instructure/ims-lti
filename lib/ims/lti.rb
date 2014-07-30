@@ -1,6 +1,7 @@
 require 'json'
 require 'securerandom'
 require 'simple_oauth'
+require 'faraday'
 require 'oauth'
 
 module IMS
