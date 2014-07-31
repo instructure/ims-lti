@@ -3,7 +3,6 @@ require 'securerandom'
 require 'simple_oauth'
 require 'faraday'
 require 'faraday_middleware'
-require 'oauth'
 
 module IMS
   module LTI
