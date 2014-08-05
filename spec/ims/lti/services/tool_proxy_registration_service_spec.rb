@@ -7,7 +7,7 @@ module IMS::LTI::Services
     subject{ToolProxyRegistrationService.new(registration_request)}
 
     before(:each) do
-      Faraday.stub(:new).and_return(faraday)
+      allow(Faraday).to receive(:new) {faraday}
     end
 
     describe '#tool_consumer_profile' do
