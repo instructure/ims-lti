@@ -193,6 +193,20 @@ module IMS::LTI::Models
 
       end
 
+      describe '#self.from_json' do
+
+        it 'deserializes json with json key mappings' do
+          model = SampleClass.from_json('{"@one":1}')
+          expect(model.one).to eq 1
+        end
+
+        it 'handles arrays of items' do
+          model = SampleClass.from_json('{"two": [{"a": "a"}, {"a": "b"}]}')
+          expect(model.two.count).to eq 2
+        end
+
+      end
+
     end
 
   end

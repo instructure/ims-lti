@@ -31,6 +31,10 @@ module IMS::LTI::Models
       subclass.inherit_attributes(self.attributes)
     end
 
+    def self.from_json(json)
+      new.from_json(json)
+    end
+
     def attributes
       attrs = {}
       self.class.attributes.each do |a|

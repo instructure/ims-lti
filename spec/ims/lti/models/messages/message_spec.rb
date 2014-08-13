@@ -38,13 +38,19 @@ module IMS::LTI::Models::Messages
     it 'returns all the custom params' do
       subject.custom_name = 'my_custom_name'
       subject.custom_number = '3'
-      expect(subject.get_custom_params).to eq({'custom_name' => 'my_custom_name', 'custom_number' => '3'})
+      subject.user_id = 2
+      params = subject.post_params
+      expect(params['custom_name']).to eq 'my_custom_name'
+      expect(params['custom_number']).to eq '3'
     end
 
     it 'returns all the ext params' do
       subject.ext_name = 'my_ext_name'
-      subject.ext_number = '4'
-      expect(subject.get_ext_params).to eq({'ext_name' => 'my_ext_name', 'ext_number' => '4'})
+      subject.ext_number = '42'
+      subject.user_id = 2
+      params = subject.post_params
+      expect(params['ext_name']).to eq 'my_ext_name'
+      expect(params['ext_number']).to eq '42'
     end
 
     it 'sets configured attributes' do
@@ -60,6 +66,46 @@ module IMS::LTI::Models::Messages
     it 'sets extension attributes' do
       message = described_class.new(ext_attribute: 'extension_value')
       expect(message.ext_attribute).to eq 'extension_value'
+    end
+
+    context 'OAuth' do
+      describe "#signed_post_params" do
+        it "creates a hash with the oauth signature" do
+          subject.user_id = 'user_id'
+          subject.launch_url = 'http://www.example.com'
+          subject.oauth_consumer_key = 'key'
+
+          params = subject.signed_post_params('secret')
+
+          expect(params[:oauth_consumer_key]).to eq "key"
+          expect(params[:oauth_signature_method]).to eq "HMAC-SHA1"
+          expect(params[:oauth_version]).to eq "1.0"
+          expect(params['user_id']).to eq "user_id"
+          expect(params.key?(:oauth_signature)).to eq true
+          expect(params.key?(:oauth_timestamp)).to eq true
+          expect(params.key?(:oauth_nonce)).to eq true
+        end
+      end
+
+      describe "#valid_signature?" do
+        it "returns true for a valid signature" do
+          subject.launch_url = 'http://www.example.com'
+          params = subject.signed_post_params('secret')
+          message = described_class.new(params)
+          message.launch_url = 'http://www.example.com'
+          expect(message.valid_signature?('secret')).to eq true
+        end
+
+        it "returns false for an invalid signature" do
+          message = IMS::LTI::Models::Messages::Message.new
+          subject.launch_url = 'http://www.example.com'
+          params = subject.signed_post_params('secret')
+
+          message = described_class.new(params)
+          message.launch_url = 'http://www.example.com'
+          expect(message.valid_signature?('bad_secret')).to eq false
+        end
+      end
     end
 
   end
