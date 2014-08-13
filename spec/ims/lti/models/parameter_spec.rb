@@ -38,6 +38,18 @@ module IMS::LTI::Models
         expect(p['param2']).to eq 123
       end
 
+      it 'handles lambdas for variables' do
+        param = described_class.new(name: 'param1', variable: '$my.variable.value')
+        p = described_class.process_params(param, {'$my.variable.value' => -> { 123 }})
+        expect(p['param1']).to eq 123
+      end
+
+      it 'handles procs for variables' do
+        param = described_class.new(name: 'param1', variable: '$my.variable.value')
+        p = described_class.process_params(param, {'$my.variable.value' => Proc.new { 123 } } )
+        expect(p['param1']).to eq 123
+      end
+
     end
 
 

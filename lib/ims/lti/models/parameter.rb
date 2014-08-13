@@ -8,9 +8,15 @@ module IMS::LTI::Models
 
     def self.process_params(parameters, lookup_hash)
       [*parameters].inject({}) do |hash, param|
-        hash[param.name] = param.fixed? ? param.fixed : lookup_hash[param.variable]
+        hash[param.name] = param.fixed? ? param.fixed : expand_variable(lookup_hash[param.variable])
         hash
       end
+    end
+
+    private
+
+    def self.expand_variable(value)
+      value.respond_to?(:call) ? value.call : value
     end
 
   end
