@@ -68,7 +68,11 @@ module IMS::LTI::Models::Messages
     end
 
     def add_custom_params(params)
-      params.each { |k,v| @custom_params["custom_#{k}"] = v}
+      params.each { |k,v| k.to_s.start_with?('custom_') ? @custom_params[k.to_s] = v : @custom_params["custom_#{k.to_s}"] = v }
+    end
+
+    def get_custom_params
+      @custom_params.inject({}) { |hash, (k,v)| hash[k.gsub(/\Acustom_/, '')] = v ; hash }
     end
 
     def post_params

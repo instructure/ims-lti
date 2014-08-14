@@ -68,6 +68,32 @@ module IMS::LTI::Models::Messages
       expect(message.ext_attribute).to eq 'extension_value'
     end
 
+    describe '#add_custom_params' do
+
+      it 'prepends "custom_" to the param' do
+        subject.add_custom_params('foo' => 'bar')
+        params = subject.instance_variable_get('@custom_params')
+        expect(params.keys.size).to eq 1
+        expect(params.keys.first).to eq 'custom_foo'
+      end
+
+      it 'handles symbols' do
+        subject.add_custom_params(foo: 'bar')
+        params = subject.instance_variable_get('@custom_params')
+        expect(params.keys.first).to eq 'custom_foo'
+      end
+
+    end
+
+    describe '#get_custom_params' do
+      it 'removes "custom_" to the parameter' do
+        subject.add_custom_params('custom_foo' => 'bar')
+        params = subject.get_custom_params
+        expect(params.keys.size).to eq 1
+        expect(params.keys.first).to eq 'foo'
+      end
+    end
+
     context 'OAuth' do
       describe "#signed_post_params" do
         it "creates a hash with the oauth signature" do
