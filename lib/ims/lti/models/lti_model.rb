@@ -71,7 +71,7 @@ module IMS::LTI::Models
     end
 
     def from_json(json)
-      data = JSON.parse(json)
+      data = json.is_a?(String) ? JSON.parse(json) : json
       if data.is_a? Array
         data.map { |hash| self.class.new.from_json(hash.to_json) }
       else

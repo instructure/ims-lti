@@ -52,6 +52,59 @@ module IMS::LTI::Models
 
     end
 
+    describe '#==' do
+       it 'is equal when both are fixed and the names and fixed values are the same' do
+         subject.name = 'my_name'
+         subject.fixed = 'my_fixed_value'
+         param = described_class.new(name: subject.name, fixed: subject.fixed)
+         expect(subject).to eq param
+       end
+
+       it 'is equal when both are variable and the names and variable values are the same' do
+         subject.name = 'my_name'
+         subject.variable = 'my_variable_value'
+         param = described_class.new(name: subject.name, variable: subject.variable)
+         expect(subject).to eq param
+       end
+
+       it 'is not equal when one is fixed and the other variable' do
+         subject.name = 'my_name'
+         subject.variable = 'my_variable_value'
+         param = described_class.new(name: subject.name, fixed: 'my_fixed_value')
+         expect(subject).to_not eq param
+       end
+
+       it 'is not equal when both are fixed, the names are the same, and fixed values are different' do
+         subject.name = 'my_name'
+         subject.fixed = 'my_fixed_value'
+         param = described_class.new(name: subject.name, fixed: 'my_other_fixed_value')
+         expect(subject).to_not eq param
+       end
+
+       it 'is not equal when both are fixed, the names are different, and fixed values are the same' do
+         subject.name = 'my_name'
+         subject.fixed = 'my_fixed_value'
+         param = described_class.new(name: 'my_other_name', fixed: subject.fixed)
+         expect(subject).to_not eq param
+       end
+
+       it 'is not equal when both are variable, the names are the same, and variable values are different' do
+         subject.name = 'my_name'
+         subject.variable = 'my_variable_value'
+         param = described_class.new(name: subject.name, fixed: 'my_other_variable_value')
+         expect(subject).to_not eq param
+       end
+
+       it 'is not equal when both are variable, the names are different, and variable values are the same' do
+         subject.name = 'my_name'
+         subject.variable = 'my_varaible_value'
+         param = described_class.new(name: 'my_other_name', fixed: subject.variable)
+         expect(subject).to_not eq param
+       end
+
+    end
+
+
 
   end
 end

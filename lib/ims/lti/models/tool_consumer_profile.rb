@@ -4,6 +4,9 @@ module IMS::LTI::Models
     CONTEXT = "http://purl.imsglobal.org/ctx/lti/v2/ToolConsumerProfile"
     TYPE = "ToolConsumerProfile"
 
+    MESSAGING_CAPABILITIES = %w(basic-lti-launch-request)
+    OUTCOMES_CAPABILITIES = %w(Result.autocreate)
+
     add_attributes :lti_version, :guid, :capability_offered
     add_attribute :id, json_key:'@id'
     add_attribute :type, json_key:'@type'

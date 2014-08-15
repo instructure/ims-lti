@@ -1,9 +1,10 @@
 module IMS::LTI::Models
   class Parameter < LTIModel
+
     add_attributes :name, :variable, :fixed
 
     def fixed?
-      !fixed.nil? && fixed.strip != ''
+      !fixed.nil? && fixed.to_s.strip != ''
     end
 
     def self.process_params(parameters, lookup_hash)
@@ -11,6 +12,10 @@ module IMS::LTI::Models
         hash[param.name] = param.fixed? ? param.fixed : expand_variable(lookup_hash[param.variable])
         hash
       end
+    end
+
+    def ==(obj)
+      self.fixed? == obj.fixed? && self.name == obj.name && self.fixed == obj.fixed
     end
 
     private
