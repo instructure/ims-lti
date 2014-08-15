@@ -19,36 +19,42 @@ module IMS::LTI::Models
 
     describe '#self.process_params' do
       it 'replaces variable params' do
-        param = described_class.new(name: 'param1', variable: '$my.variable.value')
-        p = described_class.process_params(param, {'$my.variable.value' => 123})
+        param = described_class.new(name: 'param1', variable: 'my.variable.value')
+        p = described_class.process_params(param, {'my.variable.value' => 123})
         expect(p['param1']).to eq 123
       end
 
       it "doesn't replace fixed params" do
         param = described_class.new(name: 'param1', fixed: 'my fixed value')
-        p = described_class.process_params(param, {'$my.variable.value' => 123})
+        p = described_class.process_params(param, {'my.variable.value' => 123})
         expect(p['param1']).to eq 'my fixed value'
       end
 
       it 'handles fixed and variable params' do
         params = [described_class.new(name: 'param1', fixed: 'my fixed value'),
-                  described_class.new(name: 'param2', variable: '$my.variable.value')]
-        p = described_class.process_params(params, {'$my.variable.value' => 123})
+                  described_class.new(name: 'param2', variable: 'my.variable.value')]
+        p = described_class.process_params(params, {'my.variable.value' => 123})
         expect(p['param1']).to eq 'my fixed value'
         expect(p['param2']).to eq 123
       end
 
       it 'handles lambdas for variables' do
-        param = described_class.new(name: 'param1', variable: '$my.variable.value')
-        p = described_class.process_params(param, {'$my.variable.value' => -> { 123 }})
+        param = described_class.new(name: 'param1', variable: 'my.variable.value')
+        p = described_class.process_params(param, {'my.variable.value' => -> { 123 }})
         expect(p['param1']).to eq 123
       end
 
       it 'handles procs for variables' do
-        param = described_class.new(name: 'param1', variable: '$my.variable.value')
-        p = described_class.process_params(param, {'$my.variable.value' => Proc.new { 123 } } )
+        param = described_class.new(name: 'param1', variable: 'my.variable.value')
+        p = described_class.process_params(param, {'my.variable.value' => Proc.new { 123 } } )
         expect(p['param1']).to eq 123
       end
+       it 'returns the variable with a $ prepended if it ca not be expanded' do
+         param = described_class.new(name: 'param1', variable: 'my.variable.value')
+         p = described_class.process_params(param, {})
+         expect(p['param1']).to eq '$my.variable.value'
+       end
+
 
     end
 

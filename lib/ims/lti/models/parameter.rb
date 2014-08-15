@@ -9,7 +9,7 @@ module IMS::LTI::Models
 
     def self.process_params(parameters, lookup_hash)
       [*parameters].inject({}) do |hash, param|
-        hash[param.name] = param.fixed? ? param.fixed : expand_variable(lookup_hash[param.variable])
+        hash[param.name] = param.fixed? ? param.fixed : expand_variable(lookup_hash[param.variable]) || '$' + param.variable
         hash
       end
     end
