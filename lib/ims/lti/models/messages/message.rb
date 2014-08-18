@@ -22,7 +22,7 @@ module IMS::LTI::Models::Messages
 
       def add_params(param, *params)
         params.unshift(param)
-        @parameters ||= []
+        @parameters ||= superclass.instance_variable_get('@parameters') || []
         @parameters += params
         attr_accessor(params.shift, *params)
       end
@@ -48,8 +48,8 @@ module IMS::LTI::Models::Messages
     recommended_params :user_id, :roles, :launch_presentation_document_target, :launch_presentation_width, :launch_presentation_height
     optional_params :launch_presentation_local, :launch_presentation_css_url
 
-
     def initialize(attrs = {})
+
       @custom_params = {}
       @ext_params = {}
 

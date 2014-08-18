@@ -10,6 +10,7 @@ module IMS::LTI::Models::Messages
     it "inherits parameters from $Message" do
       subject.user_id = '123'
       expect(subject.user_id).to eq '123'
+      expect(subject.post_params.keys).to include('user_id')
     end
 
 
