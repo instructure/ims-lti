@@ -15,9 +15,15 @@ def create_params
             "launch_presentation_return_url" => "http://example.com/lti_return",
             "custom_param1" => "custom1",
             "custom_param2" => "custom2",
+            "invalid_ext_param" => "invalid_param",
+            "invalid_custom_param" => "invalid_custom",
             "ext_lti_message_type" => "extension-lti-launch",
             "roles" => "learner,instructor,observer,urn:lti:role:ims/lis/member,mentor/mentor,administrator,urn:lti:role:ims/lis/teachingassistant/teachingassistantsection"
     }
+end
+
+def valid_params
+  @params.reject {|p| p =~ /\Ainvalid_.+\Z/ }
 end
 
 def create_test_tp

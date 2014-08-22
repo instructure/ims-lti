@@ -137,9 +137,9 @@ module IMS::LTI
       params.each_pair do |key, val|
         if LAUNCH_DATA_PARAMETERS.member?(key)
           self.send("#{key}=", val)
-        elsif key =~ /custom_(.*)/
+        elsif key =~ /\Acustom_(.+)\Z/
           @custom_params[$1] = val
-        elsif key =~ /ext_(.*)/
+        elsif key =~ /\Aext_(.+)\Z/
           @ext_params[$1] = val
         end
       end
