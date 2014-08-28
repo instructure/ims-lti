@@ -25,5 +25,7 @@ module IMS::LTI
     require_relative 'models/rest_service_profile'
     require_relative 'models/base_url_choice'
     require_relative 'models/base_url_selector'
+    require_relative 'models/tool_setting'
+    require_relative 'models/tool_setting_container'
   end
 end
