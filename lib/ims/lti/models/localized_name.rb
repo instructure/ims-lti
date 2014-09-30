@@ -5,6 +5,7 @@ module IMS::LTI::Models
     def initialize(default_value = nil, key = nil)
       @default_value = default_value
       @key = key
+      super()
     end
 
   end
