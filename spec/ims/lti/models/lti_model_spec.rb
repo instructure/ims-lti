@@ -207,6 +207,34 @@ module IMS::LTI::Models
 
       end
 
+      context 'ext_ methods' do
+
+        it 'pareses ext_ json' do
+          obj = SampleClass.from_json({ ext_custom_field: 123}.to_json)
+          expect(obj.instance_variable_get('@ext_attributes')).to eq({ext_custom_field: 123})
+        end
+
+        it 'convert ext_ attributes back to json' do
+          obj = SampleClass.new
+          obj.instance_variable_set('@ext_attributes', {ext_custom_field: 456})
+          expect(obj.to_json).to eq '{"ext_custom_field":456}'
+        end
+
+        it 'sets ext_ attributes via method call' do
+          obj = SampleClass.new
+          obj.ext_custom_field = 789
+          expect(obj.instance_variable_get('@ext_attributes')).to eq({ext_custom_field: 789})
+        end
+
+        it 'returns ext_ attributes via method call' do
+          obj = SampleClass.new
+          obj.instance_variable_set('@ext_attributes', {ext_custom_field: 456})
+          expect(obj.ext_custom_field).to eq 456
+        end
+
+
+      end
+
     end
 
   end

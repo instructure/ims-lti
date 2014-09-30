@@ -4,6 +4,7 @@ module IMS::LTI::Models
 
     def initialize(attributes = {})
       self.attributes = attributes
+      @ext_attributes = {}
     end
 
     def self.add_attributes(attribute, *attrs)
@@ -48,6 +49,8 @@ module IMS::LTI::Models
       attrs.each do |k, v|
         if self.class.attributes.include?(k.to_sym)
           instance_variable_set("@#{k.to_s}", v)
+        elsif k.to_s =~ /^ext_/
+          @ext_attributes[k.to_sym] = v
         else
           warn("Unknown attribute '#{k}'")
         end
@@ -61,6 +64,7 @@ module IMS::LTI::Models
         val = attributes[attr.to_s]
         json_hash[json_key(attr)] = val.as_json if val
       end
+      json_hash = @ext_attributes.merge(json_hash)
       json_hash.merge! to_json_conversions
       json_hash.merge! to_json_keys
       json_hash
@@ -76,6 +80,14 @@ module IMS::LTI::Models
         data.map { |hash| self.class.new.from_json(hash.to_json) }
       else
         process_json_hash(data)
+      end
+    end
+
+    def method_missing(meth, *args, &block)
+      if match = /^ext_([^=$]*)/.match(meth)
+        meth =~ /=$/ ? @ext_attributes[match.to_s.to_sym] = args[0] : @ext_attributes[match.to_s.to_sym]
+      else
+        super
       end
     end
 
