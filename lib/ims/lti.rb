@@ -33,6 +33,19 @@ module IMS # :nodoc:
     class InvalidLTIConfigError < StandardError
     end
 
+    # POST a signed oauth request with the given key/secret/data
+    def self.post_service_request(key, secret, url, content_type, body)
+      raise IMS::LTI::InvalidLTIConfigError, "" unless key && secret
+
+      consumer = OAuth::Consumer.new(key, secret)
+      token = OAuth::AccessToken.new(consumer)
+      token.post(
+              url,
+              body,
+              'Content-Type' => content_type
+      )
+    end
+
     # Generates a unique identifier
     def self.generate_identifier
       UUID.new
@@ -43,6 +56,7 @@ end
 require 'ims/lti/extensions'
 require 'ims/lti/launch_params'
 require 'ims/lti/request_validator'
+require 'ims/lti/tool_base'
 require 'ims/lti/tool_provider'
 require 'ims/lti/tool_consumer'
 require 'ims/lti/outcome_request'

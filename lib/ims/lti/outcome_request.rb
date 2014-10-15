@@ -32,7 +32,7 @@ module IMS::LTI
   #    else
   #      # return an unsupported OutcomeResponse
   #    end
-  class OutcomeRequest
+  class OutcomeRequest < ToolBase
     include IMS::LTI::Extensions::Base
 
     REPLACE_REQUEST = 'replaceResult'
@@ -123,13 +123,10 @@ module IMS::LTI
     def post_outcome_request
       raise IMS::LTI::InvalidLTIConfigError, "" unless has_required_attributes?
 
-      consumer = OAuth::Consumer.new(@consumer_key, @consumer_secret)
-      token = OAuth::AccessToken.new(consumer)
-      res = token.post(
-              @lis_outcome_service_url,
-              generate_request_xml,
-              'Content-Type' => 'application/xml'
-      )
+      res = post_service_request(@lis_outcome_service_url,
+                                 'application/xml',
+                                 generate_request_xml)
+
       @outcome_response = extend_outcome_response(OutcomeResponse.new)
       @outcome_response.process_post_response(res)
     end
