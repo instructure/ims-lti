@@ -91,7 +91,7 @@ module IMS::LTI::Models::Messages
         hash[k] = value if value
         hash
       end
-      options, parsed_params = parse_params(params)
+      options, parsed_params = parse_params(params.merge(post_params))
       signature = parsed_params.delete(:oauth_signature)
       consumer_key = oauth_consumer_key
       header = SimpleOAuth::Header.new(:post, launch_url, parsed_params, options.merge({consumer_key: consumer_key, consumer_secret: secret}))
