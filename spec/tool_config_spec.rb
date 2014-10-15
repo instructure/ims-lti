@@ -8,6 +8,7 @@ describe IMS::LTI::ToolConfig do
   <blti:description>Description of boringness</blti:description>
   <blti:launch_url>http://www.example.com/lti</blti:launch_url>
   <blti:secure_launch_url>https://www.example.com/lti</blti:secure_launch_url>
+  <blti:icon>http://wil.to/_/beardslap.gif</blti:icon>
   <blti:vendor>
     <lticp:name>test.tool</lticp:name>
     <lticp:code>test</lticp:code>
