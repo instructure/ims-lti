@@ -3,7 +3,7 @@ describe IMS::LTI::OutcomeResponse do
 
   response_xml = <<-XML
 <?xml version="1.0" encoding="UTF-8"?>
-<imsx_POXEnvelopeResponse xmlns="http://www.imsglobal.org/lis/oms1p0/pox">
+<imsx_POXEnvelopeResponse xmlns="http://www.imsglobal.org/services/ltiv1p1/xsd/imsoms_v1p0">
 <imsx_POXHeader>
 <imsx_POXResponseHeaderInfo>
 <imsx_version>V1.0</imsx_version>
@@ -18,7 +18,7 @@ describe IMS::LTI::OutcomeResponse do
 </imsx_POXResponseHeaderInfo>
 </imsx_POXHeader>
 <imsx_POXBody>
-<replaceResultResponse></replaceResultResponse>
+<replaceResultResponse/>
 </imsx_POXBody>
 </imsx_POXEnvelopeResponse>
   XML
@@ -43,7 +43,7 @@ describe IMS::LTI::OutcomeResponse do
   end
 
   it "should parse readResult response xml" do
-    read_xml = response_xml.gsub('<replaceResultResponse></replaceResultResponse>', <<-XML)
+    read_xml = response_xml.gsub('<replaceResultResponse/>', <<-XML)
 <readResultResponse>
 <result>
 <resultScore>
