@@ -1,10 +1,6 @@
 module IMS::LTI
   # Class for implementing an LTI Tool Consumer
   class ToolConsumer < ToolBase
-    include IMS::LTI::Extensions::Base
-    include IMS::LTI::LaunchParams
-    include IMS::LTI::RequestValidator
-
     attr_accessor :launch_url, :timestamp, :nonce
 
     # Create a new ToolConsumer
@@ -13,12 +9,8 @@ module IMS::LTI
     # @param consumer_secret [String] The OAuth consumer secret
     # @param params [Hash] Set the launch parameters as described in LaunchParams
     def initialize(consumer_key, consumer_secret, params={})
-      super(consumer_key, consumer_secret)
-      @custom_params = {}
-      @ext_params = {}
-      @non_spec_params = {}
+      super(consumer_key, consumer_secret, params)
       @launch_url = params['launch_url']
-      process_params(params)
     end
     
     def process_post_request(post_request)
