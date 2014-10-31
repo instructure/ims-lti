@@ -34,10 +34,6 @@ module IMS::LTI
   #     end
 
   class ToolProvider < ToolBase
-    include IMS::LTI::Extensions::Base
-    include IMS::LTI::LaunchParams
-    include IMS::LTI::RequestValidator
-
     # List of outcome requests made through this instance
     attr_accessor :outcome_requests
     # Message to be sent back to the ToolConsumer when the user returns
@@ -49,12 +45,8 @@ module IMS::LTI
     # @param consumer_secret [String] The OAuth consumer secret
     # @param params [Hash] Set the launch parameters as described in LaunchParams
     def initialize(consumer_key, consumer_secret, params={})
-      super(consumer_key, consumer_secret)
-      @custom_params = {}
-      @ext_params = {}
-      @non_spec_params = {}
+      super(consumer_key, consumer_secret, params)
       @outcome_requests = []
-      process_params(params)
     end
 
     # Check whether the Launch Parameters have a role
