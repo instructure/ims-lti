@@ -3,7 +3,7 @@ module IMS::LTI::Models::Messages
     class << self
 
       def required_params
-        @required_params || supers_params('@required_params')
+        supers_params('@required_params') | (@required_params || [])
       end
 
       def add_required_params(param, *params)
@@ -11,7 +11,7 @@ module IMS::LTI::Models::Messages
       end
 
       def recommended_params
-        @recommended_params || supers_params('@recommended_params')
+        supers_params('@recommended_params') | (@recommended_params || [])
       end
 
       def add_recommended_params(param, *params)
@@ -19,7 +19,7 @@ module IMS::LTI::Models::Messages
       end
 
       def optional_params
-        @optional_params || supers_params('@optional_params')
+        supers_params('@optional_params') | (@optional_params || [])
       end
 
       def add_optional_params(param, *params)
@@ -27,7 +27,7 @@ module IMS::LTI::Models::Messages
       end
 
       def deprecated_params
-        @deprecated_params || supers_params('@deprecated_params')
+        supers_params('@deprecated_params') | (@deprecated_params || [])
       end
 
       def add_deprecated_params(param, *params)
@@ -37,12 +37,8 @@ module IMS::LTI::Models::Messages
       private
 
       def add_params(instance_variable, param, *params)
-        params.unshift(param)
-        instance_var = self.instance_variable_get(instance_variable)
-        unless instance_var
-          instance_var = supers_params(instance_variable)
-        end
-        instance_var += params
+        instance_var = self.instance_variable_get(instance_variable) || []
+        instance_var |= params.unshift(param)
         self.instance_variable_set(instance_variable, instance_var)
         attr_accessor(params.shift, *params)
       end
