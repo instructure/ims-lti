@@ -2,57 +2,76 @@ require 'spec_helper'
 
 module IMS::LTI::Models::Messages
   describe Message do
-    it "returns params for the message" do
-      subject.lti_message_type = 'message-type'
-      subject.user_id = '123456'
+    describe 'parameters' do
+      it "returns params for the message" do
+        subject.lti_message_type = 'message-type'
+        subject.user_id = '123456'
 
-      params = subject.post_params
-      expect(params['lti_message_type']).to eq('message-type')
-      expect(params['user_id']).to eq('123456')
+        params = subject.post_params
+        expect(params['lti_message_type']).to eq('message-type')
+        expect(params['user_id']).to eq('123456')
+      end
+
+      it 'returns custom params for the message' do
+        subject.custom_name = 'my_custom_name'
+
+        params = subject.post_params
+        expect(params['custom_name']).to eq('my_custom_name')
+      end
+
+      it 'returns ext params for the message' do
+        subject.ext_name = 'my_ext_name'
+
+        params = subject.post_params
+        expect(params['ext_name']).to eq('my_ext_name')
+      end
+
+      it 'sets a ext param' do
+        subject.ext_name = 'my_ext_name'
+        expect(subject.ext_name).to eq 'my_ext_name'
+      end
+
+      it 'sets an custom param' do
+        subject.custom_name = 'my_custom_name'
+        expect(subject.custom_name).to eq 'my_custom_name'
+      end
+
+      it 'returns all the custom params' do
+        subject.custom_name = 'my_custom_name'
+        subject.custom_number = '3'
+        subject.user_id = 2
+        params = subject.post_params
+        expect(params['custom_name']).to eq 'my_custom_name'
+        expect(params['custom_number']).to eq '3'
+      end
+
+      it 'returns all the ext params' do
+        subject.ext_name = 'my_ext_name'
+        subject.ext_number = '42'
+        subject.user_id = 2
+        params = subject.post_params
+        expect(params['ext_name']).to eq 'my_ext_name'
+        expect(params['ext_number']).to eq '42'
+      end
+
+      it 'returns required param names' do
+        expect(described_class.required_params).to eq [:lti_message_type, :lti_version]
+      end
+
+      it 'returns recommended param names' do
+        expect(described_class.recommended_params).to eq [:user_id, :roles, :launch_presentation_document_target, :launch_presentation_width, :launch_presentation_height]
+      end
+
+      it 'returns optional param names' do
+        expect(described_class.optional_params).to eq [:launch_presentation_local, :launch_presentation_css_url]
+      end
+
+      it 'returns deprecated param names' do
+        expect(described_class.deprecated_params).to eq []
+      end
+
+
     end
-
-    it 'returns custom params for the message' do
-      subject.custom_name = 'my_custom_name'
-
-      params = subject.post_params
-      expect(params['custom_name']).to eq('my_custom_name')
-    end
-
-    it 'returns ext params for the message' do
-      subject.ext_name = 'my_ext_name'
-
-      params = subject.post_params
-      expect(params['ext_name']).to eq('my_ext_name')
-    end
-
-    it 'sets a ext param' do
-      subject.ext_name = 'my_ext_name'
-      expect(subject.ext_name).to eq 'my_ext_name'
-    end
-
-    it 'sets an custom param' do
-      subject.custom_name = 'my_custom_name'
-      expect(subject.custom_name).to eq 'my_custom_name'
-    end
-
-    it 'returns all the custom params' do
-      subject.custom_name = 'my_custom_name'
-      subject.custom_number = '3'
-      subject.user_id = 2
-      params = subject.post_params
-      expect(params['custom_name']).to eq 'my_custom_name'
-      expect(params['custom_number']).to eq '3'
-    end
-
-    it 'returns all the ext params' do
-      subject.ext_name = 'my_ext_name'
-      subject.ext_number = '42'
-      subject.user_id = 2
-      params = subject.post_params
-      expect(params['ext_name']).to eq 'my_ext_name'
-      expect(params['ext_number']).to eq '42'
-    end
-
     it 'sets configured attributes' do
       message = described_class.new(lti_message_type: 'message-type')
       expect(message.lti_message_type).to eq 'message-type'

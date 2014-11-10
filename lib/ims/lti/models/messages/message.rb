@@ -2,33 +2,53 @@ module IMS::LTI::Models::Messages
   class Message
     class << self
 
-      def required_params(param, *params)
-        add_params(param, *params)
+      def required_params
+        supers_params('@required_params') | (@required_params || [])
       end
 
-      def recommended_params(param, *params)
-        add_params(param, *params)
+      def add_required_params(param, *params)
+        add_params('@required_params', param, *params)
       end
 
-      def optional_params(param, *params)
-        add_params(param, *params)
+      def recommended_params
+        supers_params('@recommended_params') | (@recommended_params || [])
       end
 
-      def deprecated_params(param, *params)
-        add_params(param, *params)
+      def add_recommended_params(param, *params)
+        add_params('@recommended_params', param, *params)
+      end
+
+      def optional_params
+        supers_params('@optional_params') | (@optional_params || [])
+      end
+
+      def add_optional_params(param, *params)
+        add_params('@optional_params', param, *params)
+      end
+
+      def deprecated_params
+        supers_params('@deprecated_params') | (@deprecated_params || [])
+      end
+
+      def add_deprecated_params(param, *params)
+        add_params('@deprecated_params', param, *params)
       end
 
       private
 
-      def add_params(param, *params)
-        params.unshift(param)
-        @parameters ||= superclass.instance_variable_get('@parameters') || []
-        @parameters += params
+      def add_params(instance_variable, param, *params)
+        instance_var = self.instance_variable_get(instance_variable) || []
+        instance_var |= params.unshift(param)
+        self.instance_variable_set(instance_variable, instance_var)
         attr_accessor(params.shift, *params)
       end
 
       def parameters
-        @parameters ||= []
+        required_params + recommended_params + optional_params + deprecated_params
+      end
+
+      def supers_params(instance_variable)
+        superclass == Object ? [] : superclass.instance_variable_get(instance_variable) || []
       end
 
     end
@@ -44,9 +64,9 @@ module IMS::LTI::Models::Messages
 
     attr_accessor :launch_url, *OAUTH_KEYS
 
-    required_params :lti_message_type, :lti_version
-    recommended_params :user_id, :roles, :launch_presentation_document_target, :launch_presentation_width, :launch_presentation_height
-    optional_params :launch_presentation_local, :launch_presentation_css_url
+    add_required_params :lti_message_type, :lti_version
+    add_recommended_params :user_id, :roles, :launch_presentation_document_target, :launch_presentation_width, :launch_presentation_height
+    add_optional_params :launch_presentation_local, :launch_presentation_css_url
 
     def initialize(attrs = {})
 
@@ -68,11 +88,11 @@ module IMS::LTI::Models::Messages
     end
 
     def add_custom_params(params)
-      params.each { |k,v| k.to_s.start_with?('custom_') ? @custom_params[k.to_s] = v : @custom_params["custom_#{k.to_s}"] = v }
+      params.each { |k, v| k.to_s.start_with?('custom_') ? @custom_params[k.to_s] = v : @custom_params["custom_#{k.to_s}"] = v }
     end
 
     def get_custom_params
-      @custom_params.inject({}) { |hash, (k,v)| hash[k.gsub(/\Acustom_/, '')] = v ; hash }
+      @custom_params.inject({}) { |hash, (k, v)| hash[k.gsub(/\Acustom_/, '')] = v; hash }
     end
 
     def post_params
@@ -111,8 +131,7 @@ module IMS::LTI::Models::Messages
     private
 
     def parameters
-
-      self.class.instance_variable_get("@parameters").inject({}) do |h, param|
+      self.class.send("parameters").inject({}) do |h, param|
         value = instance_variable_get("@#{param.to_s}")
         h[param.to_s] = value unless value.nil?
         h
