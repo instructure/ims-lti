@@ -66,7 +66,7 @@ module IMS::LTI::Models::Messages
 
     add_required_params :lti_message_type, :lti_version
     add_recommended_params :user_id, :roles, :launch_presentation_document_target, :launch_presentation_width, :launch_presentation_height
-    add_optional_params :launch_presentation_local, :launch_presentation_css_url
+    add_optional_params :launch_presentation_locale, :launch_presentation_css_url
 
     def initialize(attrs = {})
 
