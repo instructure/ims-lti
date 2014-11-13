@@ -12,7 +12,7 @@ module IMS::LTI::Models
     def base_message_url
       if base_url_choice
         choice = base_url_choice.find { |choice| choice.default_message_url != '' }
-        choice.default_message_url
+        choice ? choice.default_message_url : ''
       else
         ''
       end
