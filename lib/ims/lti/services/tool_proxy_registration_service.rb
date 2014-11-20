@@ -20,7 +20,9 @@ module IMS::LTI::Services
       service = tool_consumer_profile.services_offered.find { |s| s.formats.include?('application/vnd.ims.lti.v2.toolproxy+json') && s.actions.include?('POST') }
 
       SimpleOAuth::Header::ATTRIBUTE_KEYS << :body_hash unless SimpleOAuth::Header::ATTRIBUTE_KEYS.include? :body_hash
-
+      tool_proxy_json = tool_proxy.to_json
+      body_hash = Digest::SHA1.base64digest tool_proxy_json
+      
       conn = Faraday.new do |conn|
         conn.request :oauth, {:consumer_key => @registration_request.reg_key, :consumer_secret => @registration_request.reg_password, :body_hash => body_hash}
         conn.adapter :net_http
