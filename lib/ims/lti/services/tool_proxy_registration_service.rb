@@ -19,15 +19,17 @@ module IMS::LTI::Services
     def register_tool_proxy(tool_proxy)
       service = tool_consumer_profile.services_offered.find { |s| s.formats.include?('application/vnd.ims.lti.v2.toolproxy+json') && s.actions.include?('POST') }
 
-      conn = Faraday.new do |conn|
-        conn.request :oauth, {:consumer_key => @registration_request.reg_key, :consumer_secret => @registration_request.reg_password}
+      SimpleOAuth::Header::ATTRIBUTE_KEYS << :body_hash unless SimpleOAuth::Header::ATTRIBUTE_KEYS.include? :body_hash
+
+      conn = Faraday.new(proxy: 'http://localhost:8888') do |conn|
+        conn.request :oauth, {:consumer_key => @registration_request.reg_key, :consumer_secret => @registration_request.reg_password, :body_hash => body_hash}
         conn.adapter :net_http
       end
 
       response = conn.post do |req|
         req.url service.endpoint
         req.headers['Content-Type'] = 'application/json'
-        req.body = tool_proxy.to_json
+        req.body = tool_proxy_json
       end
 
       if response.status == 201
