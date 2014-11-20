@@ -5,7 +5,7 @@ module IMS::LTI::Models
 
     def default_message_url
       if selector.nil? || (selector.applies_to && selector.applies_to.include?('MessageHandler'))
-        secure_base_url || default_base_url
+        secure_base_url || default_base_url || ''
       else
         ''
       end
