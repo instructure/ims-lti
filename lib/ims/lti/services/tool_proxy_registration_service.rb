@@ -21,7 +21,7 @@ module IMS::LTI::Services
 
       SimpleOAuth::Header::ATTRIBUTE_KEYS << :body_hash unless SimpleOAuth::Header::ATTRIBUTE_KEYS.include? :body_hash
 
-      conn = Faraday.new(proxy: 'http://localhost:8888') do |conn|
+      conn = Faraday.new do |conn|
         conn.request :oauth, {:consumer_key => @registration_request.reg_key, :consumer_secret => @registration_request.reg_password, :body_hash => body_hash}
         conn.adapter :net_http
       end
