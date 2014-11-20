@@ -101,7 +101,7 @@ module IMS::LTI::Models::Messages
 
     def signed_post_params(secret)
       params = post_params
-      header = SimpleOAuth::Header.new(:post, launch_url, params, consumer_key: oauth_consumer_key, consumer_secret: secret)
+      header = SimpleOAuth::Header.new(:post, launch_url, params, consumer_key: oauth_consumer_key, consumer_secret: secret, callback: 'about:blank')
       header.signed_attributes.merge(params)
     end
 
