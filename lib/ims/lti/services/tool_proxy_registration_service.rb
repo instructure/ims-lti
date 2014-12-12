@@ -30,7 +30,7 @@ module IMS::LTI::Services
 
       response = conn.post do |req|
         req.url service.endpoint
-        req.headers['Content-Type'] = 'application/json'
+        req.headers['Content-Type'] = 'application/vnd.ims.lti.v2.toolproxy+json'
         req.body = tool_proxy_json
       end
 
