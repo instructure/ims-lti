@@ -14,6 +14,13 @@ module IMS::LTI::Models
       @description = LocalizedText.new(name, key)
     end
 
+    def default_description
+      description && description.default_value
+    end
+
+    def default_name
+      product_name && product_name.default_value
+    end
 
   end
 end
