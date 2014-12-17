@@ -32,20 +32,20 @@ very helpful to read the [LTI documentation](http://www.imsglobal.org/lti/index.
 
 In LTI there are Tool Providers (TP) and Tool Consumers (TC), this library is
 useful for implementing both. Here is an overview of the communication process:
-[LTI 1.1 Introduction](http://www.imsglobal.org/lti/v1p1pd/ltiIMGv1p1pd.html#_Toc309649680)
+[LTI 1.1 Introduction](http://www.imsglobal.org/LTI/v1p1/ltiIMGv1p1.html#_Toc319560461)
 
 This library doesn't help you manage the consumer keys and secrets. The POST
 headers/parameters will contain the `oauth_consumer_key` and your app can use
 that to look up the appropriate `oauth_consumer_secret`.
 
 Your app will also need to manage the OAuth nonce to make sure the same nonce
-isn't used twice with the same timestamp. [Read the LTI documentation on OAuth](http://www.imsglobal.org/LTI/v1p1pd/ltiIMGv1p1pd.html#_Toc309649687).
+isn't used twice with the same timestamp. [Read the LTI documentation on OAuth](http://www.imsglobal.org/LTI/v1p1/ltiIMGv1p1.html#_Toc319560468).
 
 ### Tool Provider
 As a TP your app will receive a POST request with a bunch of
-[LTI launch data](http://www.imsglobal.org/lti/v1p1pd/ltiIMGv1p1pd.html#_Toc309649684)
+[LTI launch data](http://www.imsglobal.org/LTI/v1p1/ltiIMGv1p1.html#_Toc319560465)
 and it will be signed with OAuth using a key/secret that both the TP and TC share.
-This is covered in the [LTI security model](http://www.imsglobal.org/lti/v1p1pd/ltiIMGv1p1pd.html#_Toc309649685)
+This is covered in the [LTI security model](http://www.imsglobal.org/LTI/v1p1/ltiIMGv1p1.html#_Toc319560466)
 
 Here is an example of a simple TP Sinatra app using this gem:
 [LTI Tool Provider](https://github.com/instructure/lti_tool_provider_example)
@@ -66,13 +66,13 @@ end
 ```
 
 Once your TP object is initialized and verified you can load your tool. All of the
-[launch data](http://www.imsglobal.org/lti/v1p1pd/ltiIMGv1p1pd.html#_Toc309649684)
+[launch data](http://www.imsglobal.org/LTI/v1p1/ltiIMGv1p1.html#_Toc319560465)
 is available in the TP object along with some convenience methods like `provider.username`
 which will try to find the name from the 3 potential name launch data attributes.
 
 #### Returning Results of a Quiz/Assignment
 If your TP provides some kind of assessment service you can write grades back to
-the TC. This is documented in the LTI docs [here](http://www.imsglobal.org/lti/v1p1pd/ltiIMGv1p1pd.html#_Toc309649690).
+the TC. This is documented in the LTI docs [here](http://www.imsglobal.org/LTI/v1p1/ltiIMGv1p1.html#_Toc319560471).
 
 You can check whether the TC is expecting a grade write-back:
 
@@ -105,8 +105,8 @@ You can see the error code documentation
 
 ### Tool Consumer
 As a Tool Consumer your app will POST an OAuth-signed launch requests to TPs with the necessary
-[LTI launch data](http://www.imsglobal.org/lti/v1p1pd/ltiIMGv1p1pd.html#_Toc309649684).
-This is covered in the [LTI security model](http://www.imsglobal.org/lti/v1p1pd/ltiIMGv1p1pd.html#_Toc309649685)
+[LTI launch data](http://www.imsglobal.org/LTI/v1p1/ltiIMGv1p1.html#_Toc319560465).
+This is covered in the [LTI security model](http://www.imsglobal.org/LTI/v1p1/ltiIMGv1p1.html#_Toc319560466)
 
 Here is an example of a simple TC Sinatra app using this gem:
 [LTI Tool Consumer](https://github.com/instructure/lti_tool_consumer_example)
