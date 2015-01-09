@@ -17,7 +17,7 @@ module IMS::LTI
     #     # post the score to the TC, score should be a float >= 0.0 and <= 1.0
     #     # this returns an OutcomeResponse object
     #     if provider.accepts_outcome_text?
-    #       response = provider.post_replace_result_with_data!(score, "text" => "submission text")
+    #       response = provider.post_extended_replace_result!(score: score, text: "submission text")
     #     else
     #       response = provider.post_replace_result!(score)
     #     end
@@ -83,14 +83,8 @@ module IMS::LTI
         # @return [OutcomeResponse] the response from the Tool Consumer
         # @deprecated Use #post_extended_replace_result! instead
         def post_replace_result_with_data!(score = nil, data={})
-          req = new_request
-          if data["cdata_text"] 
-            req.outcome_cdata_text = data["cdata_text"] 
-          elsif data["text"]
-            req.outcome_text = data["text"]
-          end
-          req.outcome_url = data["url"] if data["url"]
-          req.post_replace_result!(score)
+          data[:score] = score if score
+          post_extended_replace_result!(data)
         end
 
         # POSTs the given score to the Tool Consumer with a replaceResult and
