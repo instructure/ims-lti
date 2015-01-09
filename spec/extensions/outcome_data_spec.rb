@@ -67,4 +67,56 @@ describe IMS::LTI::Extensions do
     req.process_xml(result_xml % %{<resultData><text>what the text</text></resultData>})
     req.outcome_text.should == "what the text"
   end
+
+  describe 'OutcomeData::ToolProvider' do
+    describe '#generate_request_xml' do
+      it 'handles cdata_text' do
+        xml = result_xml % %{<resultData><text><![CDATA[my cdata]]></text></resultData>}
+        mock_request(xml)
+
+        @tp.post_extended_replace_result!(cdata_text: 'my cdata')
+      end
+
+      it 'handles text' do
+        xml = result_xml % %{<resultData><text>my text</text></resultData>}
+        mock_request(xml)
+
+        @tp.post_extended_replace_result!(text: 'my text')
+      end
+
+      it 'handles url' do
+        xml = result_xml % %{<resultData><url>http://url</url></resultData>}
+        mock_request(xml)
+
+        @tp.post_extended_replace_result!(url: 'http://url')
+      end
+
+      it 'handles total_score' do
+        xml = result_xml % %{<resultTotalScore><language>en</language><textString>13</textString></resultTotalScore>}
+        mock_request(xml)
+
+        @tp.post_extended_replace_result!(total_score: '13')
+      end
+
+      it 'handles score' do
+        xml = result_xml % %{<resultScore><language>en</language><textString>.7</textString></resultScore>}
+        mock_request(xml)
+
+        @tp.post_extended_replace_result!(score: '.7')
+      end
+
+      it 'handles all options at once' do
+        xml = result_xml % %{<resultTotalScore><language>en</language><textString>13</textString></resultTotalScore><resultData><text><![CDATA[my cdata]]></text><url>http://url</url></resultData>}
+        mock_request(xml)
+
+        @tp.post_extended_replace_result!(
+            'cdata_text' => 'my cdata',
+            'text' => 'my text',
+            'url' => 'http://url',
+            'total_score' => '13',
+            'score' => '.7'
+        )
+      end
+    end
+  end
 end
