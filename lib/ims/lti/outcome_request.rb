@@ -154,7 +154,7 @@ module IMS::LTI
     end
     
     def has_result_data?
-      !!@score
+      !!score
     end
     
     def results(node)
@@ -166,10 +166,10 @@ module IMS::LTI
     end
 
     def result_values(node)
-      if @score
+      if score
         node.resultScore do |res_score|
           res_score.language "en" # 'en' represents the format of the number
-          res_score.textString @score.to_s
+          res_score.textString score.to_s
         end
       end
     end

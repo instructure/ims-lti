@@ -77,6 +77,7 @@ module IMS::LTI
         # Creates a new OutcomeRequest object and stores it in @outcome_requests
         #
         # @return [OutcomeResponse] the response from the Tool Consumer
+        # @deprecated Use #post_extended_replace_result! instead
         def post_replace_result_with_data!(score = nil, data={})
           req = new_request
           if data["cdata_text"] 
@@ -86,6 +87,29 @@ module IMS::LTI
           end
           req.outcome_url = data["url"] if data["url"]
           req.post_replace_result!(score)
+        end
+
+        # POSTs the given score to the Tool Consumer with a replaceResult and
+        # adds the specified data. The options hash can have the keys
+        # :text, :cdata_text, :url, :score, or :total_score
+        #
+        # If both cdata_text and text are sent, cdata_text will be used
+        # If both total_score and score are sent, total_score will be used
+        # If score is nil, the replace result XML will not contain a resultScore node
+        #
+        # Creates a new OutcomeRequest object and stores it in @outcome_requests
+        #
+        # @return [OutcomeResponse] the response from the Tool Consumer
+        def post_extended_replace_result!(options = {})
+          opts = {}
+          options.each {|k,v| opts[k.to_sym] = v}
+
+          req = new_request
+          req.outcome_cdata_text = opts[:cdata_text]
+          req.outcome_text = opts[:text]
+          req.outcome_url = opts[:url]
+          req.total_score = opts[:total_score]
+          req.post_replace_result!(opts[:score])
         end
       end
 
@@ -123,26 +147,38 @@ module IMS::LTI
         include IMS::LTI::Extensions::ExtensionBase
         include Base
 
-        attr_accessor :outcome_text, :outcome_url, :outcome_cdata_text
+        attr_accessor :outcome_text, :outcome_url, :outcome_cdata_text, :total_score
 
         def result_values(node)
           super
-          if @outcome_text || @outcome_url || @outcome_cdata_text
+
+          if total_score
+            node.resultTotalScore do |res_total_score|
+              res_total_score.language "en" # 'en' represents the format of the number
+              res_total_score.textString total_score.to_s
+            end
+          end
+
+          if outcome_text || outcome_url || outcome_cdata_text
             node.resultData do |res_data|
-              if @outcome_cdata_text
+              if outcome_cdata_text
                 res_data.text {
-                  res_data.cdata! @outcome_cdata_text
+                  res_data.cdata! outcome_cdata_text
                 }
-              elsif @outcome_text
-                res_data.text @outcome_text
+              elsif outcome_text
+                res_data.text outcome_text
               end
-              res_data.url @outcome_url if @outcome_url
+              res_data.url outcome_url if outcome_url
             end
           end
         end
 
+        def score
+          total_score ? nil : @score
+        end
+
         def has_result_data?
-          !!@outcome_text || !!@outcome_url || super
+          !!outcome_text || !!outcome_url || !!outcome_cdata_text || !!total_score || super
         end
         
         def extention_process_xml(doc)
