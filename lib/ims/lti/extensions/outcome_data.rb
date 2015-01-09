@@ -67,6 +67,10 @@ module IMS::LTI
           accepted_outcome_types.member?("url")
         end
 
+        def accepts_outcome_result_total_score?
+          !!@ext_params["outcome_result_total_score_accepted"]
+        end
+
         # POSTs the given score to the Tool Consumer with a replaceResult and
         # adds the specified data. The data hash can have the keys "text", "cdata_text", or "url"
         #
