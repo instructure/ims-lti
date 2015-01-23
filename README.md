@@ -26,6 +26,10 @@ proxy for your application. For example:
 
 For further information see the [oauth-ruby](https://github.com/oauth-xx/oauth-ruby) project.
 
+As a quick debugging note, if you forget that step, you'll get an error like:
+
+    OAuth::RequestProxy::UnknownRequestType
+
 ## Usage
 This readme won't cover the LTI standard, just how to use the library. It will be
 very helpful to read the [LTI documentation](http://www.imsglobal.org/lti/index.html)
