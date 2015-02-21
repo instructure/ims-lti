@@ -1,7 +1,6 @@
 require 'oauth'
 require 'builder'
 require "rexml/document"
-require 'uuid'
 require 'cgi'
 
 module IMS # :nodoc:
@@ -35,7 +34,7 @@ module IMS # :nodoc:
 
     # Generates a unique identifier
     def self.generate_identifier
-      UUID.new
+      SecureRandom.uuid
     end
   end
 end
