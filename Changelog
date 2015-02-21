@@ -1,3 +1,7 @@
+2015-02-20 Version 1.1.8
+    * Replace usage of the 'uuid' gem with SecureRandom
+    * Update the outcome extension doc example
+
 2015-01-09 Version 1.1.7
     * Add support for new outcome extension resultTotalScore
 
