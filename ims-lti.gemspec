@@ -4,7 +4,7 @@
 
 Gem::Specification.new do |spec|
   spec.name          = 'ims-lti'
-  spec.version       = '2.0.0.beta.18'
+  spec.version       = '2.0.0.beta.19'
   spec.authors       = ['Instructure']
   spec.summary       = %q{Ruby library for creating IMS LTI tool providers and consumers}
   spec.homepage      = %q{http://github.com/instructure/ims-lti}
@@ -18,6 +18,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'simple_oauth', '0.2'
   spec.add_dependency 'faraday', '~> 0.8'
   spec.add_dependency 'faraday_middleware', '~> 0.8'
+  spec.add_dependency 'builder'
 
   spec.add_development_dependency 'rake', '~> 0'
   spec.add_development_dependency 'rspec', '~> 0'
