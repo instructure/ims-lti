@@ -70,6 +70,11 @@ module IMS::LTI::Models::Messages
         expect(described_class.deprecated_params).to eq []
       end
 
+      it 'returns unknown params' do
+        message = described_class.new(foo: 'bar')
+        expect(message.unknown_params).to eq({'foo' => 'bar'})
+      end
+
 
     end
     it 'sets configured attributes' do

@@ -63,6 +63,7 @@ module IMS::LTI::Models::Messages
       :oauth_timestamp, :oauth_token, :oauth_verifier, :oauth_version
 
     attr_accessor :launch_url, *OAUTH_KEYS
+    attr_reader :unknown_params
 
     add_required_params :lti_message_type, :lti_version
     add_recommended_params :user_id, :roles, :launch_presentation_document_target, :launch_presentation_width, :launch_presentation_height
@@ -72,6 +73,7 @@ module IMS::LTI::Models::Messages
 
       @custom_params = {}
       @ext_params = {}
+      @unknown_params = {}
 
       attrs.each do |k, v|
         str_key = k.to_s
@@ -83,6 +85,7 @@ module IMS::LTI::Models::Messages
           instance_variable_set("@#{k}", v)
         else
           warn "Unknown parameter #{k}"
+          @unknown_params[str_key] = v
         end
       end
     end
@@ -96,7 +99,7 @@ module IMS::LTI::Models::Messages
     end
 
     def post_params
-      @custom_params.merge(@ext_params).merge(parameters)
+      unknown_params.merge(@custom_params).merge(@ext_params).merge(parameters)
     end
 
     def signed_post_params(secret)
