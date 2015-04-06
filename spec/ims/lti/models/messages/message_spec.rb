@@ -70,6 +70,35 @@ module IMS::LTI::Models::Messages
         expect(described_class.deprecated_params).to eq []
       end
 
+      it 'returns unknown params' do
+        message = described_class.new(foo: 'bar')
+        expect(message.unknown_params).to eq({'foo' => 'bar'})
+      end
+
+      describe 'parameters' do
+        class CustomMesage < Message
+          add_deprecated_params :foo
+        end
+
+        subject {CustomMesage.new(lti_version: '1', user_id: 3, launch_presentation_locale: 'en', foo: 'bar')}
+
+
+        it 'returns all the supported params' do
+          expect(subject.parameters).to eq({"lti_version"=>"1", "user_id"=>3, "launch_presentation_locale"=>"en", "foo"=>"bar"})
+        end
+
+        it 'returns the required params' do
+          expect(subject.required_params).to eq({"lti_version"=>"1"})
+        end
+
+        it 'returns the recommended params' do
+          expect(subject.recommended_params).to eq({"user_id"=>3})
+        end
+
+        it 'returns the deprecated params' do
+          expect(subject.deprecated_params).to eq({"foo"=>"bar"})
+        end
+      end
 
     end
     it 'sets configured attributes' do

@@ -63,15 +63,28 @@ module IMS::LTI::Models::Messages
       :oauth_timestamp, :oauth_token, :oauth_verifier, :oauth_version
 
     attr_accessor :launch_url, *OAUTH_KEYS
+    attr_reader :unknown_params, :custom_params, :ext_params
 
     add_required_params :lti_message_type, :lti_version
     add_recommended_params :user_id, :roles, :launch_presentation_document_target, :launch_presentation_width, :launch_presentation_height
     add_optional_params :launch_presentation_locale, :launch_presentation_css_url
 
+    def self.generate(params)
+      case params['lti_message_type']
+        when BasicLTILaunchRequest::MESSAGE_TYPE
+          BasicLTILaunchRequest.new(params)
+        when RegistrationRequest::MESSAGE_TYPE
+          RegistrationRequest.new(params)
+        else
+          self.new(params)
+      end
+    end
+
     def initialize(attrs = {})
 
       @custom_params = {}
       @ext_params = {}
+      @unknown_params = {}
 
       attrs.each do |k, v|
         str_key = k.to_s
@@ -83,6 +96,7 @@ module IMS::LTI::Models::Messages
           instance_variable_set("@#{k}", v)
         else
           warn "Unknown parameter #{k}"
+          @unknown_params[str_key] = v
         end
       end
     end
@@ -96,7 +110,7 @@ module IMS::LTI::Models::Messages
     end
 
     def post_params
-      @custom_params.merge(@ext_params).merge(parameters)
+      unknown_params.merge(@custom_params).merge(@ext_params).merge(parameters)
     end
 
     def signed_post_params(secret)
@@ -118,6 +132,26 @@ module IMS::LTI::Models::Messages
       header.valid?(signature: signature)
     end
 
+    def parameters
+      collect_attributes(self.class.send("parameters"))
+    end
+
+    def required_params
+      collect_attributes(self.class.required_params)
+    end
+
+    def recommended_params
+      collect_attributes(self.class.recommended_params)
+    end
+
+    def optional_params
+      collect_attributes(self.class.optional_params)
+    end
+
+    def deprecated_params
+      collect_attributes(self.class.deprecated_params)
+    end
+
     def method_missing(meth, *args, &block)
       if match = /^(custom|ext)_([^=$]*)/.match(meth)
         param_type, key = match.captures
@@ -130,14 +164,6 @@ module IMS::LTI::Models::Messages
 
     private
 
-    def parameters
-      self.class.send("parameters").inject({}) do |h, param|
-        value = instance_variable_get("@#{param.to_s}")
-        h[param.to_s] = value unless value.nil?
-        h
-      end
-    end
-
     def parse_params(params)
       params.inject([{}, {}]) do |array, (k, v)|
         attr = k.to_s.sub('oauth_', '').to_sym
@@ -147,6 +173,14 @@ module IMS::LTI::Models::Messages
           array[1][k] = v
         end
         array
+      end
+    end
+
+    def collect_attributes(attributes)
+      attributes.inject({}) do |h, param|
+        value = instance_variable_get("@#{param.to_s}")
+        h[param.to_s] = value unless value.nil?
+        h
       end
     end
 
