@@ -10,7 +10,7 @@ module IMS::LTI::Models::Messages
                       :lis_course_offering_sourcedid, :lis_course_section_sourcedid,
                       :tool_consumer_info_product_family_code, :tool_consumer_info_product_family_version,
                       :tool_consumer_instance_name, :tool_consumer_instance_description, :tool_consumer_instance_url,
-                      :tool_consumer_instance_contact_email
+                      :tool_consumer_instance_contact_email, :tool_consumer_info_version
 
     MESSAGE_TYPE = 'basic-lti-launch-request'
 
