@@ -133,43 +133,23 @@ module IMS::LTI::Models::Messages
     end
 
     def parameters
-      self.class.send("parameters").inject({}) do |h, param|
-        value = instance_variable_get("@#{param.to_s}")
-        h[param.to_s] = value unless value.nil?
-        h
-      end
+      collect_attributes(self.class.send("parameters"))
     end
 
     def required_params
-      self.class.required_params.inject({}) do |h, param|
-        value = instance_variable_get("@#{param.to_s}")
-        h[param.to_s] = value unless value.nil?
-        h
-      end
+      collect_attributes(self.class.required_params)
     end
 
     def recommended_params
-      self.class.recommended_params.inject({}) do |h, param|
-        value = instance_variable_get("@#{param.to_s}")
-        h[param.to_s] = value unless value.nil?
-        h
-      end
+      collect_attributes(self.class.recommended_params)
     end
 
     def optional_params
-      self.class.optional_params.inject({}) do |h, param|
-        value = instance_variable_get("@#{param.to_s}")
-        h[param.to_s] = value unless value.nil?
-        h
-      end
+      collect_attributes(self.class.optional_params)
     end
 
     def deprecated_params
-      self.class.deprecated_params.inject({}) do |h, param|
-        value = instance_variable_get("@#{param.to_s}")
-        h[param.to_s] = value unless value.nil?
-        h
-      end
+      collect_attributes(self.class.deprecated_params)
     end
 
     def method_missing(meth, *args, &block)
@@ -193,6 +173,14 @@ module IMS::LTI::Models::Messages
           array[1][k] = v
         end
         array
+      end
+    end
+
+    def collect_attributes(attributes)
+      attributes.inject({}) do |h, param|
+        value = instance_variable_get("@#{param.to_s}")
+        h[param.to_s] = value unless value.nil?
+        h
       end
     end
 
