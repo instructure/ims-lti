@@ -63,11 +63,22 @@ module IMS::LTI::Models::Messages
       :oauth_timestamp, :oauth_token, :oauth_verifier, :oauth_version
 
     attr_accessor :launch_url, *OAUTH_KEYS
-    attr_reader :unknown_params
+    attr_reader :unknown_params, :custom_params, :ext_params
 
     add_required_params :lti_message_type, :lti_version
     add_recommended_params :user_id, :roles, :launch_presentation_document_target, :launch_presentation_width, :launch_presentation_height
     add_optional_params :launch_presentation_locale, :launch_presentation_css_url
+
+    def self.generate(params)
+      case params['lti_message_type']
+        when BasicLTILaunchRequest::MESSAGE_TYPE
+          BasicLTILaunchRequest.new(params)
+        when RegistrationRequest::MESSAGE_TYPE
+          RegistrationRequest.new(params)
+        else
+          self.new(params)
+      end
+    end
 
     def initialize(attrs = {})
 
@@ -121,6 +132,46 @@ module IMS::LTI::Models::Messages
       header.valid?(signature: signature)
     end
 
+    def parameters
+      self.class.send("parameters").inject({}) do |h, param|
+        value = instance_variable_get("@#{param.to_s}")
+        h[param.to_s] = value unless value.nil?
+        h
+      end
+    end
+
+    def required_params
+      self.class.required_params.inject({}) do |h, param|
+        value = instance_variable_get("@#{param.to_s}")
+        h[param.to_s] = value unless value.nil?
+        h
+      end
+    end
+
+    def recommended_params
+      self.class.recommended_params.inject({}) do |h, param|
+        value = instance_variable_get("@#{param.to_s}")
+        h[param.to_s] = value unless value.nil?
+        h
+      end
+    end
+
+    def optional_params
+      self.class.optional_params.inject({}) do |h, param|
+        value = instance_variable_get("@#{param.to_s}")
+        h[param.to_s] = value unless value.nil?
+        h
+      end
+    end
+
+    def deprecated_params
+      self.class.deprecated_params.inject({}) do |h, param|
+        value = instance_variable_get("@#{param.to_s}")
+        h[param.to_s] = value unless value.nil?
+        h
+      end
+    end
+
     def method_missing(meth, *args, &block)
       if match = /^(custom|ext)_([^=$]*)/.match(meth)
         param_type, key = match.captures
@@ -132,14 +183,6 @@ module IMS::LTI::Models::Messages
     end
 
     private
-
-    def parameters
-      self.class.send("parameters").inject({}) do |h, param|
-        value = instance_variable_get("@#{param.to_s}")
-        h[param.to_s] = value unless value.nil?
-        h
-      end
-    end
 
     def parse_params(params)
       params.inject([{}, {}]) do |array, (k, v)|
