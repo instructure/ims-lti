@@ -1,6 +1,6 @@
 # IMS LTI
 
-[![Build Status](https://travis-ci.org/rivernate/ims-lti.svg?branch=2.0.x)](https://travis-ci.org/rivernate/ims-lti)
+[![Build Status](https://travis-ci.org/instructure/ims-lti.svg?branch=2.0.x)](https://travis-ci.org/instructure/ims-lti)
 
 #Version 2.x is currently BETA
 
