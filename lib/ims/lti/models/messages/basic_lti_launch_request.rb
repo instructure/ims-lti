@@ -1,5 +1,5 @@
 module IMS::LTI::Models::Messages
-  class BasicLTILaunchRequest < Message
+  class BasicLTILaunchRequest < RequestMessage
 
     add_required_params :resource_link_id
     add_recommended_params :context_id, :launch_presentation_return_url, :tool_consumer_instance_guid

@@ -48,7 +48,7 @@ module IMS::LTI::Models
     def attributes=(attrs)
       attrs.each do |k, v|
         if self.class.attributes.include?(k.to_sym)
-          instance_variable_set("@#{k.to_s}", v)
+          send(("#{k}=").to_sym, v)
         elsif k.to_s =~ /^ext_/
           @ext_attributes[k.to_sym] = v
         else
@@ -62,7 +62,11 @@ module IMS::LTI::Models
       serialization_attrs_for(:json_key).each { |attr| json_hash.delete(attr.to_s) }
       serialization_attrs_for(:relation).each do |attr|
         val = attributes[attr.to_s]
-        json_hash[json_key(attr)] = val.as_json if val
+        if val && val.is_a?(Array)
+          json_hash[json_key(attr)] = val.map {|v| v.as_json }
+        elsif val
+          json_hash[json_key(attr)] = val.as_json
+        end
       end
       json_hash = @ext_attributes.merge(json_hash)
       json_hash.merge! to_json_conversions
@@ -120,7 +124,8 @@ module IMS::LTI::Models
       result = {}
       if attrs = serialization_attrs_for(:json_key)
         conversion_attrs = serialization_attrs_for(:json_converter)
-        attrs.each { |attr| result[json_key(attr)] = attributes[attr.to_s] unless conversion_attrs.include?(attr) || attributes[attr.to_s].nil? }
+        relation_attrs = serialization_attrs_for(:relation)
+        attrs.each { |attr| result[json_key(attr)] = attributes[attr.to_s] unless (conversion_attrs | relation_attrs).include?(attr) || attributes[attr.to_s].nil? }
       end
       result
     end
@@ -171,8 +176,12 @@ module IMS::LTI::Models
       @attributes = attribs
     end
 
-    def self.serialization_options
-      @serialization_options ||= {}
+    def self.serialization_options()
+      if superclass == Object
+        @serialization_options || {}
+      else
+        superclass.send(:serialization_options).merge(@serialization_options || {})
+      end
     end
 
     def serialization_options

@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'faraday_middleware', '~> 0.8'
   spec.add_dependency 'builder'
 
-  spec.add_development_dependency 'rake', '~> 0'
-  spec.add_development_dependency 'rspec', '~> 0'
-  spec.add_development_dependency 'pry', '~> 0'
+  spec.add_development_dependency 'rake', '~> 10.4.2'
+  spec.add_development_dependency 'rspec', '~> 3.2.0'
+  spec.add_development_dependency 'byebug', '~> 4.0.5'
 end

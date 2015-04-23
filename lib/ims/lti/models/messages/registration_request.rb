@@ -1,5 +1,5 @@
 module IMS::LTI::Models::Messages
-  class RegistrationRequest < Message
+  class RegistrationRequest < RequestMessage
 
     add_required_params :reg_key, :reg_password, :tc_profile_url, :launch_presentation_return_url
 

@@ -27,5 +27,9 @@ module IMS::LTI
     require_relative 'models/base_url_selector'
     require_relative 'models/tool_setting'
     require_relative 'models/tool_setting_container'
+    require_relative 'models/content_items'
+    require_relative 'models/content_item_placement'
+    require_relative 'models/content_item_container'
+    require_relative 'models/image'
   end
 end
