@@ -6,8 +6,8 @@ module IMS::LTI::Models
     TOOL_SETTING_CONTAINER_CONTEXT = 'http://purl.imsglobal.org/ctx/lti/v2/ToolSettings'
 
     def initialize(opts = {})
-      self.context = TOOL_SETTING_CONTAINER_CONTEXT
       super(opts)
+      self.context = TOOL_SETTING_CONTAINER_CONTEXT
     end
 
   end

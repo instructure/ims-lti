@@ -12,7 +12,7 @@ module IMS::LTI::Models
 
     it 'when initialized with unsupported attributes' do
       #swallow warning
-      expect{
+      expect {
         obj = described_class.new(one: 1, two: 2, three: 3)
         expect(obj.instance_variable_get('@one')).to be_nil
         expect(obj.instance_variable_get('@two')).to be_nil
@@ -191,6 +191,20 @@ module IMS::LTI::Models
           expect(model.two.count).to eq 2
         end
 
+        context "inherited class" do
+
+          class TestSubclass < SampleClass
+            add_attribute :dos
+          end
+
+          it 'handles subclassing' do
+            model = TestSubclass.new.from_json('{"@one":1, "two": {"a": "a"}}')
+            expect(model.one).to eq 1
+            expect(model.two.a).to eq 'a'
+          end
+
+        end
+
       end
 
       describe '#self.from_json' do
@@ -210,7 +224,7 @@ module IMS::LTI::Models
       context 'ext_ methods' do
 
         it 'pareses ext_ json' do
-          obj = SampleClass.from_json({ ext_custom_field: 123}.to_json)
+          obj = SampleClass.from_json({ext_custom_field: 123}.to_json)
           expect(obj.instance_variable_get('@ext_attributes')).to eq({ext_custom_field: 123})
         end
 

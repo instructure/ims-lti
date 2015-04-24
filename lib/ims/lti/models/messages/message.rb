@@ -1,5 +1,6 @@
 module IMS::LTI::Models::Messages
   class Message
+
     class << self
 
       def required_params
@@ -48,7 +49,11 @@ module IMS::LTI::Models::Messages
       end
 
       def supers_params(instance_variable)
-        superclass == Object ? [] : superclass.instance_variable_get(instance_variable) || []
+        if name == "IMS::LTI::Models::Messages::Message"
+          []
+        else
+          (superclass.instance_variable_get(instance_variable) || []) | superclass.send(:supers_params, instance_variable)
+        end
       end
 
     end
@@ -66,8 +71,6 @@ module IMS::LTI::Models::Messages
     attr_reader :unknown_params, :custom_params, :ext_params
 
     add_required_params :lti_message_type, :lti_version
-    add_recommended_params :user_id, :roles, :launch_presentation_document_target, :launch_presentation_width, :launch_presentation_height
-    add_optional_params :launch_presentation_locale, :launch_presentation_css_url
 
     def self.generate(params)
       case params['lti_message_type']
@@ -75,6 +78,8 @@ module IMS::LTI::Models::Messages
           BasicLTILaunchRequest.new(params)
         when RegistrationRequest::MESSAGE_TYPE
           RegistrationRequest.new(params)
+        when ContentItemSelectionRequest::MESSAGE_TYPE
+          ContentItemSelectionRequest.new(params)
         else
           self.new(params)
       end
@@ -93,7 +98,8 @@ module IMS::LTI::Models::Messages
         elsif str_key.start_with?(CUSTOM_PREFIX)
           @custom_params[str_key] = v
         elsif !v.nil? && self.respond_to?(k.to_sym)
-          instance_variable_set("@#{k}", v)
+          send(("#{k}=").to_sym, v)
+
         else
           warn "Unknown parameter #{k}"
           @unknown_params[str_key] = v
@@ -120,6 +126,7 @@ module IMS::LTI::Models::Messages
     end
 
     def valid_signature?(secret)
+      params = collect_attributes(OAUTH_KEYS)
       params = OAUTH_KEYS.inject({}) do |hash, k|
         value = instance_variable_get("@#{k}")
         hash[k] = value if value
@@ -152,6 +159,10 @@ module IMS::LTI::Models::Messages
       collect_attributes(self.class.deprecated_params)
     end
 
+    def oauth_params
+      collect_attributes(OAUTH_KEYS)
+    end
+
     def method_missing(meth, *args, &block)
       if match = /^(custom|ext)_([^=$]*)/.match(meth)
         param_type, key = match.captures
@@ -178,8 +189,8 @@ module IMS::LTI::Models::Messages
 
     def collect_attributes(attributes)
       attributes.inject({}) do |h, param|
-        value = instance_variable_get("@#{param.to_s}")
-        h[param.to_s] = value unless value.nil?
+        value = instance_variable_get("@#{param}")
+        h[param.to_s] = value if value
         h
       end
     end

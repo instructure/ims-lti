@@ -5,11 +5,9 @@ module IMS::LTI::Models::Messages
     describe 'parameters' do
       it "returns params for the message" do
         subject.lti_message_type = 'message-type'
-        subject.user_id = '123456'
 
         params = subject.post_params
         expect(params['lti_message_type']).to eq('message-type')
-        expect(params['user_id']).to eq('123456')
       end
 
       it 'returns custom params for the message' do
@@ -39,7 +37,6 @@ module IMS::LTI::Models::Messages
       it 'returns all the custom params' do
         subject.custom_name = 'my_custom_name'
         subject.custom_number = '3'
-        subject.user_id = 2
         params = subject.post_params
         expect(params['custom_name']).to eq 'my_custom_name'
         expect(params['custom_number']).to eq '3'
@@ -48,7 +45,6 @@ module IMS::LTI::Models::Messages
       it 'returns all the ext params' do
         subject.ext_name = 'my_ext_name'
         subject.ext_number = '42'
-        subject.user_id = 2
         params = subject.post_params
         expect(params['ext_name']).to eq 'my_ext_name'
         expect(params['ext_number']).to eq '42'
@@ -58,17 +54,6 @@ module IMS::LTI::Models::Messages
         expect(described_class.required_params).to eq [:lti_message_type, :lti_version]
       end
 
-      it 'returns recommended param names' do
-        expect(described_class.recommended_params).to eq [:user_id, :roles, :launch_presentation_document_target, :launch_presentation_width, :launch_presentation_height]
-      end
-
-      it 'returns optional param names' do
-        expect(described_class.optional_params).to eq [:launch_presentation_locale, :launch_presentation_css_url]
-      end
-
-      it 'returns deprecated param names' do
-        expect(described_class.deprecated_params).to eq []
-      end
 
       it 'returns unknown params' do
         message = described_class.new(foo: 'bar')
@@ -80,24 +65,17 @@ module IMS::LTI::Models::Messages
           add_deprecated_params :foo
         end
 
-        subject {CustomMesage.new(lti_version: '1', user_id: 3, launch_presentation_locale: 'en', foo: 'bar')}
+        subject {CustomMesage.new(lti_version: '1', foo: 'bar')}
 
 
         it 'returns all the supported params' do
-          expect(subject.parameters).to eq({"lti_version"=>"1", "user_id"=>3, "launch_presentation_locale"=>"en", "foo"=>"bar"})
+          expect(subject.parameters).to eq({"lti_version"=>"1", "foo"=>"bar"})
         end
 
         it 'returns the required params' do
           expect(subject.required_params).to eq({"lti_version"=>"1"})
         end
 
-        it 'returns the recommended params' do
-          expect(subject.recommended_params).to eq({"user_id"=>3})
-        end
-
-        it 'returns the deprecated params' do
-          expect(subject.deprecated_params).to eq({"foo"=>"bar"})
-        end
       end
 
     end
@@ -145,7 +123,7 @@ module IMS::LTI::Models::Messages
     context 'OAuth' do
       describe "#signed_post_params" do
         it "creates a hash with the oauth signature" do
-          subject.user_id = 'user_id'
+          subject.custom_user_id = 'user_id'
           subject.launch_url = 'http://www.example.com'
           subject.oauth_consumer_key = 'key'
 
@@ -154,7 +132,7 @@ module IMS::LTI::Models::Messages
           expect(params[:oauth_consumer_key]).to eq "key"
           expect(params[:oauth_signature_method]).to eq "HMAC-SHA1"
           expect(params[:oauth_version]).to eq "1.0"
-          expect(params['user_id']).to eq "user_id"
+          expect(params['custom_user_id']).to eq "user_id"
           expect(params.key?(:oauth_signature)).to eq true
           expect(params.key?(:oauth_timestamp)).to eq true
           expect(params.key?(:oauth_nonce)).to eq true
@@ -180,6 +158,26 @@ module IMS::LTI::Models::Messages
           expect(message.valid_signature?('bad_secret')).to eq false
         end
       end
+    end
+
+    describe "#generate" do
+
+      it 'generates a BasicLTILaunchRequest message' do
+        message = described_class.generate({'lti_message_type' => BasicLTILaunchRequest::MESSAGE_TYPE })
+        expect(message).to be_a BasicLTILaunchRequest
+      end
+
+      it 'generates a RegistrationRequest message' do
+        message = described_class.generate({'lti_message_type' => RegistrationRequest::MESSAGE_TYPE })
+        expect(message).to be_a RegistrationRequest
+      end
+
+      it 'generates a ContentItemSelection message' do
+        message = described_class.generate({'lti_message_type' => ContentItemSelectionRequest::MESSAGE_TYPE })
+        expect(message).to be_a ContentItemSelectionRequest
+      end
+
+
     end
 
   end
