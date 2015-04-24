@@ -49,7 +49,7 @@ module IMS::LTI::Models::Messages
       end
 
       def supers_params(instance_variable)
-        if superclass == Object
+        if name == "IMS::LTI::Models::Messages::Message"
           []
         else
           (superclass.instance_variable_get(instance_variable) || []) | superclass.send(:supers_params, instance_variable)

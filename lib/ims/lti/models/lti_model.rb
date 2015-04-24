@@ -177,7 +177,7 @@ module IMS::LTI::Models
     end
 
     def self.serialization_options()
-      if superclass == Object
+      if name == "IMS::LTI::Models::LTIModel"
         @serialization_options || {}
       else
         superclass.send(:serialization_options).merge(@serialization_options || {})
