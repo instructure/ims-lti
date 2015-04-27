@@ -172,9 +172,14 @@ module IMS::LTI::Models::Messages
         expect(message).to be_a RegistrationRequest
       end
 
-      it 'generates a ContentItemSelection message' do
+      it 'generates a ContentItemSelectionRequest message' do
         message = described_class.generate({'lti_message_type' => ContentItemSelectionRequest::MESSAGE_TYPE })
         expect(message).to be_a ContentItemSelectionRequest
+      end
+
+      it 'generates a ContentItemSelection message' do
+        message = described_class.generate({'lti_message_type' => ContentItemSelection::MESSAGE_TYPE })
+        expect(message).to be_a ContentItemSelection
       end
 
 
