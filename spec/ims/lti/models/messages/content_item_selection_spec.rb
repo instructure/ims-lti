@@ -3,7 +3,7 @@ require 'spec_helper'
 module IMS::LTI::Models::Messages
   describe ContentItemSelection do
 
-    let(:default_params) { {lti_message_type: 'ContentItemSelection', lti_version: 'my_version'} }
+    let(:default_params) { {lti_version: 'my_version'} }
     let(:content_item) do
       IMS::LTI::Models::ContentItems::ContentItem.new(
         media_type: 'my_media_type',
@@ -12,6 +12,10 @@ module IMS::LTI::Models::Messages
       )
     end
     let(:content_item_container) { IMS::LTI::Models::ContentItemContainer.new(graph: [content_item]) }
+
+    it 'should have a default value for lti_message_type' do
+      expect(subject.lti_message_type).to eq 'ContentItemSelection'
+    end
 
     it "inherits parameters" do
       subject.lti_version = '123'

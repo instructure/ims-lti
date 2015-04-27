@@ -80,6 +80,8 @@ module IMS::LTI::Models::Messages
           RegistrationRequest.new(params)
         when ContentItemSelectionRequest::MESSAGE_TYPE
           ContentItemSelectionRequest.new(params)
+        when ContentItemSelection::MESSAGE_TYPE
+          ContentItemSelection.new(params)
         else
           self.new(params)
       end
