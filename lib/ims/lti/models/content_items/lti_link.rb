@@ -3,5 +3,12 @@ module IMS::LTI::Models::ContentItems
 
     add_attributes :custom
 
+    TYPE = "FileItem"
+
+    def initialize(attributes = {})
+      super(attributes)
+      self.type = TYPE
+    end
+
   end
 end

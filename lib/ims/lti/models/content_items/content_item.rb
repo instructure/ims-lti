@@ -8,6 +8,12 @@ module IMS::LTI::Models::ContentItems
     add_attribute :placement_advice, relation: 'IMS::LTI::Models::ContentItemPlacement'
     add_attribute :thumbnail, relation: 'IMS::LTI::Models::Image'
 
+    TYPE = "ContentItem"
+
+    def initialize(attributes = {})
+      super(attributes)
+      self.type = TYPE
+    end
 
     def self.from_json(json)
       data = json.is_a?(String) ? JSON.parse(json) : json
