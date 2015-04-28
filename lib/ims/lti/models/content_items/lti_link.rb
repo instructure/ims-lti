@@ -3,7 +3,7 @@ module IMS::LTI::Models::ContentItems
 
     add_attributes :custom
 
-    TYPE = "FileItem"
+    TYPE = "LtiLink"
 
     def initialize(attributes = {})
       super(attributes)
