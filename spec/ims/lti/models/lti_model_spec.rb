@@ -195,6 +195,7 @@ module IMS::LTI::Models
 
           class TestSubclass < SampleClass
             add_attribute :dos
+            add_attribute :tres, json_key: @tres
           end
 
           it 'handles subclassing' do

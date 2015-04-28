@@ -11,8 +11,10 @@ module IMS::LTI::Models
       window: 'http://purl.imsglobal.org/vocab/lti/v2/lti#window'
     }
 
-    add_attributes :display_height, :display_width, :window_target
-    add_attribute :presentation_document_target
+    add_attribute :display_height, json_key: 'displayHeight'
+    add_attribute :display_width, json_key: 'displayWidth'
+    add_attribute :window_target, json_key: 'windowTarget'
+    add_attribute :presentation_document_target, json_key: 'presentationDocumentTarget'
 
   end
 end
