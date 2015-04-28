@@ -63,7 +63,7 @@ module IMS::LTI::Models
       serialization_attrs_for(:relation).each do |attr|
         val = attributes[attr.to_s]
         if val && val.is_a?(Array)
-          json_hash[json_key(attr)] = val.map {|v| v.as_json }
+          json_hash[json_key(attr)] = val.map { |v| v.as_json }
         elsif val
           json_hash[json_key(attr)] = val.as_json
         end
@@ -177,10 +177,13 @@ module IMS::LTI::Models
     end
 
     def self.serialization_options()
+      @serialization_options ||= {}
       if name == "IMS::LTI::Models::LTIModel"
-        @serialization_options || {}
+        @serialization_options
       else
-        superclass.send(:serialization_options).merge(@serialization_options || {})
+        opts = superclass.send(:serialization_options) || {}
+        keys = opts.keys | @serialization_options.keys
+        keys.each_with_object({}) {|k, h| h[k] = (opts[k] || {}).merge(@serialization_options[k] || {})}
       end
     end
 
