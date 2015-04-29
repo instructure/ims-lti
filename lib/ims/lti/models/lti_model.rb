@@ -30,6 +30,7 @@ module IMS::LTI::Models
 
     def self.inherited(subclass)
       subclass.inherit_attributes(self.attributes)
+      super
     end
 
     def self.from_json(json)
@@ -169,7 +170,11 @@ module IMS::LTI::Models
     end
 
     def self.attributes
-      @attributes || []
+      if self == LTIModel
+        @attributes || []
+      else
+        superclass.send(:attributes) | (@attributes || [])
+      end
     end
 
     def self.attributes=(attribs)

@@ -204,6 +204,12 @@ module IMS::LTI::Models
             expect(model.two.a).to eq 'a'
           end
 
+          it 'lets you add methods ad-hoc to parent classes' do
+            SampleClass.add_attribute :sample
+            obj = TestSubclass.new(sample: '123')
+            expect(obj.as_json).to eq({"sample" => '123'})
+          end
+
         end
 
       end
