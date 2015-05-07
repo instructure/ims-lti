@@ -44,6 +44,25 @@ module IMS::LTI::Models
 
     end
 
+    describe 'add_attribute' do
+      class A < described_class
+        add_attribute :aisle
+      end
+      it 'only lets you set an attribute once' do
+        A.add_attribute :one
+        A.add_attribute :one
+        expect(A.attributes.select { |k| k == :one }.size).to eq 1
+      end
+
+      it 'only takes the last options set for the attribute' do
+        A.add_attribute :one, json_key: 'one'
+        A.add_attribute :one
+        ser_options = A.instance_variable_get(:'@serialization_options')
+        expect(ser_options.map { |_, v| v.keys }.flatten.select { |k| k == :one }.size).to eq 0
+      end
+
+    end
+
     describe "#add_attributes" do
       it 'adds attributes' do
         described_class.add_attributes(:one)
@@ -84,6 +103,13 @@ module IMS::LTI::Models
         expect(model.one).to eq 1
         expect(model.two).to eq 2
       end
+
+      it 'only lets you set an attribute once' do
+        described_class.add_attributes :one
+        described_class.add_attributes :one
+        expect(described_class.attributes.select { |k| k == :one }.size).to eq 1
+      end
+
     end
 
     describe 'attributes' do
@@ -159,6 +185,7 @@ module IMS::LTI::Models
       end
 
       describe '#from_json' do
+
         it 'deserializes json with json key mappings' do
           model = SampleClass.new.from_json('{"@one":1}')
           expect(model.one).to eq 1
