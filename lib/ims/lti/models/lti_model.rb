@@ -9,18 +9,24 @@ module IMS::LTI::Models
 
     def self.add_attributes(attribute, *attrs)
       attrs.unshift(attribute)
-      self.attributes += attrs
-      attr_accessor(attrs.shift, *attrs)
+      attrs -= self.attributes
+      if attrs.size > 0
+        self.attributes += attrs
+        attr_accessor(attrs.shift, *attrs)
+      end
     end
 
     def self.add_attribute(attribute, options = {})
       @serialization_options ||= {}
-      options.each do |k, v|
+      keys = @serialization_options.keys + options.keys
+      keys.each do |k|
         @serialization_options[k] ||= {}
-        @serialization_options[k][attribute] = v
+        options.has_key?(k) ? @serialization_options[k][attribute] = options[k] : @serialization_options[k].delete(attribute)
       end
-      self.attributes += [attribute]
-      attr_accessor(attribute)
+      unless self.attributes.include? attribute
+        self.attributes += [attribute]
+        attr_accessor(attribute)
+      end
     end
 
     def self.inherit_attributes(attrs)
@@ -188,7 +194,7 @@ module IMS::LTI::Models
       else
         opts = superclass.send(:serialization_options) || {}
         keys = opts.keys | @serialization_options.keys
-        keys.each_with_object({}) {|k, h| h[k] = (opts[k] || {}).merge(@serialization_options[k] || {})}
+        keys.each_with_object({}) { |k, h| h[k] = (opts[k] || {}).merge(@serialization_options[k] || {}) }
       end
     end
 
