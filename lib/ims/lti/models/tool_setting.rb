@@ -6,7 +6,7 @@ module IMS::LTI::Models
 
     TOOL_PROXY_BINDING_TYPE = 'ToolProxyBinding'
     TOOL_PROXY_TYPE = 'ToolProxy'
-    LTI_LINK_TYPE = 'LtiLink'
+    LTI_LINK_TYPE = 'LtiLinkItem'
 
   end
 end
