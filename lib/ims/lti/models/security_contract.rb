@@ -1,7 +1,7 @@
 module IMS::LTI::Models
   class SecurityContract < LTIModel
 
-    add_attribute :shared_secret
+    add_attributes :shared_secret, :tp_half_shared_secret
     add_attribute :tool_service, relation: 'IMS::LTI::Models::RestServiceProfile'
     add_attribute :end_user_service, relation: 'IMS::LTI::Models::RestServiceProfile'
 
