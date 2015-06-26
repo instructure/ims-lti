@@ -1,9 +1,9 @@
 module IMS::LTI::Models::ContentItems
-  class LtiLink < ContentItem
+  class LtiLinkItem < ContentItem
 
     add_attributes :custom
 
-    TYPE = "LtiLink"
+    TYPE = "LtiLinkItem"
 
     def initialize(attributes = {})
       super(attributes)

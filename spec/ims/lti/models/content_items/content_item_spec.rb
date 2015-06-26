@@ -16,14 +16,14 @@ module IMS::LTI::Models::ContentItems
         expect(described_class.from_json(subject.to_json)).to be_a FileItem
       end
 
-      it 'returns a LtiLink when the type is LtiLink' do
-        subject.type = 'LtiLink'
-        expect(described_class.from_json(subject.to_json)).to be_a LtiLink
+      it 'returns a LtiLinkItem when the type is LtiLinkItem' do
+        subject.type = 'LtiLinkItem'
+        expect(described_class.from_json(subject.to_json)).to be_a LtiLinkItem
       end
 
       it 'converts json to a content_item' do
         json = {
-              "@type" => "LtiLink",
+              "@type" => "LtiLinkItem",
               "@id" => "http://localhost:4001/messages/blti",
               "url" => "http://localhost:4001/messages/blti",
               "title" => "Test Lti Tool",
@@ -35,7 +35,7 @@ module IMS::LTI::Models::ContentItems
               }
         }.to_json
         content_item = described_class.from_json(json)
-        expect(content_item).to be_a LtiLink
+        expect(content_item).to be_a LtiLinkItem
         expect(content_item.placement_advice.presentation_document_target).to eq 'iframe'
       end
 
@@ -44,4 +44,3 @@ module IMS::LTI::Models::ContentItems
 
   end
 end
-
