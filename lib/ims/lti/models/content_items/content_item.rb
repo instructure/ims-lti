@@ -23,8 +23,8 @@ module IMS::LTI::Models::ContentItems
           ContentItem.new.from_json(data)
         when 'FileItem'
           FileItem.new.from_json(data)
-        when 'LtiLink'
-          LtiLink.new.from_json(data)
+        when 'LtiLinkItem'
+          LtiLinkItem.new.from_json(data)
       end
     end
 
