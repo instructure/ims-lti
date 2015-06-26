@@ -1,6 +1,6 @@
 module IMS::LTI::Models
   class ToolProxy < LTIModel
-    add_attributes :lti_version, :tool_proxy_guid, :custom, :custom_url, :enabled_capability
+    add_attributes :lti_version, :tool_proxy_guid, :custom, :custom_url, :enabled_capability, :tc_half_shared_secret
     add_attribute :context, json_key:'@context'
     add_attribute :type, json_key:'@type'
     add_attribute :id, json_key:'@id'
@@ -12,6 +12,10 @@ module IMS::LTI::Models
       @context = ['http://purl.imsglobal.org/ctx/lti/v2/ToolProxy']
       super(attr)
       @type = 'ToolProxy'
+    end
+
+    def enabled_capabilities
+      [*enabled_capability]
     end
   end
 end

@@ -24,5 +24,9 @@ module IMS::LTI::Models
       [*@service_offered]
     end
 
+    def capabilities_offered
+      [*@capability_offered]
+    end
+
   end
 end

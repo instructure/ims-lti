@@ -7,5 +7,10 @@ module IMS::LTI::Models
         expect(subject.type).to eq 'ToolProxy'
       end
     end
+
+    it 'pluralizes enabled_capability' do
+      expect(subject.enabled_capabilities).to eq []
+    end
+
   end
 end
