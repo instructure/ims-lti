@@ -119,7 +119,7 @@ module IMS::LTI
         @score = doc.text("//readResultResponse//resultScore/textString")
         @score = @score.to_s if @score
       rescue => e
-        raise IMS::LTI::InvalidLTIConfigError, "Wrong XML response. Original xml: '#{xml}'"
+        raise StandardError, "Wrong XML response, original error:\n#{e}.\nOriginal xml: '#{xml}'"
       end
     end
 

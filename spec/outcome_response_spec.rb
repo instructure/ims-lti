@@ -94,7 +94,7 @@ describe IMS::LTI::OutcomeResponse do
 
   it "should raise an error with wrong xml" do
     res = IMS::LTI::OutcomeResponse.new
-    expect { res.process_xml(wrong_xml) }.to raise_error(IMS::LTI::InvalidLTIConfigError)
+    expect { res.process_xml(wrong_xml) }.to raise_error(StandardError)
   end
 
 end
