@@ -23,6 +23,8 @@ describe IMS::LTI::OutcomeResponse do
 </imsx_POXEnvelopeResponse>
   XML
 
+  wrong_xml = "This is a wrong XML file without any tags but with some chars %ùp<>/:!"
+
   def mock_response(xml)
     @fake = Object
     OAuth::AccessToken.stub(:new).and_return(@fake)
@@ -88,6 +90,11 @@ describe IMS::LTI::OutcomeResponse do
     res.process_xml(response_xml)
     alt = response_xml.gsub("\n",'')
     res.generate_response_xml.should == alt
+  end
+
+  it "should raise an error with wrong xml" do
+    res = IMS::LTI::OutcomeResponse.new
+    expect { res.process_xml(wrong_xml) }.to raise_error(IMS::LTI::InvalidLTIConfigError)
   end
 
 end
