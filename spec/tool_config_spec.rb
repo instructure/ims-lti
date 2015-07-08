@@ -37,12 +37,12 @@ describe IMS::LTI::ToolConfig do
   <cartridge_bundle identifierref="BLTI001_Bundle"/>
 </cartridge_basiclti_link>
 XML
-  
+
   # the generated order of the schema stuff is random, just ignore it
   def clear_shema_stuffs(text)
     text.gsub(/<cartridge_basiclti_link[^>]*>/, "<cartridge_basiclti_link>")
   end
-  
+
   it "should generate the expected config xml" do
     config = IMS::LTI::ToolConfig.new("title" => "Test Config", "secure_launch_url" => "https://www.example.com/lti", "custom_params" => {"custom1" => "customval1"})
     config.description = "Description of boringness"
@@ -56,15 +56,15 @@ XML
     config.vendor_contact_name = "Joe Support"
 
     config.set_custom_param("custom2", "customval2")
-    
+
     config.set_ext_params("example.com", {"extkey1" => "extval1"})
     config.set_ext_param("example.com", "extkey2", "extval2")
     config.set_ext_param("example.com", "extopt1", {"optkey1" => "optval1", "optkey2" => "optval2"})
-    
+
     config.set_ext_param("two.example.com", "ext1key", "ext1val")
 
     config.cartridge_bundle = "BLTI001_Bundle"
-    
+
     clear_shema_stuffs(config.to_xml(:indent => 2)).should == clear_shema_stuffs(cc_lti_xml)
   end
 
@@ -72,10 +72,10 @@ XML
     config = IMS::LTI::ToolConfig.create_from_xml(cc_lti_xml)
     clear_shema_stuffs(config.to_xml(:indent => 2)).should == clear_shema_stuffs(cc_lti_xml)
   end
-  
+
   it "should not allow creating invalid config xml" do
     config = IMS::LTI::ToolConfig.new("title" => "Test Config")
     expect { config.to_xml }.to raise_error(IMS::LTI::InvalidLTIConfigError)
   end
-  
+
 end
