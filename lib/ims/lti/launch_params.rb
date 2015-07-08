@@ -39,6 +39,7 @@ module IMS::LTI
       resource_link_id
       resource_link_title
       roles
+      role_scope_mentor
       tool_consumer_info_product_family_code
       tool_consumer_info_version
       tool_consumer_instance_contact_email
