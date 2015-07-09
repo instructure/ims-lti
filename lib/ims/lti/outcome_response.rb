@@ -129,7 +129,6 @@ module IMS::LTI
       builder = Builder::XmlMarkup.new
       builder.instruct!
 
-      # builder.imsx_POXEnvelopeResponse("xmlns" => "http://www.imsglobal.org/lis/oms1p0/pox") do |env|
       builder.imsx_POXEnvelopeResponse("xmlns" => "http://www.imsglobal.org/services/ltiv1p1/xsd/imsoms_v1p0") do |env|
         env.imsx_POXHeader do |header|
           header.imsx_POXResponseHeaderInfo do |info|
@@ -146,8 +145,8 @@ module IMS::LTI
         end #/header
         env.imsx_POXBody do |body|
           unless unsupported?
-            body.tag!(@operation + 'Response') do |request|
-              if @operation == OutcomeRequest::READ_REQUEST
+            if @operation == OutcomeRequest::READ_REQUEST
+              body.tag!(@operation + 'Response') do |request|
                 request.result do |res|
                   res.resultScore do |res_score|
                     res_score.language "en" # 'en' represents the format of the number
@@ -155,6 +154,8 @@ module IMS::LTI
                   end
                 end #/result
               end
+            else
+              body.tag!(@operation + 'Response')
             end #/operationResponse
           end
         end #/body
