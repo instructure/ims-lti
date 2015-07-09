@@ -94,7 +94,6 @@ describe IMS::LTI::OutcomeResponse do
 
   it "should raise an error with bad xml" do
     res = IMS::LTI::OutcomeResponse.new
-    puts res.process_xml(bad_xml)
     expect { res.process_xml(bad_xml) }.to raise_error(IMS::LTI::XMLParseError)
   end
 
