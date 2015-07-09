@@ -23,7 +23,7 @@ describe IMS::LTI::OutcomeResponse do
 </imsx_POXEnvelopeResponse>
   XML
 
-  bad_xml = "This is a bad XML file without any tags but with some special chars %ùp<>/:!"
+  bad_xml = "This is a bad XML file with bad tags <root_tag></root_tag><second_root_tag></second_root_tag>"
 
   def mock_response(xml)
     @fake = Object
