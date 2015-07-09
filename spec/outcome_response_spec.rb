@@ -23,7 +23,7 @@ describe IMS::LTI::OutcomeResponse do
 </imsx_POXEnvelopeResponse>
   XML
 
-  wrong_xml = "This is a wrong XML file without any tags but with some chars %ùp<>/:!"
+  bad_xml = "This is a bad XML file without any tags but with some special chars %ùp<>/:!"
 
   def mock_response(xml)
     @fake = Object
@@ -92,9 +92,10 @@ describe IMS::LTI::OutcomeResponse do
     res.generate_response_xml.should == alt
   end
 
-  it "should raise an error with wrong xml" do
+  it "should raise an error with bad xml" do
     res = IMS::LTI::OutcomeResponse.new
-    expect { res.process_xml(wrong_xml) }.to raise_error(StandardError)
+    puts res.process_xml(bad_xml)
+    expect { res.process_xml(bad_xml) }.to raise_error(IMS::LTI::XMLParseError)
   end
 
 end

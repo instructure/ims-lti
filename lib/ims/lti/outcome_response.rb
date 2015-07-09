@@ -107,20 +107,20 @@ module IMS::LTI
     def process_xml(xml)
       begin
         doc = REXML::Document.new xml
-        @message_identifier = doc.text("//imsx_statusInfo/imsx_messageIdentifier").to_s
-        @code_major = doc.text("//imsx_statusInfo/imsx_codeMajor")
-        @code_major.downcase! if @code_major
-        @severity = doc.text("//imsx_statusInfo/imsx_severity")
-        @severity.downcase! if @severity
-        @description = doc.text("//imsx_statusInfo/imsx_description")
-        @description = @description.to_s if @description
-        @message_ref_identifier = doc.text("//imsx_statusInfo/imsx_messageRefIdentifier")
-        @operation = doc.text("//imsx_statusInfo/imsx_operationRefIdentifier")
-        @score = doc.text("//readResultResponse//resultScore/textString")
-        @score = @score.to_s if @score
       rescue => e
-        raise StandardError, "Wrong XML response, original error:\n#{e}.\nOriginal xml: '#{xml}'"
+        raise IMS::LTI::XMLParseError, "#{e}\nOriginal xml: '#{xml}'"
       end
+      @message_identifier = doc.text("//imsx_statusInfo/imsx_messageIdentifier").to_s
+      @code_major = doc.text("//imsx_statusInfo/imsx_codeMajor")
+      @code_major.downcase! if @code_major
+      @severity = doc.text("//imsx_statusInfo/imsx_severity")
+      @severity.downcase! if @severity
+      @description = doc.text("//imsx_statusInfo/imsx_description")
+      @description = @description.to_s if @description
+      @message_ref_identifier = doc.text("//imsx_statusInfo/imsx_messageRefIdentifier")
+      @operation = doc.text("//imsx_statusInfo/imsx_operationRefIdentifier")
+      @score = doc.text("//readResultResponse//resultScore/textString")
+      @score = @score.to_s if @score
     end
 
     # Generate XML based on the current configuration
