@@ -20,7 +20,66 @@ describe IMS::LTI::ToolProvider do
     @tp.build_return_url.should == @params['launch_presentation_return_url'] + "?lti_errormsg=user%20error%20message&lti_errorlog=lms%20error%20log&lti_msg=user%20message&lti_log=lms%20message"
   end
 
-  it "should recognize the roles" do
+  it "should find the base role" do
+    @tp.roles = "urn:lti:role:ims/lis/Instructor/GuestInstructor"
+    @tp.has_base_role?("urn:lti:role:ims/lis/Instructor").should == true
+    @tp.has_exact_role?("urn:lti:role:ims/lis/Instructor").should == false
+  end
+
+  it "should recognize the learner roles" do
+    @tp.roles = "urn:lti:instrole:ims/lis/Student"
+    @tp.institution_student?.should == true
+    @tp.context_student?.should == false
+    @tp.roles = "Learner"
+    @tp.institution_student?.should == false
+    @tp.context_student?.should == true
+    @tp.roles = "urn:lti:role:ims/lis/Learner"
+    @tp.institution_student?.should == false
+    @tp.context_student?.should == true
+  end
+
+  it "should recognize the instructor roles" do
+    @tp.roles = "urn:lti:instrole:ims/lis/Instructor"
+    @tp.institution_instructor?.should == true
+    @tp.context_instructor?.should == false
+    @tp.roles = "Instructor"
+    @tp.institution_instructor?.should == false
+    @tp.context_instructor?.should == true
+    @tp.roles = "urn:lti:role:ims/lis/Instructor"
+    @tp.institution_instructor?.should == false
+    @tp.context_instructor?.should == true
+    @tp.roles = "urn:lti:role:ims/lis/Instructor/GuestInstructor"
+    @tp.institution_instructor?.should == false
+    @tp.context_instructor?.should == false
+  end
+
+  it "should recognize the admin roles" do
+    @tp.roles = "urn:lti:instrole:ims/lis/Administrator"
+    @tp.institution_admin?.should == true
+    @tp.context_admin?.should == false
+    @tp.roles = "Administrator"
+    @tp.institution_admin?.should == false
+    @tp.context_admin?.should == true
+    @tp.roles = "urn:lti:role:ims/lis/Administrator"
+    @tp.institution_admin?.should == false
+    @tp.context_admin?.should == true
+    @tp.roles = "urn:lti:role:ims/lis/Administrator/ExternalSystemAdministrator"
+    @tp.institution_admin?.should == false
+    @tp.context_admin?.should == false
+  end
+
+  it "should recognize other context roles" do
+    @tp.roles = "Mentor,TeachingAssistant,ContentDeveloper"
+    @tp.context_content_developer?.should == true
+    @tp.context_mentor? == true
+    @tp.context_ta? == true
+    @tp.roles = "urn:lti:role:ims/lis/Mentor,urn:lti:role:ims/lis/TeachingAssistant,urn:lti:role:ims/lis/ContentDeveloper"
+    @tp.context_content_developer?.should == true
+    @tp.context_mentor? == true
+    @tp.context_ta? == true
+  end
+
+  it "should recognize the deprecated roles" do
     @tp.student?.should == true
     @tp.instructor?.should == true
     @tp.content_developer?.should == false
