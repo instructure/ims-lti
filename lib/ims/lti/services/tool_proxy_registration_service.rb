@@ -36,6 +36,8 @@ module IMS::LTI::Services
 
       if response.status == 201
         IMS::LTI::Models::ToolProxy.new.from_json(tool_proxy.to_json).from_json(response.body)
+      else
+        raise IMS::LTI::Errors::ToolProxyRegistrationError.new(response.status, response.body)
       end
     end
 
