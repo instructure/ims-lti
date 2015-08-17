@@ -57,6 +57,26 @@ module IMS::LTI::Services
         expect(new_tp.id).to eq 'some/json-ld/id'
         expect(new_tp.tool_proxy_guid).to eq 'another_guid'
       end
+
+      it "throws an error if the response isn't 201" do
+        allow(response).to receive(:status) { 400 }
+        allow(response).to receive(:body) { '{"error": "failed"}' }
+        tool_proxy = IMS::LTI::Models::ToolProxy.new(id: 'some/json-ld/id', tool_proxy_guid: 'a_guid')
+        expect{subject.register_tool_proxy(tool_proxy)}.to raise_error(IMS::LTI::Errors::ToolProxyRegistrationError)
+      end
+
+      it 'sets the code and body on the exception if the response is not 201' do
+        allow(response).to receive(:status) { 400 }
+        allow(response).to receive(:body) { '{"error": "failed"}' }
+        tool_proxy = IMS::LTI::Models::ToolProxy.new(id: 'some/json-ld/id', tool_proxy_guid: 'a_guid')
+        begin
+          subject.register_tool_proxy(tool_proxy)
+        rescue IMS::LTI::Errors::ToolProxyRegistrationError => e
+          expect(e.response_body).to eq '{"error": "failed"}'
+          expect(e.response_status).to eq 400
+        end
+      end
+
     end
 
     describe '#remove_invalid_capabilities!' do
