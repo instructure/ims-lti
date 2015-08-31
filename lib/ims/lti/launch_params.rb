@@ -7,6 +7,12 @@ module IMS::LTI
 
     # List of the standard launch parameters for an LTI launch
     LAUNCH_DATA_PARAMETERS = %w{
+      accept_media_types
+      accept_multiple
+      accept_presentation_document_targets
+      accept_unsigned
+      auto_create
+      content_item_return_url
       context_id
       context_label
       context_title
