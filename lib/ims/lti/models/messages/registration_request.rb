@@ -3,6 +3,7 @@ module IMS::LTI::Models::Messages
 
     add_required_params :reg_key, :reg_password, :tc_profile_url, :launch_presentation_return_url
 
+
     MESSAGE_TYPE = 'ToolProxyRegistrationRequest'
 
     def initialize(attrs = {})
