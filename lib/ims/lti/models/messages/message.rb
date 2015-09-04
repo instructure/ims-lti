@@ -35,6 +35,16 @@ module IMS::LTI::Models::Messages
         add_params('@deprecated_params', param, *params)
       end
 
+      def inherited(klass)
+        @descendants ||= Set.new
+        @descendants << klass
+        superclass.inherited(klass) unless(self == Message)
+      end
+
+      def descendants
+        @descendants || Set.new
+      end
+
       private
 
       def add_params(instance_variable, param, *params)
@@ -58,6 +68,8 @@ module IMS::LTI::Models::Messages
 
     end
 
+    MESSAGE_TYPE = "".freeze
+
     LAUNCH_TARGET_IFRAME = 'iframe'
     LAUNCH_TARGET_WINDOW = 'window'
 
@@ -73,20 +85,8 @@ module IMS::LTI::Models::Messages
     add_required_params :lti_message_type, :lti_version
 
     def self.generate(params)
-      case params['lti_message_type']
-        when BasicLTILaunchRequest::MESSAGE_TYPE
-          BasicLTILaunchRequest.new(params)
-        when RegistrationRequest::MESSAGE_TYPE
-          RegistrationRequest.new(params)
-        when ContentItemSelectionRequest::MESSAGE_TYPE
-          ContentItemSelectionRequest.new(params)
-        when ContentItemSelection::MESSAGE_TYPE
-          ContentItemSelection.new(params)
-        when ToolProxyReregistrationRequest::MESSAGE_TYPE
-          ToolProxyReregistrationRequest.new(params)
-        else
-          self.new(params)
-      end
+      klass = self.descendants.select{|d| d::MESSAGE_TYPE == params['lti_message_type']}.first
+      klass ? klass.new(params) : Message.new(params)
     end
 
     def initialize(attrs = {})
