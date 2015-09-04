@@ -182,6 +182,11 @@ module IMS::LTI::Models::Messages
         expect(message).to be_a ContentItemSelection
       end
 
+      it 'generates a ToolProxyReregistration message' do
+        message = described_class.generate({'lti_message_type' => ToolProxyReregistrationRequest::MESSAGE_TYPE})
+        expect(message).to be_a ToolProxyReregistrationRequest
+      end
+
 
     end
 

@@ -82,6 +82,8 @@ module IMS::LTI::Models::Messages
           ContentItemSelectionRequest.new(params)
         when ContentItemSelection::MESSAGE_TYPE
           ContentItemSelection.new(params)
+        when ToolProxyReregistrationRequest::MESSAGE_TYPE
+          ToolProxyReregistrationRequest.new(params)
         else
           self.new(params)
       end
