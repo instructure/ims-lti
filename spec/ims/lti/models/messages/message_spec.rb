@@ -79,6 +79,15 @@ module IMS::LTI::Models::Messages
       end
 
     end
+
+    describe ".descendants" do
+
+      it 'returns multiple levels of descendents' do
+        expect(described_class.descendants).to include(BasicLTILaunchRequest, ContentItemSelection)
+      end
+
+    end
+
     it 'sets configured attributes' do
       message = described_class.new(lti_message_type: 'message-type')
       expect(message.lti_message_type).to eq 'message-type'
