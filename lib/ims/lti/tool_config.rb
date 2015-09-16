@@ -175,17 +175,7 @@ module IMS::LTI
             ext_params = @extensions[ext_platform]
             blti_node.blti(:extensions, :platform => ext_platform) do |ext_node|
               ext_params.keys.sort.each do |key|
-                val = ext_params[key]
-                if val.is_a?(Hash)
-                  ext_node.lticm(:options, :name => key) do |type_node|
-                    val.keys.sort.each do |p_key|
-                      p_val = val[p_key]
-                      type_node.lticm :property, p_val, 'name' => p_key
-                    end
-                  end
-                else
-                  ext_node.lticm :property, val, 'name' => key
-                end
+                nest_xml(ext_node, key, ext_params[key])
               end
             end
           end
@@ -198,6 +188,18 @@ module IMS::LTI
     end
 
     private
+
+    def nest_xml(ext_node, key, value)
+      if value.is_a?(Hash)
+        ext_node.lticm(:options, :name => key) do |type_node|
+          value.keys.sort.each do |sub_key|
+            nest_xml(type_node, sub_key, value[sub_key])
+          end
+        end
+      else
+        ext_node.lticm :property, value, 'name' => key
+      end
+    end
 
     def get_node_text(node, path)
       if val = REXML::XPath.first(node, path, LTI_NAMESPACES)
