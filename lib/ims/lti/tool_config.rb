@@ -115,13 +115,7 @@ module IMS::LTI
           platform = vendor_ext_node.attributes['platform']
           properties = {}
           set_properties(properties, vendor_ext_node)
-          REXML::XPath.each(vendor_ext_node, 'lticm:options', LTI_NAMESPACES) do |options_node|
-            opt_name = options_node.attributes['name']
-            options = {}
-            set_properties(options, options_node)
-            properties[opt_name] = options
-          end
-
+          set_options(properties, vendor_ext_node)
           self.set_ext_params(platform, properties)
         end
 
@@ -220,6 +214,16 @@ module IMS::LTI
     def set_properties(hash, node)
       REXML::XPath.each(node, 'lticm:property', LTI_NAMESPACES) do |prop|
         hash[prop.attributes['name']] = prop.text
+      end
+    end
+
+    def set_options(hash, node)
+      REXML::XPath.each(node, 'lticm:options', LTI_NAMESPACES) do |options_node|
+        opt_name = options_node.attributes['name']
+        options = {}
+        set_properties(options, options_node)
+        set_options(options, options_node)
+        hash[opt_name] = options
       end
     end
 
