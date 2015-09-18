@@ -115,13 +115,7 @@ module IMS::LTI
           platform = vendor_ext_node.attributes['platform']
           properties = {}
           set_properties(properties, vendor_ext_node)
-          REXML::XPath.each(vendor_ext_node, 'lticm:options', LTI_NAMESPACES) do |options_node|
-            opt_name = options_node.attributes['name']
-            options = {}
-            set_properties(options, options_node)
-            properties[opt_name] = options
-          end
-
+          set_options(properties, vendor_ext_node)
           self.set_ext_params(platform, properties)
         end
 
@@ -175,17 +169,7 @@ module IMS::LTI
             ext_params = @extensions[ext_platform]
             blti_node.blti(:extensions, :platform => ext_platform) do |ext_node|
               ext_params.keys.sort.each do |key|
-                val = ext_params[key]
-                if val.is_a?(Hash)
-                  ext_node.lticm(:options, :name => key) do |type_node|
-                    val.keys.sort.each do |p_key|
-                      p_val = val[p_key]
-                      type_node.lticm :property, p_val, 'name' => p_key
-                    end
-                  end
-                else
-                  ext_node.lticm :property, val, 'name' => key
-                end
+                nest_xml(ext_node, key, ext_params[key])
               end
             end
           end
@@ -198,6 +182,18 @@ module IMS::LTI
     end
 
     private
+
+    def nest_xml(ext_node, key, value)
+      if value.is_a?(Hash)
+        ext_node.lticm(:options, :name => key) do |type_node|
+          value.keys.sort.each do |sub_key|
+            nest_xml(type_node, sub_key, value[sub_key])
+          end
+        end
+      else
+        ext_node.lticm :property, value, 'name' => key
+      end
+    end
 
     def get_node_text(node, path)
       if val = REXML::XPath.first(node, path, LTI_NAMESPACES)
@@ -218,6 +214,16 @@ module IMS::LTI
     def set_properties(hash, node)
       REXML::XPath.each(node, 'lticm:property', LTI_NAMESPACES) do |prop|
         hash[prop.attributes['name']] = prop.text
+      end
+    end
+
+    def set_options(hash, node)
+      REXML::XPath.each(node, 'lticm:options', LTI_NAMESPACES) do |options_node|
+        opt_name = options_node.attributes['name']
+        options = {}
+        set_properties(options, options_node)
+        set_options(options, options_node)
+        hash[opt_name] = options
       end
     end
 
