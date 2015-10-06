@@ -1,8 +1,10 @@
 module IMS::LTI::Models
   class ServiceOwner < LTIModel
+    add_attribute :id, json_key:'@id'
     add_attribute :description, relation: 'IMS::LTI::Models::LocalizedText'
     add_attribute :timestamp, json_converter:'IMS::LTI::Converters::TimeJSONConverter'
     add_attribute :service_owner_name, relation: 'IMS::LTI::Models::LocalizedName'
+    add_attribute :support, relation:'IMS::LTI::Models::Contact'
 
     def create_service_owner_name(name, key = 'service_owner.name')
       @service_owner_name = LocalizedName.new(name, key)
