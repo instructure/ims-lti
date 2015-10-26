@@ -1,7 +1,7 @@
 module IMS::LTI::Models
   class LTIModel
-    LTI_VERSION_2P0 = 'LTI-2p0'
-    LTI_VERSION_2P0 = 'LTI-2p1'
+    LTI_VERSION_2P0 = 'LTI-2p0'.freeze
+    LTI_VERSION_2P1 = 'LTI-2p1'.freeze
 
     def initialize(attributes = {})
       self.attributes = attributes
