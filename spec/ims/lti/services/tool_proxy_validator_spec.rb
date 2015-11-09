@@ -163,6 +163,96 @@ module IMS::LTI::Services
 
     end
 
+    describe "#invalid_capabilities" do
+      it 'returns an empty hash if all capabilities are valid' do
+        expect(subject.invalid_capabilities).to be_empty
+      end
+
+      it 'returns an array of invalid capabilities' do
+        tool_proxy.enabled_capability = ["SDA"]
+        expect(subject.invalid_capabilities).to eq ["SDA"]
+      end
+    end
+
+
+    describe "#invalid_security_contract" do
+
+      it 'returns an empty hash if all services are valid' do
+        expect(subject.invalid_security_contract).to be_empty
+      end
+
+
+      it 'rejects tool proxies that are missing a shared secret' do
+        tool_proxy.security_contract.shared_secret = nil
+        expect(subject.invalid_security_contract).to eq(
+                                                       {
+                                                         missing_secret: :shared_secret
+                                                       }
+                                                     )
+      end
+
+
+      it 'requires the "OAuth.splitSecret" capability for split secret' do
+        tp_half_secret = SecureRandom.hex(64)
+        tool_proxy.enabled_capability = []
+        tool_proxy.security_contract.shared_secret = nil
+        tool_proxy.security_contract.tp_half_shared_secret = tp_half_secret
+
+
+
+        expect(subject.invalid_security_contract).to eq(
+                                                       {
+                                                         invalid_secret_type: :tp_half_shared_secret,
+                                                         missing_secret: :shared_secret
+                                                       }
+                                                     )
+      end
+
+      it 'should pass with tp_half_secret and OAuth.splitSecret without shared secret' do
+        tp_half_secret = SecureRandom.hex(64)
+        tool_proxy.enabled_capability = ['OAuth.splitSecret']
+        tool_proxy.security_contract.shared_secret = nil
+        tool_proxy.security_contract.tp_half_shared_secret = tp_half_secret
+
+        expect(subject.invalid_security_contract).to be_empty
+      end
+
+      it 'requires  split secret for "OAuth.splitSecret" capability' do
+        tool_proxy.enabled_capability = ['OAuth.splitSecret']
+
+        expect(subject.invalid_security_contract).to eq(
+                                                       {
+                                                         invalid_secret_type: :shared_secret,
+                                                         missing_secret: :tp_half_shared_secret
+                                                       }
+                                                     )
+      end
+
+      it 'requires ONLY split secret for "OAuth.splitSecret" capability' do
+        tp_half_secret = SecureRandom.hex(64)
+        tool_proxy.enabled_capability = ['OAuth.splitSecret']
+        tool_proxy.security_contract.tp_half_shared_secret = tp_half_secret
+        expect(subject.invalid_security_contract).to eq(
+                                                       {
+                                                         invalid_secret_type: :shared_secret
+                                                       }
+                                                     )
+      end
+
+      it 'requires "OAuth.splitSecret" for tp_half_secret' do
+        tp_half_secret = SecureRandom.hex(64)
+        tool_proxy.enabled_capability = []
+        tool_proxy.security_contract.tp_half_shared_secret = tp_half_secret
+        expect(subject.invalid_security_contract).to eq(
+                                                       {
+                                                         invalid_secret_type: :tp_half_shared_secret
+                                                       }
+                                                     )
+      end
+
+    end
+
+
     describe "#valid??" do
 
       it 'returns true if the tool proxy is valid' do
@@ -173,6 +263,25 @@ module IMS::LTI::Services
         tool_consumer_profile.service_offered = []
         expect(subject.valid?).to be_falsey
       end
+
+      it 'returns an error if the message handlers are invalid' do
+        mh = tool_proxy.tool_profile.resource_handlers.first.messages.first
+        mh.parameter = mh.parameters << IMS::LTI::Models::Parameter.new(name: 'invalid', variable: 'invalid.variable')
+        expect(subject.valid?).to be_falsey
+      end
+
+      it 'returns an error if the capabilities are invalid' do
+        tool_consumer_profile.capability_offered = []
+        expect(subject.valid?).to be_falsey
+      end
+
+      it 'returns an error if the security contract is invalid' do
+        tp_half_secret = SecureRandom.hex(64)
+        tool_proxy.enabled_capability = ['OAuth.splitSecret']
+        tool_proxy.security_contract.tp_half_shared_secret = tp_half_secret
+        expect(subject.valid?).to be_falsey
+      end
+
 
     end
 

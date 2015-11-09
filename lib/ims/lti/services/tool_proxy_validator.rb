@@ -63,12 +63,35 @@ module IMS::LTI::Services
       ret_val
     end
 
+    def invalid_capabilities
+      tool_proxy.enabled_capabilities - capabilities_offered
+    end
+
+    def invalid_security_contract
+      ret_val = {}
+
+      is_split_secret_capable = tool_proxy.enabled_capabilities.include?('OAuth.splitSecret')
+      has_shared_secret = tool_proxy.security_contract.shared_secret != nil && !tool_proxy.security_contract.shared_secret.empty?
+      has_split_secret = tool_proxy.security_contract.tp_half_shared_secret != nil && !tool_proxy.security_contract.tp_half_shared_secret.empty?
+
+      if is_split_secret_capable
+        ret_val[:missing_secret] = :tp_half_shared_secret unless has_split_secret
+        ret_val[:invalid_secret_type] = :shared_secret if has_shared_secret
+      else
+        ret_val[:missing_secret] = :shared_secret unless has_shared_secret
+        ret_val[:invalid_secret_type] = :tp_half_shared_secret if has_split_secret
+      end
+
+      ret_val
+    end
+
     def valid?
-      invalid_services.empty? && invalid_message_handlers.empty?
+      invalid_capabilities.empty? && invalid_security_contract.empty? && invalid_services.empty? && invalid_message_handlers.empty?
     end
 
 
     private
+
 
     def normalize_strings(string, *strings)
       strings.push(string)
