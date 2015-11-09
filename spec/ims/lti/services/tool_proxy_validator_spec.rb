@@ -42,12 +42,12 @@ module IMS::LTI::Services
         expect(subject.instance_variable_get(:@tool_consumer_profile)).not_to be_nil
       end
 
-      it 'converts json  to a ToolConsumerProfile' do
+      it 'converts json to a ToolConsumerProfile' do
         expect(IMS::LTI::Models::ToolConsumerProfile).to receive(:from_json).and_return(tool_consumer_profile)
         subject.tool_consumer_profile = tool_consumer_profile.to_json
       end
 
-      it "throws an expection if the id doesn't match the tcp in the tool proxy" do
+      it "throws an exception if the id doesn't match the tcp in the tool proxy" do
         tcp = tool_consumer_profile
         tcp.id = "bad id"
         expect { subject.tool_consumer_profile=(tcp) }.
@@ -250,6 +250,42 @@ module IMS::LTI::Services
                                                      )
       end
 
+    end
+
+
+    describe "#errors" do
+
+      it 'returns true if the tool proxy is valid' do
+
+        message = tool_proxy.tool_profile.resource_handlers.first.messages.first.clone
+        message.message_type = 'invalid'
+        tool_proxy.tool_profile.message = message
+
+        service = tool_consumer_profile.services_offered.find { |s| s.id == "tcp:ToolProxy.item" }
+        service.action = ["GET"]
+        subject.tool_consumer_profile = tool_consumer_profile
+
+        tp_half_secret = SecureRandom.hex(64)
+        tool_proxy.enabled_capability = ['OAuth.splitSecret', "DSF"]
+        tool_proxy.security_contract.tp_half_shared_secret = tp_half_secret
+
+        expect(subject.errors).to eq(
+                                    {
+                                      :invalid_security_contract => {
+                                         :invalid_secret_type => :shared_secret
+                                      },
+                                      :invalid_capabilities => ["OAuth.splitSecret", "DSF"],
+                                      :invalid_message_handlers => {
+                                        :singleton_message_handlers => {
+                                          :invalid_message_types => ["invalid"]
+                                        }
+                                      },
+                                      :invalid_services => {
+                                        "ToolProxy.item" => ["PUT"]
+                                      }
+                                    }
+                                  )
+      end
     end
 
 

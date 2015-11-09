@@ -85,13 +85,21 @@ module IMS::LTI::Services
       ret_val
     end
 
+    def errors
+      ret_val = {}
+      ret_val[:invalid_security_contract] = invalid_security_contract unless invalid_security_contract.empty?
+      ret_val[:invalid_capabilities] = invalid_capabilities unless invalid_capabilities.empty?
+      ret_val[:invalid_message_handlers] = invalid_message_handlers unless invalid_message_handlers.empty?
+      ret_val[:invalid_services] = invalid_services unless invalid_services.empty?
+
+      ret_val
+    end
+
     def valid?
       invalid_capabilities.empty? && invalid_security_contract.empty? && invalid_services.empty? && invalid_message_handlers.empty?
     end
 
-
     private
-
 
     def normalize_strings(string, *strings)
       strings.push(string)
