@@ -16,21 +16,30 @@ module IMS::LTI::Services
       tool_consumer_profile.services_offered.map(&:profile)
     end
 
-    def register_tool_proxy(tool_proxy)
+    def register_tool_proxy(tool_proxy, reregistration_confirm_url = nil, shared_secret = nil)
       service = tool_consumer_profile.services_offered.find { |s| s.formats.include?('application/vnd.ims.lti.v2.toolproxy+json') && s.actions.include?('POST') }
 
       SimpleOAuth::Header::ATTRIBUTE_KEYS << :body_hash unless SimpleOAuth::Header::ATTRIBUTE_KEYS.include? :body_hash
       tool_proxy_json = tool_proxy.to_json
       body_hash = Digest::SHA1.base64digest tool_proxy_json
-      
+
+      if @registration_request.is_a?(IMS::LTI::Models::Messages::ToolProxyReregistrationRequest)
+        consumer_key = tool_proxy.tool_proxy_guid
+        consumer_secret = shared_secret
+      else
+        consumer_key = @registration_request.reg_key
+        consumer_secret = @registration_request.reg_password
+      end
+
       conn = Faraday.new do |conn|
-        conn.request :oauth, {:consumer_key => @registration_request.reg_key, :consumer_secret => @registration_request.reg_password, :body_hash => body_hash}
+        conn.request :oauth, {:consumer_key => consumer_key, :consumer_secret => consumer_secret, :body_hash => body_hash}
         conn.adapter :net_http
       end
 
       response = conn.post do |req|
         req.url service.endpoint
         req.headers['Content-Type'] = 'application/vnd.ims.lti.v2.toolproxy+json'
+        req.headers['VND-IMS-CONFIRM-URL'] = reregistration_confirm_url if reregistration_confirm_url
         req.body = tool_proxy_json
       end
 
