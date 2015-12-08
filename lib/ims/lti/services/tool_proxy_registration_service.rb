@@ -23,7 +23,7 @@ module IMS::LTI::Services
       tool_proxy_json = tool_proxy.to_json
       body_hash = Digest::SHA1.base64digest tool_proxy_json
 
-      if @registration_request.is_a?(IMS::LTI::Models::Messages::ToolProxyReregistrationRequest)
+      if reregistration?
         consumer_key = tool_proxy.tool_proxy_guid
         consumer_secret = shared_secret
       else
@@ -43,7 +43,7 @@ module IMS::LTI::Services
         req.body = tool_proxy_json
       end
 
-      if response.status == 201
+      if response.status == 201 || (response.status == 200 && reregistration?)
         IMS::LTI::Models::ToolProxy.new.from_json(tool_proxy.to_json).from_json(response.body)
       else
         raise IMS::LTI::Errors::ToolProxyRegistrationError.new(response.status, response.body)
@@ -75,6 +75,9 @@ module IMS::LTI::Services
       orig_capabilities - capabilites
     end
 
+    def reregistration?
+      @registration_request.is_a?(IMS::LTI::Models::Messages::ToolProxyReregistrationRequest)
+    end
 
 
   end

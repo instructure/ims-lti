@@ -125,8 +125,21 @@ module IMS::LTI::Services
           allow(faraday).to receive(:post) { response }
         end
 
+        it "doesn't throw an error if the response is 200 and the message is ToolProxyReregistration" do
+          allow(response).to receive(:status) { 200 }
+          allow(response).to receive(:body) { '{"tool_proxy_guid": "another_guid"}' }
+          tool_proxy = IMS::LTI::Models::ToolProxy.new(id: 'some/json-ld/id', tool_proxy_guid: 'a_guid')
+
+          new_tp = subject.register_tool_proxy(tool_proxy)
+
+          expect(tool_proxy.tool_proxy_guid).to eq 'a_guid'
+          expect(new_tp.id).to eq 'some/json-ld/id'
+          expect(new_tp.tool_proxy_guid).to eq 'another_guid'
+
+        end
+
         it 'sets the reregistration_confirm_url in the header if provided' do
-          response = double('response', status: 201, body: '{"tool_proxy_guid": "another_guid"}')
+          response = double('response', status: 200, body: '{"tool_proxy_guid": "another_guid"}')
           allow(faraday).to receive(:post) do |&arg|
             begin
               headers = {}
@@ -151,11 +164,12 @@ module IMS::LTI::Services
               faraday
             end
           end
-          response = double('response', status: 201, body: {tool_proxy_guid: tool_proxy_guid}.to_json)
+          response = double('response', status: 200, body: {tool_proxy_guid: tool_proxy_guid}.to_json)
           allow(faraday).to receive(:post) { response }
           tool_proxy = IMS::LTI::Models::ToolProxy.new(id: 'some/json-ld/id', tool_proxy_guid: tool_proxy_guid)
           subject.register_tool_proxy(tool_proxy, confirmation_url, shared_secret)
         end
+
       end
 
     end
