@@ -1,6 +1,7 @@
 module IMS::LTI
   module Models
     require_relative 'models/lti_model'
+    require_relative 'models/serializable'
     require_relative 'models/contact'
     require_relative 'models/localized_name'
     require_relative 'models/localized_text'
@@ -31,10 +32,6 @@ module IMS::LTI
     require_relative 'models/content_item_placement'
     require_relative 'models/content_item_container'
     require_relative 'models/image'
-    require_relative 'models/agent'
-    require_relative 'models/container'
-    require_relative 'models/lis_membership_container'
-    require_relative 'models/lis_person'
-    require_relative 'models/person'
+    require_relative 'models/membership_service'
   end
 end
