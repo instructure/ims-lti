@@ -31,5 +31,10 @@ module IMS::LTI
     require_relative 'models/content_item_placement'
     require_relative 'models/content_item_container'
     require_relative 'models/image'
+    require_relative 'models/agent'
+    require_relative 'models/container'
+    require_relative 'models/lis_membership_container'
+    require_relative 'models/lis_person'
+    require_relative 'models/person'
   end
 end
