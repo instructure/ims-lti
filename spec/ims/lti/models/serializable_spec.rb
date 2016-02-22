@@ -13,7 +13,7 @@ end
 
 module IMS::LTI::Serializers
   class FooSerializer < IMS::LTI::Serializers::Base
-    attributes :field1
+    set_attributes :field1
   end
 end
 

@@ -1,9 +1,9 @@
 module IMS::LTI::Serializers::MembershipService
   class LISMembershipContainerSerializer < IMS::LTI::Serializers::Base
-    attribute :membership_predicate, key: :membershipPredicate
-    attribute :membership_subject, key: :membershipSubject
-    attribute :id, key: :@id
-    attribute :context, key: :@context
-    attribute :type, key: :@type
+    set_attribute :membership_predicate, key: :membershipPredicate
+    has_serializable :membership_subject, key: :membershipSubject
+    set_attribute :id, key: :@id
+    set_attribute :context, key: :@context
+    set_attribute :type, key: :@type
   end
 end

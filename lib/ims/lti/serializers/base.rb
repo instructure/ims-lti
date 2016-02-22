@@ -15,6 +15,15 @@ module IMS::LTI::Serializers
         @serializable_lists.add(name) if opts[:list_of_serializables]
       end
 
+      def options_for_attribute(attribute)
+        options = {}
+        options[:optional] = @optionals.include?(attribute) ? true : false
+        options[:key] = @keys[attribute]
+        options[:has_serializable] = @serializables.include?(attribute) ? true : false
+        options[:has_list_of_serializables] = @serializable_lists.include?(attribute) ? true : false
+        options
+      end
+
       def filter(hash)
         hash = optionals(hash)
         hash = serializables(hash)
@@ -68,25 +77,25 @@ module IMS::LTI::Serializers
       subclass.instance_variable_set(:@attributes, Set.new)
     end
 
-    def self.attribute(name, opts={})
+    def self.set_attribute(name, opts={})
       @attributes.add(name)
       @filter.add_filter(name, opts)
     end
 
-    def self.attributes(*names)
-      names.each { |name| attribute(name) }
+    def self.set_attributes(*names)
+      names.each { |name| set_attribute(name) }
     end
 
     def self.has_serializable(name, opts={})
       opts[:serializable] = true
       opts[:list_of_serializables] = false
-      attribute(name, opts)
+      set_attribute(name, opts)
     end
 
     def self.has_list_of_serializables(name, opts={})
       opts[:list_of_serializables] = true
       opts[:serializable] = false
-      attribute(name, opts)
+      set_attribute(name, opts)
     end
 
     def self.as_json(obj)
@@ -95,6 +104,14 @@ module IMS::LTI::Serializers
 
     def self.to_json(obj)
       as_json(obj).to_json
+    end
+
+    def self.options_for_attribute(attribute)
+      @filter.options_for_attribute(attribute)
+    end
+
+    def self.attributes
+      @attributes
     end
 
     private

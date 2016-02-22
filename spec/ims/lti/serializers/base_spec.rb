@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 class Serializer < IMS::LTI::Serializers::Base
-  attributes :field1, :field2
-  attribute :field3, key: :@field3
-  attribute :field4, optional: true
-  attribute :field5, key: :@field5, optional: true
+  set_attributes :field1, :field2
+  set_attribute :field3, key: :@field3
+  set_attribute :field4, optional: true
+  set_attribute :field5, key: :@field5, optional: true
   has_serializable :field6, key: :@field6
   has_list_of_serializables :field7, optional: true
   has_list_of_serializables :field8
@@ -135,6 +135,60 @@ module IMS::LTI::Serializers
           :field8 => [{ :foo => :bar, :bar => :foo }]
         }.to_json
         expect(json).to eq(expected)
+      end
+    end
+
+    describe '.attributes' do
+      it 'returns a list of configured attributes' do
+        attributes = [:field1, :field2, :field3, :field4, :field5, :field6, :field7, :field8]
+        expect(Serializer.attributes).to match_array(attributes)
+      end
+    end
+
+    describe '.options_for_attribute' do
+      it 'returns the options for an option added with .attributes' do
+        options = Serializer.options_for_attribute(:field1)
+        expected_options = {
+          optional: false,
+          key: nil,
+          has_serializable: false,
+          has_list_of_serializables: false
+        }
+        expect(options).to eq expected_options
+
+      end
+
+      it 'returns the options for an attribute added with .set_attribute' do
+        options = Serializer.options_for_attribute(:field5)
+        expected_options = {
+          optional: true,
+          key: :@field5,
+          has_serializable: false,
+          has_list_of_serializables: false
+        }
+        expect(options).to eq expected_options
+      end
+
+      it 'returns the options for an attribute added with .has_serializable' do
+        options = Serializer.options_for_attribute(:field6)
+        expected_options = {
+          optional: false,
+          key: :@field6,
+          has_serializable: true,
+          has_list_of_serializables: false
+        }
+        expect(options).to eq expected_options
+      end
+
+      it 'returns the options for an attribute added with .has_list_of_serializables' do
+        options = Serializer.options_for_attribute(:field7)
+        expected_options = {
+          optional: true,
+          key: nil,
+          has_serializable: false,
+          has_list_of_serializables: true
+        }
+        expect(options).to eq expected_options
       end
     end
   end
