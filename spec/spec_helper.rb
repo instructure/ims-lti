@@ -1,4 +1,5 @@
 require 'ims/lti'
+require 'ims/lis'
 require 'time'
 require 'byebug'
 
