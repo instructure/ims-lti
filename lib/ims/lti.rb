@@ -12,5 +12,6 @@ module IMS
     require_relative 'lti/converters'
     require_relative 'lti/services'
     require_relative 'lti/errors'
+    require_relative 'lti/serializers'
   end
 end

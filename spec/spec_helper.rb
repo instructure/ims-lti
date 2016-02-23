@@ -1,5 +1,7 @@
 require 'ims/lti'
+require 'ims/lis'
 require 'time'
+require 'byebug'
 
 def fixture(*file)
   File.new(File.join(File.expand_path("../fixtures", __FILE__), *file))
