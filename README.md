@@ -20,6 +20,29 @@ Or install it yourself as:
 
     $ gem install lti
 
+## Usage
+
+
+### LTI 1.x
+
+#### Validating Launches
+
+You can use the classes in the IMS::LTI::Models::Messages module to valdiate Launches
+
+For example in a rails app you would do the following
+```ruby
+lti_message = IMS::LTI::Models::Messages::Message.generate(request.request_parameters.merge(request.query_parameters))
+lti_message.launch_url = request.url
+
+#Check if the signature is valid
+return false unless lti_message.valid_signature?(shared_secret)
+
+# check if `lti_message.oauth_nonce` is already been used
+
+#check if the message is too old
+return false if DateTime.strptime(lti_message.oauth_timestamp,'%s') > 5.minutes.ago
+
+```
 
 ## Contributing
 
