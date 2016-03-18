@@ -41,7 +41,7 @@ module IMS::LIS
         Administrator = "urn:lti:role:ims/lis/Administrator"
         Administrator_Administrator = "urn:lti:role:ims/lis/Administrator/Administrator"
         Administrator_Support = "urn:lti:role:ims/lis/Administrator/Support"
-        Administrator_ExternalDeveloper = "urn:lti:role:ims/lis/Administrator/ExternalDeveloper"
+        Administrator_Developer = "urn:lti:role:ims/lis/Administrator/Developer"
         Administrator_SystemAdministrator = "urn:lti:role:ims/lis/Administrator/SystemAdministrator"
         Administrator_ExternalSystemAdministrator = "urn:lti:role:ims/lis/Administrator/ExternalSystemAdministrator"
         Administrator_ExternalDeveloper = "urn:lti:role:ims/lis/Administrator/ExternalDeveloper"
