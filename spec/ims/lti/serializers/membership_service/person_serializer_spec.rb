@@ -3,7 +3,7 @@ require 'spec_helper'
 module IMS::LTI::Serializers::MembershipService
   describe PersonSerializer do
     it 'serializes the right set of attributes' do
-      expected_attributes = [:id, :name, :image, :family_name, :given_name]
+      expected_attributes = [:id, :name, :img, :family_name, :given_name]
       expect(PersonSerializer.attributes).to match_array expected_attributes
     end
 
