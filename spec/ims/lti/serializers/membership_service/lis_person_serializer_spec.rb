@@ -3,7 +3,7 @@ require 'spec_helper'
 module IMS::LTI::Serializers::MembershipService
   describe LISPersonSerializer do
     it 'serializes the right set of attributes' do
-      expected_attributes = [:id, :name, :image, :email, :family_name, :given_name,
+      expected_attributes = [:id, :name, :img, :email, :family_name, :given_name,
         :result_sourced_id, :sourced_id, :user_id]
       expect(LISPersonSerializer.attributes).to match_array expected_attributes
     end
@@ -28,14 +28,14 @@ module IMS::LTI::Serializers::MembershipService
       expect(LISPersonSerializer.options_for_attribute(:name)).to eq expected_options
     end
 
-    it 'has the right options set for the image attribute' do
+    it 'has the right options set for the img attribute' do
       expected_options = {
         optional: false,
         key: nil,
         has_serializable: false,
         has_list_of_serializables: false
       }
-      expect(LISPersonSerializer.options_for_attribute(:image)).to eq expected_options
+      expect(LISPersonSerializer.options_for_attribute(:img)).to eq expected_options
     end
 
     it 'has the right options set for the email attribute' do
