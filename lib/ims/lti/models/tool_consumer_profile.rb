@@ -28,5 +28,8 @@ module IMS::LTI::Models
       [*@capability_offered]
     end
 
+    def reregistration_capable?
+      @capability_offered.include?(Messages::ToolProxyReregistrationRequest::MESSAGE_TYPE)
+    end
   end
 end
