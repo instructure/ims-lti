@@ -1,7 +1,7 @@
 module IMS::LTI::Models::ContentItems
   class ContentItem < IMS::LTI::Models::LTIModel
 
-    add_attributes :text, :title, :url
+    add_attributes :text, :title, :url, :confirmUrl
     add_attribute :media_type, json_key: 'mediaType'
     add_attribute :type, json_key: '@type'
     add_attribute :id, json_key: '@id'
