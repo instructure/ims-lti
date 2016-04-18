@@ -9,5 +9,10 @@ module IMS::LTI::Errors
       expect(s.response_status).to eq 401
     end
 
+    it 'must construct a descriptive message from the constructor arguments' do
+      exception = described_class.new(401, 'test')
+      expect(exception.message).to include '401'
+      expect(exception.message).to include 'test'
+    end
   end
 end
