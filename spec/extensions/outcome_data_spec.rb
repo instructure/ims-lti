@@ -12,13 +12,14 @@ describe IMS::LTI::Extensions do
     @tp.accepts_outcome_data?.should == true
     @tp.accepts_outcome_text?.should == true
     @tp.accepts_outcome_url?.should == false
+    @tp.accepts_outcome_lti_launch_url?.should == false
   end
-  
+
   it "should add TC functionality" do
     tc = IMS::LTI::ToolConsumer.new("hey", "ho")
     tc.extend IMS::LTI::Extensions::OutcomeData::ToolConsumer
     tc.support_outcome_data!
-    tc.outcome_data_values_accepted.should == 'text,url'
+    tc.outcome_data_values_accepted.should == 'text,url,lti_launch_url'
     tc.outcome_data_values_accepted = 'url,text'
     tc.outcome_data_values_accepted.should == 'url,text'
     tc.outcome_data_values_accepted = %w{text url}
@@ -29,39 +30,46 @@ describe IMS::LTI::Extensions do
   it "should generate an extended outcome text request" do
     xml = result_xml % %{<resultScore><language>en</language><textString>.5</textString></resultScore><resultData><text>the text</text></resultData>}
     mock_request(xml)
-    
+
     @tp.post_replace_result_with_data!('.5', "text" => "the text")
   end
 
   it "should generate an extended outcome text request using cdata" do
     xml = result_xml % %{<resultScore><language>en</language><textString>.5</textString></resultScore><resultData><text><![CDATA[the text]]></text></resultData>}
     mock_request(xml)
-    
+
     @tp.post_replace_result_with_data!('.5', "cdata_text" => "the text")
   end
 
   it "should generate an extended outcome url request" do
     xml = result_xml % %{<resultData><url>http://www.example.com</url></resultData>}
     mock_request(xml)
-    
+
     @tp.post_replace_result_with_data!(nil, "url" => "http://www.example.com")
   end
-  
-  it "should parse replaceResult xml with extension val" do
+
+  it "should generate an extended outcome url request" do
+    xml = result_xml % %{<resultData><ltiLaunchUrl>http://www.example.com/launch</ltiLaunchUrl></resultData>}
+    mock_request(xml)
+
+    @tp.post_replace_result_with_data!(nil, "lti_launch_url" => "http://www.example.com/launch")
+  end
+
+  it "should parse replaceResult xml with extension val for url" do
     req = IMS::LTI::OutcomeRequest.new
     req.extend IMS::LTI::Extensions::OutcomeData::OutcomeRequest
     req.process_xml(result_xml % %{<resultData><url>http://www.example.com</url></resultData>})
     req.outcome_url.should == "http://www.example.com"
   end
-  
-  it "should parse replaceResult xml with extension val" do
+
+  it "should parse replaceResult xml with extension val for ltiLaunchUrl" do
     req = IMS::LTI::OutcomeRequest.new
     req.extend IMS::LTI::Extensions::OutcomeData::OutcomeRequest
-    req.process_xml(result_xml % %{<resultData><text>what the text</text></resultData>})
-    req.outcome_text.should == "what the text"
+    req.process_xml(result_xml % %{<resultData><ltiLaunchUrl>http://www.example.com/launch</ltiLaunchUrl></resultData>})
+    req.outcome_lti_launch_url.should == "http://www.example.com/launch"
   end
-  
-  it "should parse replaceResult xml with extension val" do
+
+  it "should parse replaceResult xml with extension val for text" do
     req = IMS::LTI::OutcomeRequest.new
     req.extend IMS::LTI::Extensions::OutcomeData::OutcomeRequest
     req.process_xml(result_xml % %{<resultData><text>what the text</text></resultData>})
@@ -105,16 +113,24 @@ describe IMS::LTI::Extensions do
         @tp.post_extended_replace_result!(score: '.7')
       end
 
+      it 'handles lti_launch_url' do
+        xml = result_xml % %{<resultData><ltiLaunchUrl>http://url/launch</ltiLaunchUrl></resultData>}
+        mock_request(xml)
+
+        @tp.post_extended_replace_result!(lti_launch_url: 'http://url/launch')
+      end
+
       it 'handles all options at once' do
         xml = result_xml % %{<resultTotalScore><language>en</language><textString>13</textString></resultTotalScore><resultData><text><![CDATA[my cdata]]></text><url>http://url</url></resultData>}
         mock_request(xml)
 
         @tp.post_extended_replace_result!(
-            'cdata_text' => 'my cdata',
-            'text' => 'my text',
-            'url' => 'http://url',
-            'total_score' => '13',
-            'score' => '.7'
+          'cdata_text' => 'my cdata',
+          'text' => 'my text',
+          'url' => 'http://url',
+          'total_score' => '13',
+          'score' => '.7',
+          'lti_launch_url' => 'http://url/launch'
         )
       end
     end
