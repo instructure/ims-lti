@@ -67,12 +67,16 @@ module IMS::LTI
           accepted_outcome_types.member?("url")
         end
 
+        def accepts_outcome_lti_launch_url?
+          accepted_outcome_types.member?("lti_launch_url")
+        end
+
         def accepts_outcome_result_total_score?
           !!@ext_params["outcome_result_total_score_accepted"]
         end
 
         # POSTs the given score to the Tool Consumer with a replaceResult and
-        # adds the specified data. The data hash can have the keys "text", "cdata_text", or "url"
+        # adds the specified data. The data hash can have the keys "text", "cdata_text", "url", or "lti_launch_url"
         #
         # If both cdata_text and text are sent, cdata_text will be used
         #
@@ -89,7 +93,7 @@ module IMS::LTI
 
         # POSTs the given score to the Tool Consumer with a replaceResult and
         # adds the specified data. The options hash can have the keys
-        # :text, :cdata_text, :url, :score, or :total_score
+        # :text, :cdata_text, :url, :lti_launch_url, :score, or :total_score
         #
         # If both cdata_text and text are sent, cdata_text will be used
         # If both total_score and score are sent, total_score will be used
@@ -106,6 +110,7 @@ module IMS::LTI
           req.outcome_cdata_text = opts[:cdata_text]
           req.outcome_text = opts[:text]
           req.outcome_url = opts[:url]
+          req.outcome_lti_launch_url = opts[:lti_launch_url]
           req.total_score = opts[:total_score]
           req.post_replace_result!(opts[:score])
         end
@@ -114,8 +119,8 @@ module IMS::LTI
       module ToolConsumer
         include IMS::LTI::Extensions::ExtensionBase
         include Base
-        
-        OUTCOME_DATA_TYPES = %w{text url}
+
+        OUTCOME_DATA_TYPES = %w{text url lti_launch_url}
 
         # a list of the outcome data types accepted, currently only 'url' and
         # 'text' are valid
@@ -126,7 +131,7 @@ module IMS::LTI
           if val.is_a? Array
             val = val.join(',')
           end
-          
+
           set_ext_param('outcome_data_values_accepted', val)
         end
 
@@ -134,7 +139,7 @@ module IMS::LTI
         def outcome_data_values_accepted
           get_ext_param('outcome_data_values_accepted')
         end
-        
+
         # convenience method for setting support for all current outcome data types
         def support_outcome_data!
           self.outcome_data_values_accepted = OUTCOME_DATA_TYPES
@@ -145,7 +150,7 @@ module IMS::LTI
         include IMS::LTI::Extensions::ExtensionBase
         include Base
 
-        attr_accessor :outcome_text, :outcome_url, :outcome_cdata_text, :total_score
+        attr_accessor :outcome_text, :outcome_url, :outcome_lti_launch_url, :outcome_cdata_text, :total_score
 
         def result_values(node)
           super
@@ -157,7 +162,7 @@ module IMS::LTI
             end
           end
 
-          if outcome_text || outcome_url || outcome_cdata_text
+          if outcome_text || outcome_url || outcome_cdata_text || outcome_lti_launch_url
             node.resultData do |res_data|
               if outcome_cdata_text
                 res_data.text {
@@ -165,6 +170,8 @@ module IMS::LTI
                 }
               elsif outcome_text
                 res_data.text outcome_text
+              elsif outcome_lti_launch_url
+                res_data.ltiLaunchUrl outcome_lti_launch_url
               end
               res_data.url outcome_url if outcome_url
             end
@@ -176,13 +183,14 @@ module IMS::LTI
         end
 
         def has_result_data?
-          !!outcome_text || !!outcome_url || !!outcome_cdata_text || !!total_score || super
+          !!outcome_text || !!outcome_url || !!outcome_lti_launch_url || !!outcome_cdata_text || !!total_score || super
         end
-        
+
         def extention_process_xml(doc)
           super
           @outcome_text = doc.get_text("//resultRecord/result/resultData/text")
           @outcome_url = doc.get_text("//resultRecord/result/resultData/url")
+          @outcome_lti_launch_url = doc.get_text("//resultRecord/result/resultData/ltiLaunchUrl")
         end
       end
 
