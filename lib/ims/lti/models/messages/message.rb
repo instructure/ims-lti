@@ -1,6 +1,8 @@
 module IMS::LTI::Models::Messages
   class Message
 
+    attr_reader :simple_oauth_header
+
     class << self
 
       def required_params
@@ -125,8 +127,8 @@ module IMS::LTI::Models::Messages
 
     def signed_post_params(secret)
       params = post_params
-      header = SimpleOAuth::Header.new(:post, launch_url, params, consumer_key: oauth_consumer_key, consumer_secret: secret, callback: 'about:blank')
-      header.signed_attributes.merge(params)
+      @simple_oauth_header = SimpleOAuth::Header.new(:post, launch_url, params, consumer_key: oauth_consumer_key, consumer_secret: secret, callback: 'about:blank')
+      @simple_oauth_header.signed_attributes.merge(params)
     end
 
     def valid_signature?(secret)
@@ -139,8 +141,8 @@ module IMS::LTI::Models::Messages
       options, parsed_params = parse_params(params.merge(post_params))
       signature = parsed_params.delete(:oauth_signature)
       consumer_key = oauth_consumer_key
-      header = SimpleOAuth::Header.new(:post, launch_url, parsed_params, options.merge({consumer_key: consumer_key, consumer_secret: secret}))
-      header.valid?(signature: signature)
+      @simple_oauth_header = SimpleOAuth::Header.new(:post, launch_url, parsed_params, options.merge({consumer_key: consumer_key, consumer_secret: secret}))
+      @simple_oauth_header.valid?(signature: signature)
     end
 
     def parameters
