@@ -200,7 +200,7 @@ module IMS::LTI::Models::Messages
     end
 
     describe 'simple_oauth_header' do
-      it 'returns the last simple_oauth_header_used' do
+      it 'returns the last simple_oauth_header used' do
         subject.launch_url = 'http://www.example.com'
         params = subject.signed_post_params('secret')
         message = described_class.new(params)
@@ -209,7 +209,7 @@ module IMS::LTI::Models::Messages
         expect(message.simple_oauth_header).to be_instance_of SimpleOAuth::Header
       end
 
-      it 'returns nil if there has not been on used yet' do
+      it 'returns nil if there has not been one used yet' do
         expect(subject.simple_oauth_header).to eq nil
       end
 
