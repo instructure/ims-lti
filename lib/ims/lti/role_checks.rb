@@ -92,5 +92,10 @@ module IMS::LTI
     def context_ta?
       has_exact_role?('TeachingAssistant') || has_exact_role?('urn:lti:role:ims/lis/TeachingAssistant')
     end
+
+    # Convenience method for checking if the user has 'Observer' role in the current launch context
+    def context_observer?
+      has_exact_role?('Observer') || has_exact_role?('urn:lti:instrole:ims/lis/Observer')
+    end
   end
 end
