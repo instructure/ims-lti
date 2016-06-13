@@ -21,6 +21,16 @@ module IMS::LTI::Models::ContentItems
         expect(described_class.from_json(subject.to_json)).to be_a LtiLinkItem
       end
 
+      it 'returns a LtiLinkItem when the type is LtiLink' do
+        subject.type = 'LtiLink'
+        expect(described_class.from_json(subject.to_json)).to be_a LtiLinkItem
+      end
+
+      it 'creates a ContentItem object if the type is unkown' do
+        subject.type = 'Unkown'
+        expect(described_class.from_json(subject.to_json)).to be_a ContentItem
+      end
+
       it 'converts json to a content_item' do
         json = {
               "@type" => "LtiLinkItem",
