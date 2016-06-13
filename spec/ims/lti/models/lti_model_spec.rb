@@ -20,6 +20,11 @@ module IMS::LTI::Models
       }
     end
 
+    it 'stores unknown attributes' do
+      obj = described_class.new(foo: 1)
+      expect(obj.foo).to eq 1
+    end
+
     describe 'inherited attributes' do
 
       class A < described_class
@@ -280,6 +285,26 @@ module IMS::LTI::Models
           expect(obj.ext_custom_field).to eq 456
         end
 
+
+      end
+
+      context 'unknown methods' do
+
+        it 'parses unknown json' do
+          obj = SampleClass.from_json({unknown_custom_field: 123}.to_json)
+          expect(obj.unknown_custom_field).to eq 123
+        end
+
+        it 'convert unknown attributes back to json' do
+          obj = SampleClass.new(unknown_custom_field: 456)
+          expect(obj.to_json).to eq '{"unknown_custom_field":456}'
+        end
+
+        it 'sets/gets unknown attributes via method call' do
+          obj = SampleClass.new
+          obj.unknown_custom_field = 789
+          expect(obj.unknown_custom_field).to eq 789
+        end
 
       end
 
