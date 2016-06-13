@@ -4,8 +4,9 @@ module IMS::LTI::Models
     LTI_VERSION_2P1 = 'LTI-2p1'.freeze
 
     def initialize(attributes = {})
-      self.attributes = attributes
       @ext_attributes = {}
+      @unknown_attributes = {}
+      self.attributes = attributes
     end
 
     def self.add_attributes(attribute, *attrs)
@@ -61,6 +62,7 @@ module IMS::LTI::Models
           @ext_attributes[k.to_sym] = v
         else
           warn("Unknown attribute '#{k}'")
+          @unknown_attributes[k.to_sym] = v
         end
       end
     end
@@ -76,6 +78,7 @@ module IMS::LTI::Models
           json_hash[json_key(attr)] = val.as_json
         end
       end
+      json_hash = @unknown_attributes.merge(json_hash)
       json_hash = @ext_attributes.merge(json_hash)
       json_hash.merge! to_json_conversions
       json_hash.merge! to_json_keys
@@ -99,6 +102,8 @@ module IMS::LTI::Models
     def method_missing(meth, *args, &block)
       if match = /^ext_([^=$]*)/.match(meth)
         meth =~ /=$/ ? @ext_attributes[match.to_s.to_sym] = args[0] : @ext_attributes[match.to_s.to_sym]
+      elsif (match = /([^=$]*)/.match(meth))
+        meth =~ /=$/ ? @unknown_attributes[match.to_s.to_sym] = args[0] : @unknown_attributes[match.to_s.to_sym]
       else
         super
       end
