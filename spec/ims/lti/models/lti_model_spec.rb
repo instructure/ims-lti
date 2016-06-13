@@ -20,7 +20,7 @@ module IMS::LTI::Models
       }
     end
 
-    it 'stores unkown attributes' do
+    it 'stores unknown attributes' do
       obj = described_class.new(foo: 1)
       expect(obj.foo).to eq 1
     end
@@ -301,18 +301,11 @@ module IMS::LTI::Models
           expect(obj.to_json).to eq '{"unknown_custom_field":456}'
         end
 
-        it 'sets unknown attributes via method call' do
+        it 'sets/gets unknown attributes via method call' do
           obj = SampleClass.new
           obj.unknown_custom_field = 789
-          expect(obj.instance_variable_get('@unknown_attributes')).to eq({unknown_custom_field: 789})
+          expect(obj.unknown_custom_field).to eq 789
         end
-
-        it 'returns unknown attributes via method call' do
-          obj = SampleClass.new
-          obj.instance_variable_set('@unknown_attributes', {unknown_custom_field: 456})
-          expect(obj.unknown_custom_field).to eq 456
-        end
-
 
       end
 

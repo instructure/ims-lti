@@ -100,10 +100,11 @@ module IMS::LTI::Models
     end
 
     def method_missing(meth, *args, &block)
-      if match = /^ext_([^=$]*)/.match(meth)
-        meth =~ /=$/ ? @ext_attributes[match.to_s.to_sym] = args[0] : @ext_attributes[match.to_s.to_sym]
+      proc = ->(attr, hash) {meth =~ /=$/ ? hash[attr] = args[0] : hash[attr] }
+      if (match = /^ext_([^=$]*)/.match(meth))
+        proc.call(match.to_s.to_sym, @ext_attributes)
       elsif (match = /([^=$]*)/.match(meth))
-        meth =~ /=$/ ? @unknown_attributes[match.to_s.to_sym] = args[0] : @unknown_attributes[match.to_s.to_sym]
+        proc.call(match.to_s.to_sym, @unknown_attributes)
       else
         super
       end
