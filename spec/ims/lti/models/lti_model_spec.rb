@@ -292,12 +292,11 @@ module IMS::LTI::Models
 
         it 'pareses unknown json' do
           obj = SampleClass.from_json({unknown_custom_field: 123}.to_json)
-          expect(obj.instance_variable_get('@unknown_attributes')).to eq({unknown_custom_field: 123})
+          expect(obj.unknown_custom_field).to eq 123
         end
 
         it 'convert unknown attributes back to json' do
-          obj = SampleClass.new
-          obj.instance_variable_set('@unknown_attributes', {unknown_custom_field: 456})
+          obj = SampleClass.new(unknown_custom_field: 456)
           expect(obj.to_json).to eq '{"unknown_custom_field":456}'
         end
 
