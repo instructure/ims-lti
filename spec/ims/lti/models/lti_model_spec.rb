@@ -290,7 +290,7 @@ module IMS::LTI::Models
 
       context 'unknown methods' do
 
-        it 'pareses unknown json' do
+        it 'parses unknown json' do
           obj = SampleClass.from_json({unknown_custom_field: 123}.to_json)
           expect(obj.unknown_custom_field).to eq 123
         end
