@@ -19,12 +19,12 @@ module IMS::LTI::Models::ContentItems
     def self.from_json(json)
       data = json.is_a?(String) ? JSON.parse(json) : json
       case data['@type']
-        when 'ContentItem'
-          ContentItem.new.from_json(data)
-        when 'FileItem'
-          FileItem.new.from_json(data)
-        when 'LtiLinkItem'
-          LtiLinkItem.new.from_json(data)
+      when 'FileItem'
+        FileItem.new.from_json(data)
+      when 'LtiLinkItem', 'LtiLink'
+        LtiLinkItem.new.from_json(data)
+      else
+        ContentItem.new.from_json(data)
       end
     end
 
