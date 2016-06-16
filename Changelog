@@ -1,3 +1,6 @@
+2016-06-16 Version 1.1.12
+    * Add support for detecting observer role
+
 2015-02-20 Version 1.1.8
     * Replace usage of the 'uuid' gem with SecureRandom
     * Update the outcome extension doc example
@@ -24,13 +27,13 @@
     * Fix tests reliant on random ordering
     * Add rails 3 note to readme install docs
     * Create Changelog
-    
+
 
 2012-03-14 Version 1.0.2
 
     * Refactor OAuth validation into its own module
-    
-    
+
+
 2012-03-13 Version 1.0.1
 
     * Add gem dependencies to gemspec
