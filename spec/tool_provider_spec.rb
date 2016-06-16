@@ -69,14 +69,16 @@ describe IMS::LTI::ToolProvider do
   end
 
   it "should recognize other context roles" do
-    @tp.roles = "Mentor,TeachingAssistant,ContentDeveloper"
+    @tp.roles = "Mentor,TeachingAssistant,ContentDeveloper,Observer"
     @tp.context_content_developer?.should == true
     @tp.context_mentor? == true
     @tp.context_ta? == true
-    @tp.roles = "urn:lti:role:ims/lis/Mentor,urn:lti:role:ims/lis/TeachingAssistant,urn:lti:role:ims/lis/ContentDeveloper"
+    @tp.context_observer? == true
+    @tp.roles = "urn:lti:role:ims/lis/Mentor,urn:lti:role:ims/lis/TeachingAssistant,urn:lti:role:ims/lis/ContentDeveloper,urn:lti:instrole:ims/lis/Observer"
     @tp.context_content_developer?.should == true
     @tp.context_mentor? == true
     @tp.context_ta? == true
+    @tp.context_observer? == true
   end
 
   it "should recognize the deprecated roles" do
