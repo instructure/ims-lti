@@ -1,8 +1,6 @@
 module IMS::LTI::Models::Messages
   class Message
 
-    attr_reader :simple_oauth_header
-
     class << self
 
       def required_params
@@ -127,22 +125,27 @@ module IMS::LTI::Models::Messages
 
     def signed_post_params(secret)
       params = post_params
-      @simple_oauth_header = SimpleOAuth::Header.new(:post, launch_url, params, consumer_key: oauth_consumer_key, consumer_secret: secret, callback: 'about:blank')
-      @simple_oauth_header.signed_attributes.merge(params)
+      SimpleOAuth::Header.new(
+        :post,
+        launch_url,
+        params,
+        consumer_key: oauth_consumer_key,
+        consumer_secret: secret,
+        callback: 'about:blank'
+      ).signed_attributes.merge(params)
     end
 
-    def valid_signature?(secret)
-      params = collect_attributes(OAUTH_KEYS)
-      params = OAUTH_KEYS.inject({}) do |hash, k|
-        value = instance_variable_get("@#{k}")
-        hash[k] = value if value
-        hash
-      end
-      options, parsed_params = parse_params(params.merge(post_params))
+    def self.valid_signature?(launch_url, params, secret)
+      params = params.each_with_object({}){|(k,v), h| h[k.to_sym] = v}
+      options, parsed_params = parse_params(params)
       signature = parsed_params.delete(:oauth_signature)
-      consumer_key = oauth_consumer_key
-      @simple_oauth_header = SimpleOAuth::Header.new(:post, launch_url, parsed_params, options.merge({consumer_key: consumer_key, consumer_secret: secret}))
-      @simple_oauth_header.valid?(signature: signature)
+      consumer_key = params[:oauth_consumer_key]
+      SimpleOAuth::Header.new(
+        :post,
+        launch_url,
+        parsed_params,
+        options.merge({consumer_key: consumer_key, consumer_secret: secret})
+      ).valid?(signature: signature)
     end
 
     def parameters
@@ -179,9 +182,7 @@ module IMS::LTI::Models::Messages
       end
     end
 
-    private
-
-    def parse_params(params)
+    def self.parse_params(params)
       params.inject([{}, {}]) do |array, (k, v)|
         attr = k.to_s.sub('oauth_', '').to_sym
         if SimpleOAuth::Header::ATTRIBUTE_KEYS.include?(attr)
@@ -192,6 +193,8 @@ module IMS::LTI::Models::Messages
         array
       end
     end
+
+    private
 
     def collect_attributes(attributes)
       attributes.inject({}) do |h, param|
