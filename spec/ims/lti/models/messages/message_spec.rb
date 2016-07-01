@@ -151,20 +151,15 @@ module IMS::LTI::Models::Messages
       describe "#valid_signature?" do
         it "returns true for a valid signature" do
           subject.launch_url = 'http://www.example.com'
-          params = subject.signed_post_params('secret')
-          message = described_class.new(params)
-          message.launch_url = 'http://www.example.com'
-          expect(message.valid_signature?('secret')).to eq true
+          secret = 'secret'
+          params = subject.signed_post_params(secret)
+          expect(IMS::LTI::Models::Messages::Message.valid_signature?(subject.launch_url, params, secret)).to eq true
         end
 
         it "returns false for an invalid signature" do
-          message = IMS::LTI::Models::Messages::Message.new
           subject.launch_url = 'http://www.example.com'
           params = subject.signed_post_params('secret')
-
-          message = described_class.new(params)
-          message.launch_url = 'http://www.example.com'
-          expect(message.valid_signature?('bad_secret')).to eq false
+          expect(IMS::LTI::Models::Messages::Message.valid_signature?('http://www.example.com', params, 'bad_secret')).to eq false
         end
       end
     end
@@ -198,35 +193,6 @@ module IMS::LTI::Models::Messages
 
 
     end
-
-    describe 'simple_oauth_header' do
-      it 'returns the last simple_oauth_header used' do
-        subject.launch_url = 'http://www.example.com'
-        params = subject.signed_post_params('secret')
-        message = described_class.new(params)
-        message.launch_url = 'http://www.example.com'
-        message.valid_signature?('secret')
-        expect(message.simple_oauth_header).to be_instance_of SimpleOAuth::Header
-      end
-
-      it 'returns nil if there has not been one used yet' do
-        expect(subject.simple_oauth_header).to eq nil
-      end
-
-      it 'generates a new simple_oath_header whenever used' do
-        subject.launch_url = 'http://www.example.com'
-        params = subject.signed_post_params('secret')
-        message = described_class.new(params)
-        message.launch_url = 'http://www.example.com'
-        message.valid_signature?('secret')
-        header1 = message.simple_oauth_header
-        message.valid_signature?('secret')
-        header2 = message.simple_oauth_header
-        expect(header1).to_not eq header2
-      end
-
-    end
-
 
   end
 end
