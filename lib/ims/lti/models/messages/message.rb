@@ -1,7 +1,7 @@
 module IMS::LTI::Models::Messages
   class Message
 
-    attr_reader :simple_oauth_header
+    attr_reader :message_authenticator
 
     class << self
 
@@ -126,23 +126,9 @@ module IMS::LTI::Models::Messages
     end
 
     def signed_post_params(secret)
-      params = post_params
-      @simple_oauth_header = SimpleOAuth::Header.new(:post, launch_url, params, consumer_key: oauth_consumer_key, consumer_secret: secret, callback: 'about:blank')
-      @simple_oauth_header.signed_attributes.merge(params)
-    end
-
-    def valid_signature?(secret)
-      params = collect_attributes(OAUTH_KEYS)
-      params = OAUTH_KEYS.inject({}) do |hash, k|
-        value = instance_variable_get("@#{k}")
-        hash[k] = value if value
-        hash
-      end
-      options, parsed_params = parse_params(params.merge(post_params))
-      signature = parsed_params.delete(:oauth_signature)
-      consumer_key = oauth_consumer_key
-      @simple_oauth_header = SimpleOAuth::Header.new(:post, launch_url, parsed_params, options.merge({consumer_key: consumer_key, consumer_secret: secret}))
-      @simple_oauth_header.valid?(signature: signature)
+      message_params = { oauth_consumer_key: oauth_consumer_key}.merge(post_params)
+      @message_authenticator = IMS::LTI::Services::MessageAuthenticator.new(launch_url, message_params, secret )
+      @message_authenticator.signed_params
     end
 
     def parameters
@@ -180,18 +166,6 @@ module IMS::LTI::Models::Messages
     end
 
     private
-
-    def parse_params(params)
-      params.inject([{}, {}]) do |array, (k, v)|
-        attr = k.to_s.sub('oauth_', '').to_sym
-        if SimpleOAuth::Header::ATTRIBUTE_KEYS.include?(attr)
-          array[0][attr] = v
-        else
-          array[1][k] = v
-        end
-        array
-      end
-    end
 
     def collect_attributes(attributes)
       attributes.inject({}) do |h, param|
