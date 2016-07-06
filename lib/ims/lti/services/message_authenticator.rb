@@ -6,8 +6,8 @@ module IMS::LTI::Services
     def initialize(launch_url, params, secret)
       @launch_url = launch_url
       @params = params
-      @consumer_key = params[:oauth_consumer_key]
       @options, @parsed_params = parse_params(params)
+      @consumer_key = @options[:consumer_key]
       @signature = @parsed_params.delete(:oauth_signature)
       @secret = secret
     end
@@ -57,7 +57,7 @@ module IMS::LTI::Services
         if SimpleOAuth::Header::ATTRIBUTE_KEYS.include?(attr)
           array[0][attr] = v
         else
-          array[1][k] = v
+          array[1][k.to_sym] = v
         end
         array
       end
