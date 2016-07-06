@@ -21,7 +21,12 @@ module IMS::LTI::Services
 
     describe '#valid' do
       it "returns true for a valid signature" do
+        authenticator = MessageAuthenticator.new(launch_url, signed_params, secret)
+        expect(authenticator.valid_signature?).to eq true
+      end
 
+      it 'handles string keys for params' do
+        signed_params['oauth_signature'] = signed_params.delete(:oauth_signature)
         authenticator = MessageAuthenticator.new(launch_url, signed_params, secret)
         expect(authenticator.valid_signature?).to eq true
       end
