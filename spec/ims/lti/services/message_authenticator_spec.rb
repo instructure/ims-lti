@@ -47,7 +47,6 @@ module IMS::LTI::Services
       it 'contains the launch url' do
         expect(subject.message.launch_url).to eq(launch_url)
       end
-
     end
 
     describe '#simple_oauth_header' do
@@ -65,6 +64,11 @@ module IMS::LTI::Services
     describe "#signed_params" do
       it 'returns signed params' do
         expect(subject.signed_params).to have_key(:oauth_signature)
+      end
+
+      it 'includes the oauth_callback' do
+        ma = MessageAuthenticator.new(launch_url, params, secret)
+        expect(ma.signed_params).to include({oauth_callback: 'about:blank'})
       end
     end
 
