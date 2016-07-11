@@ -47,4 +47,15 @@ describe IMS::LTI::OutcomeRequest do
     req.score.should == nil
   end
 
+  it "should generate request xml" do
+    req = IMS::LTI::OutcomeRequest.new(
+                                      :lis_result_sourcedid => '1234',
+                                      :score => 0.5,
+                                      :operation => IMS::LTI::OutcomeRequest::REPLACE_REQUEST
+    )
+    xml = req.generate_request_xml
+    xml.should be_a String
+    xml.should include '<sourcedId>1234</sourcedId>'
+    xml.should include '<replaceResultRequest><resultRecord><sourcedGUID><sourcedId>1234</sourcedId></sourcedGUID><result><resultScore><language>en</language><textString>0.5</textString></resultScore></result></resultRecord></replaceResultRequest>'
+  end
 end
