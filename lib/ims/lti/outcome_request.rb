@@ -148,37 +148,8 @@ module IMS::LTI
       extention_process_xml(doc)
     end
 
-    private
-    
-    def extention_process_xml(doc)
-    end
-    
-    def has_result_data?
-      !!score
-    end
-    
-    def results(node)
-      return unless has_result_data?
-      
-      node.result do |res|
-        result_values(res)
-      end
-    end
-
-    def result_values(node)
-      if score
-        node.resultScore do |res_score|
-          res_score.language "en" # 'en' represents the format of the number
-          res_score.textString score.to_s
-        end
-      end
-    end
-
-    def has_required_attributes?
-      @consumer_key && @consumer_secret && @lis_outcome_service_url && @lis_result_sourcedid && @operation
-    end
-
     def generate_request_xml
+      raise IMS::LTI::InvalidLTIConfigError, "`@operation` and `@lis_result_sourcedid` are required" unless has_request_xml_attributes?
       builder = Builder::XmlMarkup.new #(:indent=>2)
       builder.instruct!
 
@@ -202,5 +173,38 @@ module IMS::LTI
       end
     end
 
+    private
+
+    def extention_process_xml(doc)
+    end
+
+    def has_result_data?
+      !!score
+    end
+
+    def results(node)
+      return unless has_result_data?
+
+      node.result do |res|
+        result_values(res)
+      end
+    end
+
+    def result_values(node)
+      if score
+        node.resultScore do |res_score|
+          res_score.language "en" # 'en' represents the format of the number
+          res_score.textString score.to_s
+        end
+      end
+    end
+
+    def has_required_attributes?
+      @consumer_key && @consumer_secret && @lis_outcome_service_url && @lis_result_sourcedid && @operation
+    end
+
+    def has_request_xml_attributes?
+      @operation && @lis_result_sourcedid
+    end
   end
 end
