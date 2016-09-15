@@ -18,13 +18,19 @@ module IMS::LTI
     def valid_request?(request, handle_error=true)
       begin
         @oauth_signature_validator = OAuth::Signature.build(request, :consumer_secret => @consumer_secret)
-        @oauth_signature_validator.verify() or raise OAuth::Unauthorized
+        @oauth_signature_validator.verify() or raise OAuth::Unauthorized.new(request)
         true
-      rescue OAuth::Signature::UnknownSignatureMethod, OAuth::Unauthorized
+      rescue OAuth::Signature::UnknownSignatureMethod
         if handle_error
           false
         else
           raise $!
+        end
+      rescue OAuth::Unauthorized
+        if handle_error
+          false
+        else
+          raise OAuth::Unauthorized.new(request)
         end
       end
     end
