@@ -1,3 +1,7 @@
+2016-10-05 Version 1.1.13
+    * Fix Oauth::Unauthorized initialization bug
+    * Relax oauth dependency
+
 2016-06-16 Version 1.1.12
     * Add support for detecting observer role
 
