@@ -70,7 +70,7 @@ module IMS::LTI::Services
     def invalid_security_contract
       ret_val = {}
 
-      is_split_secret_capable = tool_proxy.enabled_capabilities.include?('OAuth.splitSecret')
+      is_split_secret_capable = tool_proxy.enabled_capabilities.include?('Security.splitSecret')
       has_shared_secret = tool_proxy.security_contract.shared_secret != nil && !tool_proxy.security_contract.shared_secret.empty?
       has_split_secret = tool_proxy.security_contract.tp_half_shared_secret != nil && !tool_proxy.security_contract.tp_half_shared_secret.empty?
 
