@@ -192,7 +192,7 @@ module IMS::LTI::Services
       end
 
 
-      it 'requires the "OAuth.splitSecret" capability for split secret' do
+      it 'requires the "Security.splitSecret" capability for split secret' do
         tp_half_secret = SecureRandom.hex(64)
         tool_proxy.enabled_capability = []
         tool_proxy.security_contract.shared_secret = nil
@@ -208,17 +208,17 @@ module IMS::LTI::Services
                                                      )
       end
 
-      it 'should pass with tp_half_secret and OAuth.splitSecret without shared secret' do
+      it 'should pass with tp_half_secret and Security.splitSecret without shared secret' do
         tp_half_secret = SecureRandom.hex(64)
-        tool_proxy.enabled_capability = ['OAuth.splitSecret']
+        tool_proxy.enabled_capability = ['Security.splitSecret']
         tool_proxy.security_contract.shared_secret = nil
         tool_proxy.security_contract.tp_half_shared_secret = tp_half_secret
 
         expect(subject.invalid_security_contract).to be_empty
       end
 
-      it 'requires  split secret for "OAuth.splitSecret" capability' do
-        tool_proxy.enabled_capability = ['OAuth.splitSecret']
+      it 'requires  split secret for "Security.splitSecret" capability' do
+        tool_proxy.enabled_capability = ['Security.splitSecret']
 
         expect(subject.invalid_security_contract).to eq(
                                                        {
@@ -228,9 +228,9 @@ module IMS::LTI::Services
                                                      )
       end
 
-      it 'requires ONLY split secret for "OAuth.splitSecret" capability' do
+      it 'requires ONLY split secret for "Security.splitSecret" capability' do
         tp_half_secret = SecureRandom.hex(64)
-        tool_proxy.enabled_capability = ['OAuth.splitSecret']
+        tool_proxy.enabled_capability = ['Security.splitSecret']
         tool_proxy.security_contract.tp_half_shared_secret = tp_half_secret
         expect(subject.invalid_security_contract).to eq(
                                                        {
@@ -239,7 +239,7 @@ module IMS::LTI::Services
                                                      )
       end
 
-      it 'requires "OAuth.splitSecret" for tp_half_secret' do
+      it 'requires "Security.splitSecret" for tp_half_secret' do
         tp_half_secret = SecureRandom.hex(64)
         tool_proxy.enabled_capability = []
         tool_proxy.security_contract.tp_half_shared_secret = tp_half_secret
@@ -266,7 +266,7 @@ module IMS::LTI::Services
         subject.tool_consumer_profile = tool_consumer_profile
 
         tp_half_secret = SecureRandom.hex(64)
-        tool_proxy.enabled_capability = ['OAuth.splitSecret', "DSF"]
+        tool_proxy.enabled_capability = ['Security.splitSecret', "DSF"]
         tool_proxy.security_contract.tp_half_shared_secret = tp_half_secret
 
         expect(subject.errors).to eq(
@@ -274,7 +274,7 @@ module IMS::LTI::Services
                                       :invalid_security_contract => {
                                          :invalid_secret_type => :shared_secret
                                       },
-                                      :invalid_capabilities => ["OAuth.splitSecret", "DSF"],
+                                      :invalid_capabilities => ["Security.splitSecret", "DSF"],
                                       :invalid_message_handlers => {
                                         :singleton_message_handlers => {
                                           :invalid_message_types => ["invalid"]
@@ -313,7 +313,7 @@ module IMS::LTI::Services
 
       it 'returns an error if the security contract is invalid' do
         tp_half_secret = SecureRandom.hex(64)
-        tool_proxy.enabled_capability = ['OAuth.splitSecret']
+        tool_proxy.enabled_capability = ['Security.splitSecret']
         tool_proxy.security_contract.tp_half_shared_secret = tp_half_secret
         expect(subject.valid?).to be_falsey
       end
