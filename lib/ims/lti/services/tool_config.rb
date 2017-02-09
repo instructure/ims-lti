@@ -130,8 +130,6 @@ module IMS::LTI::Services
 
     # Generate XML from the current settings
     def to_xml(opts = {})
-      raise IMS::LTI::Errors::InvalidLTIConfigError, "A launch url is required for an LTI configuration." unless self.launch_url || self.secure_launch_url
-
       builder = Builder::XmlMarkup.new(:indent => opts[:indent] || 0)
       builder.instruct!
       builder.cartridge_basiclti_link("xmlns" => "http://www.imsglobal.org/xsd/imslticc_v1p0",
