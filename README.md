@@ -31,16 +31,15 @@ You can use the classes in the IMS::LTI::Models::Messages module to valdiate Lau
 
 For example in a rails app you would do the following
 ```ruby
-lti_message = IMS::LTI::Models::Messages::Message.generate(request.request_parameters.merge(request.query_parameters))
-lti_message.launch_url = request.url
+authenticator = IMS::LTI::Services::MessageAuthenticator.new(request.url, request.request_parameters, shared_secret)
 
 #Check if the signature is valid
-return false unless lti_message.valid_signature?(shared_secret)
+return false unless authenticator.valid_signature?
 
-# check if `lti_message.oauth_nonce` has already been used
+# check if `params['oauth_nonce']` has already been used
 
 #check if the message is too old
-return false if DateTime.strptime(lti_message.oauth_timestamp,'%s') > 5.minutes.ago
+return false if DateTime.strptime(request.request_parameters['oauth_timestamp'],'%s') > 5.minutes.ago
 
 ```
 
