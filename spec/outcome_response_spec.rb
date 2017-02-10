@@ -23,6 +23,8 @@ describe IMS::LTI::OutcomeResponse do
 </imsx_POXEnvelopeResponse>
   XML
 
+  bad_xml = "This is a bad XML file with bad tags <root_tag></root_tag><second_root_tag></second_root_tag>"
+
   def mock_response(xml)
     @fake = Object
     OAuth::AccessToken.stub(:new).and_return(@fake)
@@ -88,6 +90,11 @@ describe IMS::LTI::OutcomeResponse do
     res.process_xml(response_xml)
     alt = response_xml.gsub("\n",'')
     res.generate_response_xml.should == alt
+  end
+
+  it "should raise an error with bad xml" do
+    res = IMS::LTI::OutcomeResponse.new
+    expect { res.process_xml(bad_xml) }.to raise_error(IMS::LTI::XMLParseError)
   end
 
 end
