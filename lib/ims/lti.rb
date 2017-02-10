@@ -25,11 +25,14 @@ module IMS # :nodoc:
   #
   #    require 'ims/lti'
   module LTI
-    
+
     # The versions of LTI this library supports
     VERSIONS = %w{1.0 1.1}
-    
+
     class InvalidLTIConfigError < StandardError
+    end
+
+    class XMLParseError < StandardError
     end
 
     # POST a signed oauth request with the given key/secret/data

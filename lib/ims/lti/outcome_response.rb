@@ -46,7 +46,7 @@ module IMS::LTI
   #
   class OutcomeResponse
     include IMS::LTI::Extensions::Base
-    
+
     attr_accessor :request_type, :score, :message_identifier, :response_code,
             :post_response, :code_major, :severity, :description, :operation,
             :message_ref_identifier
@@ -70,7 +70,7 @@ module IMS::LTI
       response = OutcomeResponse.new
       response.process_post_response(post_response)
     end
-    
+
     def process_post_response(post_response)
       self.post_response = post_response
       self.response_code = post_response.code
@@ -105,7 +105,11 @@ module IMS::LTI
 
     # Parse Outcome Response data from XML
     def process_xml(xml)
-      doc = REXML::Document.new xml
+      begin
+        doc = REXML::Document.new xml
+      rescue => e
+        raise IMS::LTI::XMLParseError, "#{e}\nOriginal xml: '#{xml}'"
+      end
       @message_identifier = doc.text("//imsx_statusInfo/imsx_messageIdentifier").to_s
       @code_major = doc.text("//imsx_statusInfo/imsx_codeMajor")
       @code_major.downcase! if @code_major
