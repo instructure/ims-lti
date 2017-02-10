@@ -27,7 +27,7 @@ Or install it yourself as:
 
 #### Validating Launches
 
-You can use the classes in the IMS::LTI::Models::Messages module to valdiate Launches
+You can use the IMS::LTI::Services::MessageAuthenticator to validate launches
 
 For example in a rails app you would do the following
 ```ruby
