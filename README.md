@@ -51,8 +51,8 @@ As a TP your app will receive a POST request with a bunch of
 and it will be signed with OAuth using a key/secret that both the TP and TC share.
 This is covered in the [LTI security model](http://www.imsglobal.org/LTI/v1p1/ltiIMGv1p1.html#_Toc319560466)
 
-Here is an example of a simple TP Rails app using this gem:
-[LTI Tool Provider](https://github.com/instructure/lti_tool_provider_example)
+Here is an example of a simple TP Sinatra app using this gem:
+[LTI Tool Provider](https://github.com/instructure/lti1_tool_provider_example)
 
 Once you find the `oauth_consumer_secret` based on the `oauth_consumer_key` in
 the request, you can initialize a `ToolProvider` object with them and the post parameters:
