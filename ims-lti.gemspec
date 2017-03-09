@@ -6,6 +6,7 @@ Gem::Specification.new do |spec|
   spec.name          = 'ims-lti'
   spec.version       = '2.1.0'
   spec.authors       = ['Instructure']
+  spec.email	     = 'opensource@instructure.com'
   spec.summary       = %q{Ruby library for creating IMS LTI tool providers and consumers}
   spec.homepage      = %q{http://github.com/instructure/ims-lti}
   spec.license       = 'MIT'
@@ -18,14 +19,14 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'simple_oauth', '0.2'
   spec.add_dependency 'faraday', '~> 0.8'
   spec.add_dependency 'faraday_middleware', '~> 0.8'
-  spec.add_dependency 'builder'
+  spec.add_dependency 'builder', '~> 3.2'
 
-  spec.add_development_dependency 'rake', '~> 10.4.2'
-  spec.add_development_dependency 'rspec', '~> 3.2.0'
-  spec.add_development_dependency 'guard', '~> 2.13.0'
-  spec.add_development_dependency 'guard-rspec', '~> 4.6.4'
-  spec.add_development_dependency 'listen', '~> 2.10.1'
-  spec.add_development_dependency 'pry', '~> 0.10.1'
+  spec.add_development_dependency 'rake', '~> 10.4'
+  spec.add_development_dependency 'rspec', '~> 3.2'
+  spec.add_development_dependency 'guard', '~> 2.13'
+  spec.add_development_dependency 'guard-rspec', '~> 4.6'
+  spec.add_development_dependency 'listen', '~> 2.10'
+  spec.add_development_dependency 'pry', '~> 0.10'
   spec.add_development_dependency 'byebug', '~> 8.2'
 
 end
