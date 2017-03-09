@@ -74,10 +74,5 @@ XML
       expect(clear_shema_stuffs(config.to_xml(:indent => 2))).to eq clear_shema_stuffs(cc_lti_xml)
     end
 
-    it "doesn't allow creating invalid config xml" do
-      config = IMS::LTI::Services::ToolConfig.new("title" => "Test Config")
-      expect { config.to_xml }.to raise_error(IMS::LTI::Errors::InvalidLTIConfigError)
-    end
-
   end
 end
