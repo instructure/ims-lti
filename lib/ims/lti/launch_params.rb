@@ -96,7 +96,7 @@ module IMS::LTI
         if roles_list.is_a?(Array)
           @roles = roles_list
         else
-          @roles = roles_list.split(",").map(&:downcase)
+          @roles = roles_list.split(",")
         end
       else
         @roles = nil

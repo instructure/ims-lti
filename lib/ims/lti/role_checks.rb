@@ -16,7 +16,7 @@ module IMS::LTI
     # Check whether the Launch Parameters have a given role
     def has_exact_role?(role)
       role = role.downcase
-      @roles && @roles.any? { |r| r == role }
+      @roles && @roles.any? { |r| r.downcase == role }
     end
 
     # Check whether the Launch Parameters have a given role ignoring
@@ -25,7 +25,7 @@ module IMS::LTI
     # will return true if the role is `urn:lti:role:ims/lis/Instructor/GuestInstructor`
     def has_base_role?(role)
       role = role.downcase
-      @roles && @roles.any? { |r| r.start_with?(role) }
+      @roles && @roles.any? { |r| r.downcase.start_with?(role) }
     end
 
     # Convenience method for checking if the user is the system administrator of the TC

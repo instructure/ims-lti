@@ -18,7 +18,7 @@ def create_params
             "invalid_ext_param" => "invalid_param",
             "invalid_custom_param" => "invalid_custom",
             "ext_lti_message_type" => "extension-lti-launch",
-            "roles" => "learner,instructor,observer,urn:lti:role:ims/lis/member,mentor/mentor,administrator,urn:lti:role:ims/lis/teachingassistant/teachingassistantsection"
+            "roles" => "Learner,Instructor,Observer,urn:lti:role:ims/lis/Member,Mentor/Mentor,Administrator,urn:lti:role:ims/lis/TeachingAssistant/TeachingAssistantSection"
     }
 end
 

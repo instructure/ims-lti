@@ -1,3 +1,6 @@
+2017-03-08 Version 1.2.0
+    * Don't downcase roles
+
 2016-10-05 Version 1.1.13
     * Fix Oauth::Unauthorized initialization bug
     * Relax oauth dependency
