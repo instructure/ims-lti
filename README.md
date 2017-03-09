@@ -1,5 +1,7 @@
 # IMS LTI
 
+## The master branch has been deprecated, for changes to the 1.x gem please use the 1.2.x branch
+
 This ruby library is to help create Tool Providers and Tool Consumers for the
 [IMS LTI standard](http://www.imsglobal.org/lti/index.html).
 
