@@ -2,6 +2,7 @@ require 'oauth'
 require 'builder'
 require "rexml/document"
 require 'cgi'
+require 'securerandom'
 
 module IMS # :nodoc:
 
