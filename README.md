@@ -1,6 +1,6 @@
 # IMS LTI
 
-[![Build Status](https://travis-ci.org/instructure/ims-lti.svg?branch=2.0.x)](https://travis-ci.org/instructure/ims-lti)
+[![Build Status](https://travis-ci.org/instructure/ims-lti.svg?branch=2.1.x)](https://travis-ci.org/instructure/ims-lti)
 
 LTI ruby implementation
 
