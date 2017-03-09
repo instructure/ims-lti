@@ -6,7 +6,7 @@ module DeprecatedRoleChecks
   # Check whether the Launch Parameters have a role
     def has_role?(role)
       role = role.downcase
-      @roles && @roles.any?{|r| r.index(role)}
+      @roles && @roles.any?{|r| r.downcase.index(role)}
     end
 
     # Convenience method for checking if the user has 'learner' or 'student' role
