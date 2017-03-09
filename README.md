@@ -2,8 +2,6 @@
 
 [![Build Status](https://travis-ci.org/instructure/ims-lti.svg?branch=2.0.x)](https://travis-ci.org/instructure/ims-lti)
 
-#Version 2.x is currently BETA
-
 LTI ruby implementation
 
 ## Installation
@@ -45,7 +43,7 @@ return false if DateTime.strptime(request.request_parameters['oauth_timestamp'],
 
 ## Contributing
 
-1. Fork it ( http://github.com/instructure/lti/fork )
+1. Fork it ( http://github.com/instructure/ims-lti/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
