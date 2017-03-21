@@ -8,7 +8,7 @@ LTI ruby implementation
 
 Add this line to your application's Gemfile:
 
-    gem 'lti'
+    gem 'ims-lti'
 
 And then execute:
 
