@@ -7,7 +7,7 @@ module IMS::LTI::Models
     MESSAGING_CAPABILITIES = %w(basic-lti-launch-request)
     OUTCOMES_CAPABILITIES = %w(Result.autocreate)
 
-    add_attributes :lti_version, :guid, :capability_offered
+    add_attributes :lti_version, :guid, :capability_offered, :security_profile
     add_attribute :id, json_key:'@id'
     add_attribute :type, json_key:'@type'
     add_attribute :context, json_key:'@context'
@@ -26,6 +26,10 @@ module IMS::LTI::Models
 
     def capabilities_offered
       [*@capability_offered]
+    end
+
+    def security_profiles
+      [*@security_profile]
     end
 
     def reregistration_capable?

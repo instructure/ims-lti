@@ -30,6 +30,10 @@ module IMS::LTI::Models
       expect(subject.capabilities_offered).to eq []
     end
 
+    it 'pluralizes security_profile' do
+      expect(subject.security_profiles).to eq []
+    end
+
     describe '#reregistration_capable?' do
       it 'must return true when the reregistration capability is present' do
         subject.capability_offered = %w{ToolProxyReregistrationRequest}
