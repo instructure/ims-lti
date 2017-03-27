@@ -33,5 +33,6 @@ module IMS::LTI
     require_relative 'models/content_item_container'
     require_relative 'models/image'
     require_relative 'models/membership_service'
+    require_relative 'models/security_profile'
   end
 end

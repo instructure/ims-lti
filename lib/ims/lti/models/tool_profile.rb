@@ -7,6 +7,7 @@ module IMS::LTI::Models
     add_attribute :resource_handler, relation:'IMS::LTI::Models::ResourceHandler'
     add_attribute :message, relation:'IMS::LTI::Models::MessageHandler'
     add_attribute :service_offered, relation:'IMS::LTI::Models::RestService'
+    add_attribute :security_profile, relation:'IMS::LTI::Models::SecurityProfile'
 
 
     def base_message_url
@@ -24,6 +25,10 @@ module IMS::LTI::Models
 
     def messages
       [*@message]
+    end
+
+    def security_profiles
+      [*@security_profile]
     end
 
   end

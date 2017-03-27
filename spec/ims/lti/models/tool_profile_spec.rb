@@ -19,6 +19,10 @@ module IMS::LTI::Models
         expect(subject.messages).to eq []
       end
 
+      it 'pluralizes security_profile' do
+        expect(subject.security_profiles).to eq []
+      end
+
     end
 
 
