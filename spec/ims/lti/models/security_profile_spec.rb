@@ -14,7 +14,8 @@ module IMS::LTI::Models
     end
 
     it 'pluralizes digest_algoritim' do
-      expect(subject.digest_algorithms).to eq []
+      subject.digest_algorithm = 'test'
+      expect(subject.digest_algorithms).to eq ['test']
     end
 
   end
