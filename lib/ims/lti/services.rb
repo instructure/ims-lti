@@ -4,5 +4,6 @@ module IMS::LTI
     require_relative 'services/tool_config'
     require_relative 'services/tool_proxy_validator'
     require_relative 'services/message_authenticator'
+    require_relative 'services/tool_consumer_profile_service'
   end
 end
