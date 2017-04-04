@@ -1,6 +1,14 @@
 require "spec_helper"
 
 module IMS::LTI::Services
+
+  RSpec::Matchers.define :an_assertion_containing do |x|
+    match do |actual|
+      jwt = JSON::JWT.decode(actual[:body][:assertion], :skip_verification)
+      jwt.merge(x) == jwt
+    end
+  end
+
   describe AuthenticationService do
 
     let(:aud) { 'http://tc.example.com/authorization' }
@@ -42,6 +50,15 @@ module IMS::LTI::Services
       it 'only makes a call to retrieve the access token once' do
         expect(faraday).to receive(:post).once.and_call_original
         2.times { auth_service.access_token }
+      end
+
+      it 'can use additional claims' do
+        code = '12345'
+        auth_service = AuthenticationService.new(iss: iss, aud: aud, sub: sub, secret: secret, additional_claims: {code: code})
+        auth_service.connection = faraday
+        expect(faraday).to receive(:post)
+                             .with(aud, an_assertion_containing({code: code})).and_call_original
+        auth_service.access_token
       end
 
       describe 'unsuccessful request' do
@@ -93,7 +110,7 @@ module IMS::LTI::Services
       end
 
       describe "expired?" do
-        it 'returns true if it is expired'do
+        it 'returns true if it is expired' do
           auth_service.access_token
           Timecop.freeze(Time.now + expires_in + 10) do
             expect(auth_service.expired?).to be true

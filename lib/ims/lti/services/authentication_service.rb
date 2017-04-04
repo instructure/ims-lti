@@ -1,13 +1,15 @@
 module IMS::LTI::Services
   class AuthenticationService
 
-    attr_accessor :connection
+    attr_accessor :connection, :iss, :aud, :sub, :secret
+    attr_writer :secret
 
-    def initialize(iss:, aud:, sub:, secret:)
-      @_iss = iss
-      @_aud = aud
-      @_sub = sub
-      @_secret = secret
+    def initialize(iss:, aud:, sub:, secret:, additional_claims: {})
+      @iss = iss
+      @aud = aud
+      @sub = sub
+      @secret = secret
+      @additional_claims = additional_claims
     end
 
     def connection
@@ -37,21 +39,22 @@ module IMS::LTI::Services
     def access_token_request
       @_access_token_request ||= begin
         assertion = JSON::JWT.new(
-          iss: @_iss,
-          sub: @_sub,
-          aud: @_aud.to_s,
+          iss: iss,
+          sub: sub,
+          aud: aud.to_s,
           iat: Time.now.to_i,
           exp: 1.minute.from_now,
           jti: SecureRandom.uuid
         )
-        assertion = assertion.sign(@_secret, :HS256).to_s
+        assertion.merge!(@additional_claims)
+        assertion = assertion.sign(@secret, :HS256).to_s
         request = {
           body: {
             grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
             assertion: assertion
           }
         }
-        response = connection.post(@_aud, request)
+        response = connection.post(aud, request)
         raise IMS::LTI::Errors::AuthenticationFailedError.new(response: response) unless response.success?
         @_response_time = Time.now
         response.body
