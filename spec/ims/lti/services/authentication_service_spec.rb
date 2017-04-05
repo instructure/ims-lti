@@ -4,7 +4,7 @@ module IMS::LTI::Services
 
   RSpec::Matchers.define :an_assertion_containing do |x|
     match do |actual|
-      jwt = JSON::JWT.decode(actual[:body][:assertion], :skip_verification)
+      jwt = JSON::JWT.decode(actual[:assertion], :skip_verification)
       jwt.merge(x) == jwt
     end
   end
@@ -85,6 +85,21 @@ module IMS::LTI::Services
         it 'only caches the response if it was successful' do
           expect(faraday).to receive(:post).twice.and_call_original
           2.times { auth_service.access_token rescue nil }
+        end
+      end
+
+      describe '#grant_type' do
+
+        it 'lets you set a custom grant_type' do
+          grant_type = 'custom_grant_type'
+          auth_service.grant_type =grant_type
+          expect(faraday).to receive(:post).with(aud, hash_including(grant_type: grant_type )).and_call_original
+          auth_service.access_token
+        end
+
+        it 'uses "urn:ietf:params:oauth:grant-type:jwt-bearer" as the default grant_type' do
+          expect(faraday).to receive(:post).with(aud, hash_including(grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer" )).and_call_original
+          auth_service.access_token
         end
 
       end

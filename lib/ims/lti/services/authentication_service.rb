@@ -1,7 +1,7 @@
 module IMS::LTI::Services
   class AuthenticationService
 
-    attr_accessor :connection, :iss, :aud, :sub, :secret
+    attr_accessor :connection, :iss, :aud, :sub, :secret, :grant_type
     attr_writer :secret
 
     def initialize(iss:, aud:, sub:, secret:, additional_claims: {})
@@ -10,6 +10,7 @@ module IMS::LTI::Services
       @sub = sub
       @secret = secret
       @additional_claims = additional_claims
+      @grant_type = 'urn:ietf:params:oauth:grant-type:jwt-bearer'
     end
 
     def connection
@@ -48,13 +49,11 @@ module IMS::LTI::Services
         )
         assertion.merge!(@additional_claims)
         assertion = assertion.sign(@secret, :HS256).to_s
-        request = {
-          body: {
-            grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-            assertion: assertion
-          }
+        body = {
+          grant_type: grant_type,
+          assertion: assertion
         }
-        response = connection.post(aud, request)
+        response = connection.post(aud, body)
         raise IMS::LTI::Errors::AuthenticationFailedError.new(response: response) unless response.success?
         @_response_time = Time.now
         response.body
