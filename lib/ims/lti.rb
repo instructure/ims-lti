@@ -5,6 +5,7 @@ require 'faraday'
 require 'faraday_middleware'
 require 'builder'
 require 'rexml/document'
+require 'json/jwt'
 
 module IMS
   module LTI

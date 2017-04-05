@@ -20,6 +20,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'faraday', '~> 0.8'
   spec.add_dependency 'faraday_middleware', '~> 0.8'
   spec.add_dependency 'builder', '~> 3.2'
+  spec.add_dependency 'json-jwt', '~> 1.7'
 
   spec.add_development_dependency 'rake', '~> 10.4'
   spec.add_development_dependency 'rspec', '~> 3.2'
@@ -28,5 +29,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'listen', '~> 2.10'
   spec.add_development_dependency 'pry', '~> 0.10'
   spec.add_development_dependency 'byebug', '~> 8.2'
+  spec.add_development_dependency 'timecop', '~>0.8'
 
 end
