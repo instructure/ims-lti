@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 module IMS::LTI::Services
-  describe OAuth2RequestService do
+  describe OAuth2Client do
     let(:base_url) { 'http://www.base.com' }
     let(:token) { 'my-api-token' }
-    let(:request_service) { OAuth2RequestService.new(token: token, base_url: base_url) }
+    let(:request_service) { OAuth2Client.new(token: token, base_url: base_url) }
 
     describe '#connection' do
       it 'populates the authoirzation header with the provided token' do

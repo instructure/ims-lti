@@ -1,6 +1,6 @@
 module IMS::LTI::Services
 
-  class OAuth2RequestService
+  class OAuth2Client
     attr_accessor :token, :base_url
     attr_writer :connection
 
