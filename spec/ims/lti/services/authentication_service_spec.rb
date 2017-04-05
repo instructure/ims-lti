@@ -54,7 +54,7 @@ module IMS::LTI::Services
 
       it 'can use additional claims' do
         code = '12345'
-        auth_service = AuthenticationService.new(iss: iss, aud: aud, sub: sub, secret: secret, additional_claims: {code: code})
+        auth_service.additional_claims[:code] = code
         auth_service.connection = faraday
         expect(faraday).to receive(:post)
                              .with(aud, an_assertion_containing({code: code})).and_call_original
@@ -93,12 +93,12 @@ module IMS::LTI::Services
         it 'lets you set a custom grant_type' do
           grant_type = 'custom_grant_type'
           auth_service.grant_type =grant_type
-          expect(faraday).to receive(:post).with(aud, hash_including(grant_type: grant_type )).and_call_original
+          expect(faraday).to receive(:post).with(aud, hash_including(grant_type: grant_type)).and_call_original
           auth_service.access_token
         end
 
         it 'uses "urn:ietf:params:oauth:grant-type:jwt-bearer" as the default grant_type' do
-          expect(faraday).to receive(:post).with(aud, hash_including(grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer" )).and_call_original
+          expect(faraday).to receive(:post).with(aud, hash_including(grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer")).and_call_original
           auth_service.access_token
         end
 
@@ -122,6 +122,15 @@ module IMS::LTI::Services
           auth_service.access_token
         end
 
+      end
+
+      describe "#additional_params" do
+        it 'includes additional params in the body' do
+          code = '1234'
+          auth_service.additional_params[:code] = code
+          expect(faraday).to receive(:post).with(aud, hash_including(code: code)).and_call_original
+          auth_service.access_token
+        end
       end
 
       describe "expired?" do
