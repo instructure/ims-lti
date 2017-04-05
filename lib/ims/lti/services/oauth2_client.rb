@@ -12,6 +12,7 @@ module IMS::LTI::Services
     def connection
       @connection ||= Faraday.new base_url do |conn|
         conn.authorization :Bearer, token
+        conn.adapter :net_http
       end
     end
   end

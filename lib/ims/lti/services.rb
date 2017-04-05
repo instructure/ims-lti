@@ -1,5 +1,6 @@
 module IMS::LTI
   module Services
+    require_relative 'services/oauth1_client'
     require_relative 'services/oauth2_client'
     require_relative 'services/tool_proxy_registration_service'
     require_relative 'services/tool_config'

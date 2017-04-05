@@ -14,5 +14,6 @@ module IMS
     require_relative 'lti/services'
     require_relative 'lti/errors'
     require_relative 'lti/serializers'
+    require_relative 'lti/oauth_faraday_middleware'
   end
 end
