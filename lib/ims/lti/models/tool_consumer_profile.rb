@@ -35,5 +35,11 @@ module IMS::LTI::Models
     def reregistration_capable?
       @capability_offered.include?(Messages::ToolProxyReregistrationRequest::MESSAGE_TYPE)
     end
+
+    def supports_capabilities?(capability, *capabilities)
+      capabilities.unshift(capability)
+      (capabilities - capabilities_offered).empty?
+    end
+
   end
 end
