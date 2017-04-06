@@ -8,8 +8,9 @@ module IMS::LTI::Services
     end
 
     def tp_registration_service(registration_request:)
-      authentication_service ||= authentication_service_from_registration_request(
+      @authentication_service ||= authentication_service_from_registration_request(
         registration_request: registration_request)
+
       api_client = if registration_request.oauth2_access_token_url
                      OAuth2Client.new(token: authentication_service.access_token)
                    else

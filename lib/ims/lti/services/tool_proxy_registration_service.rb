@@ -11,8 +11,7 @@ module IMS::LTI::Services
     def tool_consumer_profile
       return @tool_consumer_profile if @tool_consumer_profile
 
-      connection = Faraday.new
-      response = connection.get(@registration_request.tc_profile_url)
+      response = api_client.connection.get(@registration_request.tc_profile_url)
       @tool_consumer_profile = IMS::LTI::Models::ToolConsumerProfile.new.from_json(response.body)
     end
 
