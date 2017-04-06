@@ -1,17 +1,17 @@
 module IMS::LTI::Services
   class ToolProxyRegistrationService
 
-    attr_accessor :api_client
+    attr_accessor :api_client, :rereg_conf_url
 
-    def initialize(registration_request, api_client)
-      @registration_request = registration_request
+    def initialize(message:, api_client:, rereg_conf_url: nil)
+      @message = message
       @api_client = api_client
+      @rereg_conf_url = rereg_conf_url
     end
 
     def tool_consumer_profile
       return @tool_consumer_profile if @tool_consumer_profile
-
-      response = api_client.connection.get(@registration_request.tc_profile_url)
+      response = api_client.connection.get(@message.tc_profile_url)
       @tool_consumer_profile = IMS::LTI::Models::ToolConsumerProfile.new.from_json(response.body)
     end
 
@@ -24,18 +24,10 @@ module IMS::LTI::Services
 
       tool_proxy_json = tool_proxy.to_json
 
-      if reregistration?
-        consumer_key = tool_proxy.tool_proxy_guid
-        consumer_secret = shared_secret
-      else
-        consumer_key = @registration_request.reg_key
-        consumer_secret = @registration_request.reg_password
-      end
-
       response = api_client.connection.post do |req|
         req.url service.endpoint
         req.headers['Content-Type'] = 'application/vnd.ims.lti.v2.toolproxy+json'
-        req.headers['VND-IMS-CONFIRM-URL'] = reregistration_confirm_url if reregistration_confirm_url
+        req.headers['VND-IMS-CONFIRM-URL'] = rereg_conf_url if rereg_conf_url
         req.body = tool_proxy_json
       end
 
@@ -72,7 +64,7 @@ module IMS::LTI::Services
     end
 
     def reregistration?
-      @registration_request.is_a?(IMS::LTI::Models::Messages::ToolProxyReregistrationRequest)
+      @message.is_a?(IMS::LTI::Models::Messages::ToolProxyReregistrationRequest)
     end
 
 
