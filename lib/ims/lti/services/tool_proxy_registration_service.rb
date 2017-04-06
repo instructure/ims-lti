@@ -1,7 +1,18 @@
 module IMS::LTI::Services
   class ToolProxyRegistrationService
+
+    attr_accessor :api_client
+
     def initialize(registration_request)
       @registration_request = registration_request
+      @api_client = if registration_request.oauth2_access_token_url
+                      OAuth2Client.new()
+                    else
+                      OAuth1Client.new(
+                        consumer_key: @registration_request.reg_key,
+                        consumer_secret: @registration_request.reg_password
+                      )
+                    end
     end
 
     def tool_consumer_profile
@@ -16,7 +27,7 @@ module IMS::LTI::Services
       tool_consumer_profile.services_offered.map(&:profile)
     end
 
-    def register_tool_proxy(tool_proxy, reregistration_confirm_url = nil, shared_secret = nil)
+    def register_tool_proxy(tool_proxy)
       service = tool_consumer_profile.services_offered.find { |s| s.formats.include?('application/vnd.ims.lti.v2.toolproxy+json') && s.actions.include?('POST') }
 
       tool_proxy_json = tool_proxy.to_json
@@ -29,9 +40,7 @@ module IMS::LTI::Services
         consumer_secret = @registration_request.reg_password
       end
 
-      connection = OAuth1Client.new(consumer_key: consumer_key, consumer_secret: consumer_secret).connection
-
-      response = connection.post do |req|
+      response = api_client.connection.post do |req|
         req.url service.endpoint
         req.headers['Content-Type'] = 'application/vnd.ims.lti.v2.toolproxy+json'
         req.headers['VND-IMS-CONFIRM-URL'] = reregistration_confirm_url if reregistration_confirm_url
@@ -57,7 +66,7 @@ module IMS::LTI::Services
 
     def remove_params!(message_handler)
       orig_parameters = message_handler.parameter || []
-      parameters = orig_parameters.select {|p| p.fixed? || tool_consumer_profile.capability_offered.include?(p.variable)}
+      parameters = orig_parameters.select { |p| p.fixed? || tool_consumer_profile.capability_offered.include?(p.variable) }
       message_handler.parameter = parameters
       orig_parameters - parameters
     end

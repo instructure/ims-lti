@@ -141,7 +141,7 @@ module IMS::LTI::Models::Messages
           expect(params[:oauth_consumer_key]).to eq "key"
           expect(params[:oauth_signature_method]).to eq "HMAC-SHA1"
           expect(params[:oauth_version]).to eq "1.0"
-          expect(params['custom_user_id']).to eq "user_id"
+          expect(params[:custom_user_id]).to eq "user_id"
           expect(params.key?(:oauth_signature)).to eq true
           expect(params.key?(:oauth_timestamp)).to eq true
           expect(params.key?(:oauth_nonce)).to eq true

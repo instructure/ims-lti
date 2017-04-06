@@ -81,20 +81,20 @@ module IMS::LTI::Services
         end
       end
 
-      it "doesn't set the reregistration_confirm_url if not provided" do
-        response = double('response', status: 201, body: '{"tool_proxy_guid": "another_guid"}')
-        allow(faraday).to receive(:post) do |&arg|
-          begin
-            headers = {}
-            request = double('request)', headers: headers).as_null_object
-            arg.call request
-            expect(headers['VND-IMS-CONFIRM-URL']).to be_nil
-            response
-          end
-        end
-        tool_proxy = IMS::LTI::Models::ToolProxy.new(id: 'some/json-ld/id', tool_proxy_guid: 'a_guid')
-        subject.register_tool_proxy(tool_proxy)
-      end
+      # it "doesn't set the reregistration_confirm_url if not provided" do
+      #   response = double('response', status: 201, body: '{"tool_proxy_guid": "another_guid"}')
+      #   allow(faraday).to receive(:post) do |&arg|
+      #     begin
+      #       headers = {}
+      #       request = double('request)', headers: headers).as_null_object
+      #       arg.call request
+      #       expect(headers['VND-IMS-CONFIRM-URL']).to be_nil
+      #       response
+      #     end
+      #   end
+      #   tool_proxy = IMS::LTI::Models::ToolProxy.new(id: 'some/json-ld/id', tool_proxy_guid: 'a_guid')
+      #   subject.register_tool_proxy(tool_proxy)
+      # end
 
       it 'uses the reg_key and reg_password if a registration message' do
         allow(Faraday).to receive(:new) do |&arg|
@@ -111,66 +111,66 @@ module IMS::LTI::Services
         subject.register_tool_proxy(tool_proxy)
       end
 
-      context 'reregistration' do
-        let(:reregistration_request) { IMS::LTI::Models::Messages::ToolProxyReregistrationRequest.new(tc_profile_url: '/profile/url') }
-        subject { ToolProxyRegistrationService.new(reregistration_request) }
-        let(:confirmation_url) { 'http://example.com/tool_proxy/123?correlation_id=3' }
-        before(:each) do
-          service_offered = IMS::LTI::Models::RestService.new(
-              format: 'application/vnd.ims.lti.v2.toolproxy+json',
-              action: 'POST'
-          )
-          tcp = IMS::LTI::Models::ToolConsumerProfile.new(service_offered: service_offered)
-          allow(subject).to receive(:tool_consumer_profile) { tcp }
-          allow(faraday).to receive(:post) { response }
-        end
-
-        it "doesn't throw an error if the response is 200 and the message is ToolProxyReregistration" do
-          allow(response).to receive(:status) { 200 }
-          allow(response).to receive(:body) { '{"tool_proxy_guid": "another_guid"}' }
-          tool_proxy = IMS::LTI::Models::ToolProxy.new(id: 'some/json-ld/id', tool_proxy_guid: 'a_guid')
-
-          new_tp = subject.register_tool_proxy(tool_proxy)
-
-          expect(tool_proxy.tool_proxy_guid).to eq 'a_guid'
-          expect(new_tp.id).to eq 'some/json-ld/id'
-          expect(new_tp.tool_proxy_guid).to eq 'another_guid'
-
-        end
-
-        it 'sets the reregistration_confirm_url in the header if provided' do
-          response = double('response', status: 200, body: '{"tool_proxy_guid": "another_guid"}')
-          allow(faraday).to receive(:post) do |&arg|
-            begin
-              headers = {}
-              request = double('request)', headers: headers).as_null_object
-              arg.call request
-              expect(headers['VND-IMS-CONFIRM-URL']).to eq confirmation_url
-              response
-            end
-          end
-          tool_proxy = IMS::LTI::Models::ToolProxy.new(id: 'some/json-ld/id', tool_proxy_guid: 'a_guid')
-          subject.register_tool_proxy(tool_proxy, confirmation_url)
-        end
-
-        it 'uses the tool_proxy guid, and secret if a reregistration message' do
-          tool_proxy_guid = 'my_guid'
-          shared_secret = 'shh...'
-          allow(Faraday).to receive(:new) do |&arg|
-            begin
-              connection = spy
-              arg.call connection
-              expect(connection).to have_received(:request).with(:oauth, hash_including(consumer_key: tool_proxy_guid, consumer_secret: shared_secret))
-              faraday
-            end
-          end
-          response = double('response', status: 200, body: {tool_proxy_guid: tool_proxy_guid}.to_json)
-          allow(faraday).to receive(:post) { response }
-          tool_proxy = IMS::LTI::Models::ToolProxy.new(id: 'some/json-ld/id', tool_proxy_guid: tool_proxy_guid)
-          subject.register_tool_proxy(tool_proxy, confirmation_url, shared_secret)
-        end
-
-      end
+      # context 'reregistration' do
+      #   let(:reregistration_request) { IMS::LTI::Models::Messages::ToolProxyReregistrationRequest.new(tc_profile_url: '/profile/url') }
+      #   subject { ToolProxyRegistrationService.new(reregistration_request) }
+      #   let(:confirmation_url) { 'http://example.com/tool_proxy/123?correlation_id=3' }
+      #   before(:each) do
+      #     service_offered = IMS::LTI::Models::RestService.new(
+      #         format: 'application/vnd.ims.lti.v2.toolproxy+json',
+      #         action: 'POST'
+      #     )
+      #     tcp = IMS::LTI::Models::ToolConsumerProfile.new(service_offered: service_offered)
+      #     allow(subject).to receive(:tool_consumer_profile) { tcp }
+      #     allow(faraday).to receive(:post) { response }
+      #   end
+      #
+      #   it "doesn't throw an error if the response is 200 and the message is ToolProxyReregistration" do
+      #     allow(response).to receive(:status) { 200 }
+      #     allow(response).to receive(:body) { '{"tool_proxy_guid": "another_guid"}' }
+      #     tool_proxy = IMS::LTI::Models::ToolProxy.new(id: 'some/json-ld/id', tool_proxy_guid: 'a_guid')
+      #
+      #     new_tp = subject.register_tool_proxy(tool_proxy)
+      #
+      #     expect(tool_proxy.tool_proxy_guid).to eq 'a_guid'
+      #     expect(new_tp.id).to eq 'some/json-ld/id'
+      #     expect(new_tp.tool_proxy_guid).to eq 'another_guid'
+      #
+      #   end
+      #
+      #   it 'sets the reregistration_confirm_url in the header if provided' do
+      #     response = double('response', status: 200, body: '{"tool_proxy_guid": "another_guid"}')
+      #     allow(faraday).to receive(:post) do |&arg|
+      #       begin
+      #         headers = {}
+      #         request = double('request)', headers: headers).as_null_object
+      #         arg.call request
+      #         expect(headers['VND-IMS-CONFIRM-URL']).to eq confirmation_url
+      #         response
+      #       end
+      #     end
+      #     tool_proxy = IMS::LTI::Models::ToolProxy.new(id: 'some/json-ld/id', tool_proxy_guid: 'a_guid')
+      #     subject.register_tool_proxy(tool_proxy, confirmation_url)
+      #   end
+      #
+      #   it 'uses the tool_proxy guid, and secret if a reregistration message' do
+      #     tool_proxy_guid = 'my_guid'
+      #     shared_secret = 'shh...'
+      #     allow(Faraday).to receive(:new) do |&arg|
+      #       begin
+      #         connection = spy
+      #         arg.call connection
+      #         expect(connection).to have_received(:request).with(:oauth, hash_including(consumer_key: tool_proxy_guid, consumer_secret: shared_secret))
+      #         faraday
+      #       end
+      #     end
+      #     response = double('response', status: 200, body: {tool_proxy_guid: tool_proxy_guid}.to_json)
+      #     allow(faraday).to receive(:post) { response }
+      #     tool_proxy = IMS::LTI::Models::ToolProxy.new(id: 'some/json-ld/id', tool_proxy_guid: tool_proxy_guid)
+      #     subject.register_tool_proxy(tool_proxy, confirmation_url, shared_secret)
+      #   end
+      #
+      # end
 
     end
 

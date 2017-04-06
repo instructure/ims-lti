@@ -5,7 +5,8 @@ module IMS::LTI
     require_relative 'services/tool_proxy_registration_service'
     require_relative 'services/tool_config'
     require_relative 'services/tool_proxy_validator'
-    require_relative 'services/message_authenticator'
+    require_relative 'services/oauth1_message_authenticator'
+    require_relative 'services/message_service'
     require_relative 'services/authentication_service'
   end
 end
