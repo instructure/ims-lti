@@ -22,7 +22,7 @@ module IMS::LTI::Services
         "access_token" => access_token,
         "token_type" => "Bearer",
         "expires_in" => expires_in
-      }
+      }.to_json
     end
     let(:faraday_stub) do
       Faraday::Adapter::Test::Stubs.new do |stub|

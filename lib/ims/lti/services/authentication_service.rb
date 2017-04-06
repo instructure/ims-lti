@@ -16,9 +16,7 @@ module IMS::LTI::Services
     end
 
     def connection
-      @connection ||= Faraday.new do |conn|
-        conn.response :json, content_type: /\bjson$/
-      end
+      @connection ||= Faraday.new
     end
 
     def access_token
@@ -61,7 +59,7 @@ module IMS::LTI::Services
         response = connection.post(aud, body)
         raise IMS::LTI::Errors::AuthenticationFailedError.new(response: response) unless response.success?
         @_response_time = Time.now
-        response.body
+        JSON.parse(response.body)
       end
     end
 
