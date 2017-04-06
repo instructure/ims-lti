@@ -18,7 +18,7 @@ module IMS::LTI::Services
     def initialize(consumer_key:, consumer_secret:, base_url: nil)
       @consumer_key = consumer_key
       @consumer_secret = consumer_secret
-      @base_url = nil
+      @base_url = base_url
     end
 
     def connection

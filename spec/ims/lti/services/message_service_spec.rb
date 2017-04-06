@@ -34,8 +34,7 @@ module IMS
             expect(message_service.message.launch_url).to eq(launch_url)
           end
         end
-
-
+        
       end
     end
   end

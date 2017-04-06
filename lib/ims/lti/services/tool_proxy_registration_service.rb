@@ -3,16 +3,9 @@ module IMS::LTI::Services
 
     attr_accessor :api_client
 
-    def initialize(registration_request)
+    def initialize(registration_request, api_client)
       @registration_request = registration_request
-      @api_client = if registration_request.oauth2_access_token_url
-                      OAuth2Client.new()
-                    else
-                      OAuth1Client.new(
-                        consumer_key: @registration_request.reg_key,
-                        consumer_secret: @registration_request.reg_password
-                      )
-                    end
+      @api_client = api_client
     end
 
     def tool_consumer_profile
