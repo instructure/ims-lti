@@ -40,7 +40,7 @@ return false unless lti_message.valid_signature?(shared_secret)
 # check if `lti_message.oauth_nonce` has already been used
 
 #check if the message is too old
-return false if DateTime.strptime(lti_message.oauth_timestamp,'%s') > 5.minutes.ago
+return false if DateTime.strptime(lti_message.oauth_timestamp,'%s') < 5.minutes.ago
 
 ```
 
