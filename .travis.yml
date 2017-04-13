@@ -8,4 +8,5 @@ branches:
   only:
     - master
     - 2.0.x
+    - 1.2.x
 script: bundle exec rspec spec
