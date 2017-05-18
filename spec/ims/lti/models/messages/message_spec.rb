@@ -3,7 +3,7 @@ require 'spec_helper'
 module IMS::LTI::Models::Messages
   describe Message do
 
-    let(:message) {Message.new}
+    subject(:message) {Message.new}
 
     describe 'parameters' do
       it "returns params for the message" do
@@ -68,7 +68,7 @@ module IMS::LTI::Models::Messages
           add_deprecated_params :foo
         end
 
-        let(:message) {CustomMesage.new(lti_version: '1', foo: 'bar')}
+        subject(:message) {CustomMesage.new(lti_version: '1', foo: 'bar')}
 
 
         it 'returns all the supported params' do
@@ -183,57 +183,57 @@ module IMS::LTI::Models::Messages
     end
 
     describe "#to_jwt" do
-      let(:private_key) { 'secret' }
-      let(:launch_url) { 'http://www.example.com' }
+      let(:private_key) {'secret'}
+      let(:launch_url) {'http://www.example.com'}
       let(:originating_domain) {'instructure.com'}
       let(:consumer_key) {'key'}
 
-      let(:message){ Message.new(consumer_key: consumer_key) }
+      subject(:message) {Message.new(consumer_key: consumer_key)}
 
       it "sets the 'iss' to the originating domain" do
-        jwt = message.to_jwt(private_key: private_key, originating_domain: originating_domain )
+        jwt = message.to_jwt(private_key: private_key, originating_domain: originating_domain)
         json = JSON::JWT.decode(jwt, private_key)
         expect(json[:iss]).to eq originating_domain
       end
 
       it "sets the 'sub' to the consumer_key" do
-        jwt = message.to_jwt(private_key: private_key, originating_domain: originating_domain )
+        jwt = message.to_jwt(private_key: private_key, originating_domain: originating_domain)
         json = JSON::JWT.decode(jwt, private_key)
         expect(json[:sub]).to eq consumer_key
       end
 
       it "sets the 'aud' to the launch_url" do
         message.launch_url = launch_url
-        jwt = message.to_jwt(private_key: private_key, originating_domain: originating_domain )
+        jwt = message.to_jwt(private_key: private_key, originating_domain: originating_domain)
         json = JSON::JWT.decode(jwt, private_key)
         expect(json[:aud]).to eq launch_url
       end
 
       it "sets the iat to the current time" do
         Timecop.freeze do
-          jwt = message.to_jwt(private_key: private_key, originating_domain: originating_domain )
+          jwt = message.to_jwt(private_key: private_key, originating_domain: originating_domain)
           json = JSON::JWT.decode(jwt, private_key)
           expect(json[:iat]).to eq Time.now.to_i
         end
       end
 
-      it "sets the exp to the current time" do
+      it "sets the exp to 5 minutes in the future" do
         Timecop.freeze do
-          jwt = message.to_jwt(private_key: private_key, originating_domain: originating_domain )
+          jwt = message.to_jwt(private_key: private_key, originating_domain: originating_domain)
           json = JSON::JWT.decode(jwt, private_key)
-          expect(json[:exp]).to eq (Time.now + 60 * 5 ).to_i
+          expect(json[:exp]).to eq (Time.now + 60 * 5).to_i
         end
       end
 
       it "sets a 'jti'" do
-        jwt = message.to_jwt(private_key: private_key, originating_domain: originating_domain )
+        jwt = message.to_jwt(private_key: private_key, originating_domain: originating_domain)
         json = JSON::JWT.decode(jwt, private_key)
         expect(json[:jti]).to_not be_nil
       end
 
       it "creates a new jti each time" do
-        jwt1 = message.to_jwt(private_key: private_key, originating_domain: originating_domain )
-        jwt2 = message.to_jwt(private_key: private_key, originating_domain: originating_domain )
+        jwt1 = message.to_jwt(private_key: private_key, originating_domain: originating_domain)
+        jwt2 = message.to_jwt(private_key: private_key, originating_domain: originating_domain)
         json1 = JSON::JWT.decode(jwt1, private_key)
         json2 = JSON::JWT.decode(jwt2, private_key)
         expect(json1[:jti]).to_not eq json2[:jti]
@@ -243,9 +243,15 @@ module IMS::LTI::Models::Messages
         let(:user_id) {"user_id"}
         it 'sets ims claims' do
           message.custom_user_id = user_id
-          jwt = message.to_jwt(private_key: private_key, originating_domain: originating_domain )
+          message.ext_user_role = %w(student teacher)
+          jwt = message.to_jwt(private_key: private_key, originating_domain: originating_domain)
           json = JSON::JWT.decode(jwt, private_key)[:"org.imsglobal.lti.message"]
-          expect(json[:custom_user_id]).to eq user_id
+          expect(json).to eq (
+                               {
+                                 "custom_user_id" => message.custom_user_id,
+                                 "ext_user_role" => message.ext_user_role
+                               }
+                             )
         end
       end
 

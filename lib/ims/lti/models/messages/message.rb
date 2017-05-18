@@ -166,7 +166,6 @@ module IMS::LTI::Models::Messages
     end
 
     def to_jwt(private_key:, originating_domain:, algorithm: :HS256)
-      ims = post_params
       now = Time.now
       exp = now + 60 * 5
       claim = {
@@ -176,7 +175,7 @@ module IMS::LTI::Models::Messages
         iat: now,
         exp: exp,
         jti: SecureRandom.uuid,
-        "org.imsglobal.lti.message" => ims
+        "org.imsglobal.lti.message" => post_params
       }
 
       jwt = JSON::JWT.new(claim).sign(private_key, algorithm)
