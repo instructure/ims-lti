@@ -40,7 +40,7 @@ module IMS::LTI::Models::Messages
       def inherited(klass)
         @descendants ||= Set.new
         @descendants << klass
-        superclass.inherited(klass) unless(self == Message)
+        superclass.inherited(klass) unless (self == Message)
       end
 
       def descendants
@@ -87,7 +87,7 @@ module IMS::LTI::Models::Messages
     add_required_params :lti_message_type, :lti_version
 
     def self.generate(params)
-      klass = self.descendants.select{|d| d::MESSAGE_TYPE == params['lti_message_type']}.first
+      klass = self.descendants.select {|d| d::MESSAGE_TYPE == params['lti_message_type']}.first
       klass ? klass.new(params) : Message.new(params)
     end
 
@@ -114,11 +114,11 @@ module IMS::LTI::Models::Messages
     end
 
     def add_custom_params(params)
-      params.each { |k, v| k.to_s.start_with?('custom_') ? @custom_params[k.to_s] = v : @custom_params["custom_#{k.to_s}"] = v }
+      params.each {|k, v| k.to_s.start_with?('custom_') ? @custom_params[k.to_s] = v : @custom_params["custom_#{k.to_s}"] = v}
     end
 
     def get_custom_params
-      @custom_params.inject({}) { |hash, (k, v)| hash[k.gsub(/\Acustom_/, '')] = v; hash }
+      @custom_params.inject({}) {|hash, (k, v)| hash[k.gsub(/\Acustom_/, '')] = v; hash}
     end
 
     def post_params
@@ -126,8 +126,8 @@ module IMS::LTI::Models::Messages
     end
 
     def signed_post_params(secret)
-      message_params = { oauth_consumer_key: oauth_consumer_key}.merge(post_params)
-      @message_authenticator = IMS::LTI::Services::MessageAuthenticator.new(launch_url, message_params, secret )
+      message_params = { oauth_consumer_key: oauth_consumer_key }.merge(post_params)
+      @message_authenticator = IMS::LTI::Services::MessageAuthenticator.new(launch_url, message_params, secret)
       @message_authenticator.signed_params
     end
 
@@ -164,6 +164,26 @@ module IMS::LTI::Models::Messages
         super
       end
     end
+
+    def to_jwt(private_key:, originating_domain:, algorithm: :HS256)
+      ims = post_params
+      now = Time.now
+      exp = now + 60 * 5
+      claim = {
+        iss: originating_domain,
+        sub: consumer_key,
+        aud: launch_url,
+        iat: now,
+        exp: exp,
+        jti: SecureRandom.uuid,
+        "org.imsglobal.lti.message" => ims
+      }
+
+      jwt = JSON::JWT.new(claim).sign(private_key, algorithm)
+      jwt.to_s
+    end
+
+    alias_attribute :consumer_key, :oauth_consumer_key
 
     private
 
