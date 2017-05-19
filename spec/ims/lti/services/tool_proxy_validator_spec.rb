@@ -9,13 +9,13 @@ module IMS::LTI::Services
     let(:tool_consumer_profile) do
       IMS::LTI::Models::ToolConsumerProfile.from_json(fixture('models/tool_consumer_profile.json').read)
     end
-    let(:faraday) { double }
+    let(:faraday) {double}
 
     before(:each) do
-      allow(Faraday).to receive(:new) { faraday }
+      allow(Faraday).to receive(:new) {faraday}
     end
 
-    subject do
+    subject(:tp_validator) do
       subj = described_class.new(tool_proxy)
       subj.tool_consumer_profile = tool_consumer_profile
       subj
@@ -24,7 +24,7 @@ module IMS::LTI::Services
     describe "#tool_consumer_profile" do
       it 'tries to download the tool consumer profile' do
         subject.instance_variable_set(:@tool_consumer_profile, nil)
-        expect(faraday).to receive(:get).with('http://lms.example.com/profile/b6ffa601-ce1d-4549-9ccf-145670a964d4') { double(body: '{"id": "profile_id"}') }
+        expect(faraday).to receive(:get).with('http://lms.example.com/profile/b6ffa601-ce1d-4549-9ccf-145670a964d4') {double(body: '{"id": "profile_id"}')}
         tcp = subject.tool_consumer_profile
         expect(tcp).to be_a IMS::LTI::Models::ToolConsumerProfile
         expect(tcp.id).to eq 'profile_id'
@@ -50,9 +50,9 @@ module IMS::LTI::Services
       it "throws an exception if the id doesn't match the tcp in the tool proxy" do
         tcp = tool_consumer_profile
         tcp.id = "bad id"
-        expect { subject.tool_consumer_profile=(tcp) }.
-            to raise_error(IMS::LTI::Errors::InvalidToolConsumerProfile,
-                           "Tool Consumer Profile @id doesn't match the Tool Proxy")
+        expect {subject.tool_consumer_profile=(tcp)}.
+          to raise_error(IMS::LTI::Errors::InvalidToolConsumerProfile,
+                         "Tool Consumer Profile @id doesn't match the Tool Proxy")
       end
 
 
@@ -64,23 +64,23 @@ module IMS::LTI::Services
       end
 
       it 'returns only the invalid actions for a service' do
-        service = tool_consumer_profile.services_offered.find { |s| s.id == "tcp:ToolProxy.item" }
+        service = tool_consumer_profile.services_offered.find {|s| s.id == "tcp:ToolProxy.item"}
         service.action = ["GET"]
         subject.tool_consumer_profile = tool_consumer_profile
-        expect(subject.invalid_services).to eq({"ToolProxy.item" => ["PUT"]})
+        expect(subject.invalid_services).to eq({ "ToolProxy.item" => ["PUT"] })
       end
 
       it 'returns all a non offered service' do
         end_user_service = tool_proxy.security_contract.end_user_service
         end_user_service << IMS::LTI::Models::RestServiceProfile.from_json(
-            {"@type" => "RestServiceProfile",
-             "service" => "http://lms.example.com/profile/b6ffa601-ce1d-4549-9ccf-145670a964d4#Bad.service",
-             "action" => ["PUT"]
-            }
+          { "@type" => "RestServiceProfile",
+            "service" => "http://lms.example.com/profile/b6ffa601-ce1d-4549-9ccf-145670a964d4#Bad.service",
+            "action" => ["PUT"]
+          }
         )
         subj = described_class.new(tool_proxy)
         subj.tool_consumer_profile = tool_consumer_profile
-        expect(subj.invalid_services).to eq({"Bad.service" => ["PUT"]})
+        expect(subj.invalid_services).to eq({ "Bad.service" => ["PUT"] })
       end
 
     end
@@ -94,19 +94,19 @@ module IMS::LTI::Services
         mh = tool_proxy.tool_profile.resource_handlers.first.messages.first
         mh.enabled_capability = mh.enabled_capabilities << 'Bring.a.towel'
         expect(subject.invalid_message_handlers).to eq(
-                                                        {
-                                                            resource_handlers: [
-                                                                {
-                                                                    code: "asmt",
-                                                                    messages: [
-                                                                        {
-                                                                            message_type: "basic-lti-launch-request",
-                                                                            invalid_capabilities: ['Bring.a.towel']
-                                                                        }
-                                                                    ]
-                                                                }
+                                                      {
+                                                        resource_handlers: [
+                                                          {
+                                                            code: "asmt",
+                                                            messages: [
+                                                              {
+                                                                message_type: "basic-lti-launch-request",
+                                                                invalid_capabilities: ['Bring.a.towel']
+                                                              }
                                                             ]
-                                                        }
+                                                          }
+                                                        ]
+                                                      }
                                                     )
       end
 
@@ -114,22 +114,22 @@ module IMS::LTI::Services
         mh = tool_proxy.tool_profile.resource_handlers.first.messages.first
         mh.parameter = mh.parameters << IMS::LTI::Models::Parameter.new(name: 'invalid', variable: 'invalid.variable')
         expect(subject.invalid_message_handlers).to eq(
-                                                        {
-                                                            resource_handlers: [
-                                                                {
-                                                                    code: "asmt",
-                                                                    messages: [
-                                                                        {
-                                                                            message_type: "basic-lti-launch-request",
-                                                                            invalid_parameters: [{
-                                                                                name: 'invalid',
-                                                                                variable: 'invalid.variable'
-                                                                            }]
-                                                                        }
-                                                                    ]
-                                                                }
+                                                      {
+                                                        resource_handlers: [
+                                                          {
+                                                            code: "asmt",
+                                                            messages: [
+                                                              {
+                                                                message_type: "basic-lti-launch-request",
+                                                                invalid_parameters: [{
+                                                                                       name: 'invalid',
+                                                                                       variable: 'invalid.variable'
+                                                                                     }]
+                                                              }
                                                             ]
-                                                        }
+                                                          }
+                                                        ]
+                                                      }
                                                     )
       end
 
@@ -137,14 +137,14 @@ module IMS::LTI::Services
         mh = tool_proxy.tool_profile.resource_handlers.first.messages.first
         mh.message_type = 'invalid'
         expect(subject.invalid_message_handlers).to eq(
-                                                        {
-                                                            resource_handlers: [
-                                                                {
-                                                                    code: "asmt",
-                                                                    invalid_message_types: ['invalid']
-                                                                }
-                                                            ]
-                                                        }
+                                                      {
+                                                        resource_handlers: [
+                                                          {
+                                                            code: "asmt",
+                                                            invalid_message_types: ['invalid']
+                                                          }
+                                                        ]
+                                                      }
                                                     )
       end
 
@@ -153,11 +153,11 @@ module IMS::LTI::Services
         message.message_type = 'invalid'
         tool_proxy.tool_profile.message = message
         expect(subject.invalid_message_handlers).to eq(
-                                                        {
-                                                            singleton_message_handlers:{
-                                                                invalid_message_types: ['invalid']
-                                                            }
+                                                      {
+                                                        singleton_message_handlers: {
+                                                          invalid_message_types: ['invalid']
                                                         }
+                                                      }
                                                     )
       end
 
@@ -197,7 +197,6 @@ module IMS::LTI::Services
         tool_proxy.enabled_capability = []
         tool_proxy.security_contract.shared_secret = nil
         tool_proxy.security_contract.tp_half_shared_secret = tp_half_secret
-
 
 
         expect(subject.invalid_security_contract).to eq(
@@ -252,6 +251,32 @@ module IMS::LTI::Services
 
     end
 
+    describe "#invalid_security_profiles" do
+      let(:security_profile1) {IMS::LTI::Models::SecurityProfile.new(security_profile_name: 'test1', digest_algorithm: 'invalid')}
+      let(:security_profile2) {IMS::LTI::Models::SecurityProfile.new(security_profile_name: 'test2', digest_algorithm: 'HS256')}
+
+
+      it 'returns an empty array if the security profiles are valid' do
+        tool_consumer_profile.security_profile = [security_profile2]
+        tool_proxy.tool_profile.security_profile = [security_profile2]
+        expect(tp_validator.invalid_security_profiles).to eq []
+      end
+
+      it 'returns the name of invalid security profiles' do
+        tool_consumer_profile.security_profile = [security_profile2]
+        tool_proxy.tool_profile.security_profile = [security_profile2, security_profile1]
+        expect(tp_validator.invalid_security_profiles).to eq [{ name: "test1" }]
+      end
+
+      it 'returns the invalid algorithms' do
+        tool_consumer_profile.security_profile = [security_profile2]
+        security_profile3 = IMS::LTI::Models::SecurityProfile.new(security_profile_name: 'test2', digest_algorithm: ['HS256', 'ENC123'])
+        tool_proxy.tool_profile.security_profile = [security_profile3]
+        expect(tp_validator.invalid_security_profiles).to eq [{ name: "test2", algorithms: ['ENC123'] }]
+      end
+
+
+    end
 
     describe "#errors" do
 
@@ -261,7 +286,7 @@ module IMS::LTI::Services
         message.message_type = 'invalid'
         tool_proxy.tool_profile.message = message
 
-        service = tool_consumer_profile.services_offered.find { |s| s.id == "tcp:ToolProxy.item" }
+        service = tool_consumer_profile.services_offered.find {|s| s.id == "tcp:ToolProxy.item"}
         service.action = ["GET"]
         subject.tool_consumer_profile = tool_consumer_profile
 
@@ -269,20 +294,27 @@ module IMS::LTI::Services
         tool_proxy.enabled_capability = ['Security.splitSecret', "DSF"]
         tool_proxy.security_contract.tp_half_shared_secret = tp_half_secret
 
+        security_profile = IMS::LTI::Models::SecurityProfile.new(security_profile_name: 'test', digest_algorithm: 'invalid')
+        tool_proxy.tool_profile.security_profile = [security_profile]
+
         expect(subject.errors).to eq(
                                     {
-                                      :invalid_security_contract => {
-                                         :invalid_secret_type => :shared_secret
+                                      invalid_security_contract: {
+                                        invalid_secret_type: :shared_secret
                                       },
-                                      :invalid_capabilities => ["Security.splitSecret", "DSF"],
-                                      :invalid_message_handlers => {
-                                        :singleton_message_handlers => {
-                                          :invalid_message_types => ["invalid"]
+                                      invalid_capabilities: ["Security.splitSecret", "DSF"],
+                                      invalid_message_handlers: {
+                                        singleton_message_handlers: {
+                                          invalid_message_types: ["invalid"]
                                         }
                                       },
                                       :invalid_services => {
                                         "ToolProxy.item" => ["PUT"]
-                                      }
+                                      },
+                                      invalid_security_profiles:
+                                        [
+                                          { name: "test" }
+                                        ]
                                     }
                                   )
       end
@@ -318,6 +350,11 @@ module IMS::LTI::Services
         expect(subject.valid?).to be_falsey
       end
 
+      it 'returns an error if the security profiles are invalid' do
+        security_profile = IMS::LTI::Models::SecurityProfile.new(security_profile_name: 'test', digest_algorithm: 'invalid')
+        tool_proxy.tool_profile.security_profile = [security_profile]
+        expect(tp_validator.valid?).to be_falsey
+      end
 
     end
 

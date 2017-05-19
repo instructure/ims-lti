@@ -85,25 +85,42 @@ module IMS::LTI::Services
       ret_val
     end
 
+    def invalid_security_profiles
+      security_profiles = tool_proxy.tool_profile.security_profiles
+      array = security_profiles.each_with_object([]) do |sp, array|
+        tcp_sp = tool_consumer_profile.security_profile_by_name(security_profile_name: sp.security_profile_name)
+        if tcp_sp
+          supported_algorithms = sp.digest_algorithms & tcp_sp.digest_algorithms
+          unsupported_algorithms = sp.digest_algorithms - supported_algorithms
+          unless unsupported_algorithms.empty?
+            array << { name: sp.security_profile_name, algorithms: unsupported_algorithms }
+          end
+        else
+          array << { name: sp.security_profile_name }
+        end
+      end
+      array
+    end
+
     def errors
       ret_val = {}
       ret_val[:invalid_security_contract] = invalid_security_contract unless invalid_security_contract.empty?
       ret_val[:invalid_capabilities] = invalid_capabilities unless invalid_capabilities.empty?
       ret_val[:invalid_message_handlers] = invalid_message_handlers unless invalid_message_handlers.empty?
       ret_val[:invalid_services] = invalid_services unless invalid_services.empty?
-
+      ret_val[:invalid_security_profiles] = invalid_security_profiles unless invalid_security_profiles.empty?
       ret_val
     end
 
     def valid?
-      invalid_capabilities.empty? && invalid_security_contract.empty? && invalid_services.empty? && invalid_message_handlers.empty?
+      errors.keys.empty?
     end
 
     private
 
     def normalize_strings(string, *strings)
       strings.push(string)
-      normalized = strings.map { |s| s.upcase.strip }
+      normalized = strings.map {|s| s.upcase.strip}
       normalized
     end
 
@@ -112,7 +129,7 @@ module IMS::LTI::Services
         invalid_capabilities = mh.enabled_capabilities - capabilities_offered
         invalid_parameters = validate_parameters(mh.parameters)
         if !invalid_parameters.empty? || !invalid_capabilities.empty?
-          hash = {message_type: mh.message_type, }
+          hash = { message_type: mh.message_type, }
           hash[:invalid_capabilities] = invalid_capabilities unless invalid_capabilities.empty?
           hash[:invalid_parameters] = invalid_parameters unless invalid_parameters.empty?
           array << hash
@@ -124,7 +141,7 @@ module IMS::LTI::Services
     def validate_parameters(parameters)
       parameters.each_with_object([]) do |p, array|
         if !p.fixed? && !capabilities_offered.include?(p.variable)
-          array << {name: p.name, variable: p.variable}
+          array << { name: p.name, variable: p.variable }
         end
       end
     end
@@ -142,7 +159,7 @@ module IMS::LTI::Services
         invalid_mhs = validate_message_handlers(rh.messages)
         if !invalid_mhs.empty? || !invalid_message_types.empty?
           hash = {
-              code: rh.resource_type.code,
+            code: rh.resource_type.code,
           }
           hash[:messages] = invalid_mhs unless invalid_mhs.empty?
           hash[:invalid_message_types] = invalid_message_types unless invalid_message_types.empty?
@@ -160,7 +177,6 @@ module IMS::LTI::Services
       hash[:invalid_message_types] = invalid_message_types unless invalid_message_types.empty?
       hash
     end
-
 
   end
 end
