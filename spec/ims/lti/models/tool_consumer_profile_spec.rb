@@ -2,6 +2,8 @@ require 'spec_helper'
 module IMS::LTI::Models
   describe ToolConsumerProfile do
 
+    subject(:tool_consumer_profile) { ToolConsumerProfile.new}
+
     it 'should serialize to json' do
       subject.id = 'my_id'
       subject.lti_version = 'lti_v2p0'
@@ -32,6 +34,16 @@ module IMS::LTI::Models
 
     it 'pluralizes security_profile' do
       expect(subject.security_profiles).to eq []
+    end
+
+    describe '#security_profile_by_name' do
+      let(:security_profile) {IMS::LTI::Models::SecurityProfile.new(security_profile_name: 'test1', digest_algorithm: 'invalid')}
+
+      it 'looks up the profile by name' do
+        tool_consumer_profile.security_profile = [security_profile]
+        profile = tool_consumer_profile.security_profile_by_name(security_profile_name: security_profile.security_profile_name)
+        expect(profile).to eq security_profile
+      end
     end
 
     describe '#reregistration_capable?' do
