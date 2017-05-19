@@ -121,6 +121,10 @@ module IMS::LTI::Models::Messages
       @custom_params.inject({}) {|hash, (k, v)| hash[k.gsub(/\Acustom_/, '')] = v; hash}
     end
 
+    def get_ext_params
+      @ext_params.inject({}) {|hash, (k, v)| hash[k.gsub(/\Aext_/, '')] = v; hash}
+    end
+
     def post_params
       unknown_params.merge(@custom_params).merge(@ext_params).merge(parameters)
     end
@@ -168,6 +172,9 @@ module IMS::LTI::Models::Messages
     def to_jwt(private_key:, originating_domain:, algorithm: :HS256)
       now = Time.now
       exp = now + 60 * 5
+      ims = unknown_params.merge(parameters)
+      ims[:custom] = get_custom_params
+      ims[:ext] = get_ext_params
       claim = {
         iss: originating_domain,
         sub: consumer_key,
@@ -175,9 +182,8 @@ module IMS::LTI::Models::Messages
         iat: now,
         exp: exp,
         jti: SecureRandom.uuid,
-        "org.imsglobal.lti.message" => post_params
+        "org.imsglobal.lti.message" => ims
       }
-
       jwt = JSON::JWT.new(claim).sign(private_key, algorithm)
       jwt.to_s
     end

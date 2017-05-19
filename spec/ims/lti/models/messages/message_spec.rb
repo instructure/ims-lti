@@ -132,6 +132,15 @@ module IMS::LTI::Models::Messages
       end
     end
 
+    describe '#get_ext_params' do
+      it 'removes "ext_" to the parameter' do
+        message.ext_name = "name"
+        params = message.get_ext_params
+        expect(params.keys.size).to eq 1
+        expect(params.keys.first).to eq 'name'
+      end
+    end
+
     context 'OAuth' do
       describe "#signed_post_params" do
         it "creates a hash with the oauth signature" do
@@ -242,14 +251,21 @@ module IMS::LTI::Models::Messages
       context "ims claims" do
         let(:user_id) {"user_id"}
         it 'sets ims claims' do
+          roles = ["Instructor", "Student"]
+          message = Message.new(roles: roles)
           message.custom_user_id = user_id
-          message.ext_user_role = %w(student teacher)
+          message.ext_life_universe_everything = 42
           jwt = message.to_jwt(private_key: private_key, originating_domain: originating_domain)
           json = JSON::JWT.decode(jwt, private_key)[:"org.imsglobal.lti.message"]
           expect(json).to eq (
                                {
-                                 "custom_user_id" => message.custom_user_id,
-                                 "ext_user_role" => message.ext_user_role
+                                 "roles" => roles,
+                                 "custom" => {
+                                   "user_id" => message.custom_user_id
+                                 },
+                                 "ext" => {
+                                   "life_universe_everything" => message.ext_life_universe_everything
+                                 }
                                }
                              )
         end
