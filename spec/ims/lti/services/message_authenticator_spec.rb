@@ -37,6 +37,39 @@ module IMS::LTI::Services
         expect(authenticator.valid_signature?).to eq false
       end
 
+      context 'jwt' do
+        let(:originating_domain) {'example.com'}
+        let(:consumer_key) {'42'}
+        let(:orig_message)  do
+          m = IMS::LTI::Models::Messages::BasicLTILaunchRequest.new(consumer_key: consumer_key)
+          m.launch_url = launch_url
+          m
+        end
+        let(:jwt_params) {orig_message.jwt_params(private_key: secret, originating_domain: originating_domain)}
+
+        it 'validates a jwt message' do
+          authenticator = MessageAuthenticator.new(launch_url, jwt_params, secret)
+          expect(authenticator.valid_signature?).to eq true
+        end
+
+        it 'returns false for a jwt with the wrong secret' do
+          authenticator = MessageAuthenticator.new(launch_url, jwt_params, 'bad_secret')
+          expect(authenticator.valid_signature?).to eq false
+        end
+
+        it 'is false if the launch urls do not match' do
+          authenticator = MessageAuthenticator.new('http://invalid.com/launch', jwt_params, secret)
+          expect(authenticator.valid_signature?).to eq false
+        end
+
+        it 'ignores matching on the fragment' do
+          authenticator = MessageAuthenticator.new("#{launch_url}#fragment", jwt_params, secret)
+          expect(authenticator.valid_signature?).to eq true
+        end
+
+
+      end
+
     end
 
     describe '#message' do
