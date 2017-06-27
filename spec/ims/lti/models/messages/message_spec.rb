@@ -206,7 +206,7 @@ module IMS::LTI::Models::Messages
           expect(message).to be_a BasicLTILaunchRequest
         end
 
-        it 'sets ims paramaters' do
+        it 'sets ims parameters' do
           context_id = '123'
           orig_message.context_id = context_id
           message = Message.generate(jwt_params)
