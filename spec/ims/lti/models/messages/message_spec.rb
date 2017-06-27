@@ -201,7 +201,7 @@ module IMS::LTI::Models::Messages
         end
         let(:jwt_params) {orig_message.jwt_params(private_key: private_key, originating_domain: originating_domain)}
 
-        it 'generates a the correct message' do
+        it 'generates the correct message' do
           message = Message.generate(jwt_params)
           expect(message).to be_a BasicLTILaunchRequest
         end
