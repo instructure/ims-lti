@@ -14,7 +14,7 @@ module IMS::LTI::Services
 
 
     def valid_signature?
-      simple_oauth_header.valid?(signature: signature)
+       message.jwt ? valid_jwt? : simple_oauth_header.valid?(signature: signature)
     end
 
     def message
@@ -52,6 +52,19 @@ module IMS::LTI::Services
 
 
     private
+
+    def valid_jwt?
+      begin
+        jwt = JSON::JWT.decode(message.jwt, @secret)
+        aud1 = Addressable::URI.parse(jwt['aud'])
+        aud2 = Addressable::URI.parse(launch_url)
+        [aud1, aud2].each{ |aud| aud.fragment = '' }
+        aud1.normalize == aud2.normalize
+      rescue JSON::JWS::VerificationFailed
+        false
+      end
+    end
+
     def parse_params(params)
       params.inject([{}, {}]) do |array, (k, v)|
         attr = k.to_s.sub('oauth_', '').to_sym

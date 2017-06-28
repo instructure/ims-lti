@@ -81,20 +81,34 @@ module IMS::LTI::Models::Messages
     OAUTH_KEYS = :oauth_callback, :oauth_consumer_key, :oauth_nonce, :oauth_signature, :oauth_signature_method,
       :oauth_timestamp, :oauth_token, :oauth_verifier, :oauth_version
 
-    attr_accessor :launch_url, *OAUTH_KEYS
+    attr_accessor :launch_url, :jwt, *OAUTH_KEYS
     attr_reader :unknown_params, :custom_params, :ext_params
 
     add_required_params :lti_message_type, :lti_version
 
-    def self.generate(params)
+    def self.generate(launch_params)
+      params = launch_params.key?('jwt') ? parse_jwt(jwt: launch_params['jwt']) : launch_params
       klass = self.descendants.select {|d| d::MESSAGE_TYPE == params['lti_message_type']}.first
-      klass ? klass.new(params) : Message.new(params)
+      message = klass ? klass.new(params) : Message.new(params)
+      message.jwt = launch_params['jwt'] if launch_params.key?('jwt')
+      message
     end
 
-    def initialize(attrs = {})
+    def self.parse_jwt(jwt:)
+      decoded_jwt = JSON::JWT.decode(jwt, :skip_verification)
+      params = decoded_jwt['org.imsglobal.lti.message'] || {}
+      custom = params.delete(:custom)
+      custom.each {|k,v| params["custom_#{k}"] = v }
+      params['consumer_key'] = decoded_jwt[:sub]
+      ext = params.delete(:ext)
+      ext.each {|k,v| params["ext_#{k}"] = v }
+      params
+    end
 
-      @custom_params = {}
-      @ext_params = {}
+    def initialize(attrs = {}, custom_params = {}, ext_params = {})
+
+      @custom_params = custom_params
+      @ext_params = ext_params
       @unknown_params = {}
 
       attrs.each do |k, v|
@@ -127,6 +141,10 @@ module IMS::LTI::Models::Messages
 
     def post_params
       unknown_params.merge(@custom_params).merge(@ext_params).merge(parameters)
+    end
+
+    def jwt_params(private_key:, originating_domain:, algorithm: :HS256)
+      { 'jwt' => to_jwt(private_key: private_key, originating_domain: originating_domain, algorithm: algorithm) }
     end
 
     def signed_post_params(secret)
