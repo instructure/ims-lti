@@ -1,4 +1,6 @@
 module IMS::LTI::Models
+    require 'uri'
+  
   class LTIModel
     LTI_VERSION_2P0 = 'LTI-2p0'.freeze
     LTI_VERSION_2P1 = 'LTI-2p1'.freeze
@@ -90,6 +92,7 @@ module IMS::LTI::Models
     end
 
     def from_json(json)
+      json = URI.unescape(json)
       # JSON.parse(json.to_json) is a quick and dirty way to clone the json object passed in
       data = json.is_a?(String) ? JSON.parse(json) : JSON.parse(json.to_json)
       if data.is_a? Array
