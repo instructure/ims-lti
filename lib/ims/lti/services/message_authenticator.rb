@@ -33,8 +33,7 @@ module IMS::LTI::Services
           @options.merge(
             {
               consumer_key: consumer_key,
-              consumer_secret: @secret,
-              callback: 'about:blank'
+              consumer_secret: @secret
             }
           )
         )
