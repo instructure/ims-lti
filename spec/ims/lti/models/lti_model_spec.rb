@@ -190,6 +190,11 @@ module IMS::LTI::Models
       end
 
       describe '#from_json' do
+        it 'decodes encoded json' do
+          encoded_json = '%7B%22two%22%3A%20%7B%22a%22%3A%20%22a%22%7D%7D'
+          model = SampleClass.new.from_json(encoded_json)
+          expect(model.two.a).to eq 'a'
+        end
 
         it 'deserializes json with json key mappings' do
           model = SampleClass.new.from_json('{"@one":1}')
