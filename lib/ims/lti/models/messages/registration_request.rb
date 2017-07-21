@@ -1,7 +1,8 @@
 module IMS::LTI::Models::Messages
   class RegistrationRequest < RequestMessage
 
-    add_required_params :reg_key, :reg_password, :tc_profile_url, :launch_presentation_return_url
+    add_required_params :reg_key, :reg_password, :tc_profile_url, :launch_presentation_return_url, :tool_proxy_guid,
+                        :tool_proxy_url
 
 
     MESSAGE_TYPE = 'ToolProxyRegistrationRequest'

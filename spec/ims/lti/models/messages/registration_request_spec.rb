@@ -14,7 +14,8 @@ module IMS::LTI::Models::Messages
     end
 
     it 'returns required param names' do
-      expect(described_class.required_params).to eq [:lti_message_type, :lti_version, :reg_key, :reg_password, :tc_profile_url, :launch_presentation_return_url]
+      expect(described_class.required_params).to eq [:lti_message_type, :lti_version, :reg_key, :reg_password, :tc_profile_url, :launch_presentation_return_url,
+                                                     :tool_proxy_guid, :tool_proxy_url]
     end
 
     it 'returns recommended param names' do
@@ -45,7 +46,7 @@ module IMS::LTI::Models::Messages
       end
 
       it 'returns the key and secret' do
-        expect(subject.generate_key_and_password).to eq 2.times.map{ 'random_uuid' }
+        expect(subject.generate_key_and_password).to eq 2.times.map { 'random_uuid' }
       end
     end
 
