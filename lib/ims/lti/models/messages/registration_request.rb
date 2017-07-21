@@ -13,7 +13,7 @@ module IMS::LTI::Models::Messages
     end
 
     def generate_key_and_password
-      self.reg_key, self.reg_password = 2.times.map {SecureRandom.uuid}
+      self.reg_key, self.reg_password = 2.times.map { SecureRandom.uuid }
     end
 
   end
