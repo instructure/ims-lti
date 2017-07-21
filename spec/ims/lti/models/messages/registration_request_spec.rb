@@ -46,7 +46,7 @@ module IMS::LTI::Models::Messages
       end
 
       it 'returns the key and secret' do
-        expect(subject.generate_key_and_password).to eq 2.times.map {'random_uuid'}
+        expect(subject.generate_key_and_password).to eq 2.times.map { 'random_uuid' }
       end
     end
 
