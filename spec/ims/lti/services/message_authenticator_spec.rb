@@ -12,8 +12,7 @@ module IMS::LTI::Services
         launch_url,
         params,
         consumer_key: oauth_consumer_key,
-        consumer_secret: secret,
-        callback: 'about:blank'
+        consumer_secret: secret
       )
       header.signed_attributes.merge(params)
     end
@@ -99,10 +98,6 @@ module IMS::LTI::Services
         expect(subject.signed_params).to have_key(:oauth_signature)
       end
 
-      it 'includes the oauth_callback' do
-        ma = MessageAuthenticator.new(launch_url, params, secret)
-        expect(ma.signed_params).to include({oauth_callback: 'about:blank'})
-      end
     end
 
   end
