@@ -22,7 +22,7 @@ module IMS::LTI::Models::Messages
     end
 
     it 'returns optional param names' do
-      expect(described_class.optional_params).to eq [:launch_presentation_locale, :launch_presentation_css_url, :context_type, :role_scope_mentor, :user_image]
+      expect(described_class.optional_params).to eq [:launch_presentation_locale, :launch_presentation_css_url, :context_type, :role_scope_mentor, :user_image, :lis_outcome_service_url, :lis_person_sourced_id, :lis_result_sourcedid]
     end
 
     it 'returns deprecated param names' do
