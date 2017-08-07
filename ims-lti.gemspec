@@ -4,7 +4,7 @@
 
 Gem::Specification.new do |spec|
   spec.name = 'ims-lti'
-  spec.version = '2.1.5'
+  spec.version = '2.1.6'
   spec.authors = ['Instructure']
   spec.email = 'opensource@instructure.com'
   spec.summary = %q{Ruby library for creating IMS LTI tool providers and consumers}
