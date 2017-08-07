@@ -158,6 +158,18 @@ module IMS::LTI::Models::Messages
           expect(params.key?(:oauth_timestamp)).to eq true
           expect(params.key?(:oauth_nonce)).to eq true
         end
+
+        it "includes oauth_params" do
+          message.custom_user_id = 'user_id'
+          message.launch_url = 'http://www.example.com'
+          message.oauth_consumer_key = 'key'
+          message.oauth_callback = 'about:blank'
+
+          params = message.signed_post_params('secret')
+
+          expect(params[:oauth_callback]).to eq 'about:blank'
+        end
+
       end
     end
 
