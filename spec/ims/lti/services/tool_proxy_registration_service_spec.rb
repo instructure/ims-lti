@@ -112,7 +112,7 @@ module IMS::LTI::Services
       end
 
       context 'reregistration' do
-        let(:reregistration_request) { IMS::LTI::Models::Messages::ToolProxyReregistrationRequest.new(tc_profile_url: '/profile/url') }
+        let(:reregistration_request) { IMS::LTI::Models::Messages::ToolProxyUpdateRequest.new(tc_profile_url: '/profile/url') }
         subject { ToolProxyRegistrationService.new(reregistration_request) }
         let(:confirmation_url) { 'http://example.com/tool_proxy/123?correlation_id=3' }
         before(:each) do

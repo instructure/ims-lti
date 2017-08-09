@@ -1,7 +1,10 @@
+class ToolProxyUpdateRequestSpec
+end
+
 require 'spec_helper'
 
 module IMS::LTI::Models::Messages
-  describe ToolProxyReregistrationRequest do
+  describe ToolProxyUpdateRequest do
 
     it 'returns required param names' do
       expect(described_class.required_params).to match_array %i(lti_message_type tc_profile_url launch_presentation_return_url lti_version)
@@ -16,7 +19,7 @@ module IMS::LTI::Models::Messages
     end
 
     it 'should have a default value for lti_message_type' do
-      expect(subject.lti_message_type).to eq 'ToolProxyReregistrationRequest'
+      expect(subject.lti_message_type).to eq 'ToolProxyUpdateRequest'
     end
 
 

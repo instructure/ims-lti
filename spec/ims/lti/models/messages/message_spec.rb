@@ -196,8 +196,8 @@ module IMS::LTI::Models::Messages
       end
 
       it 'generates a ToolProxyReregistration message' do
-        message = described_class.generate({ 'lti_message_type' => ToolProxyReregistrationRequest::MESSAGE_TYPE })
-        expect(message).to be_a ToolProxyReregistrationRequest
+        message = described_class.generate({ 'lti_message_type' => ToolProxyUpdateRequest::MESSAGE_TYPE })
+        expect(message).to be_a ToolProxyUpdateRequest
       end
 
       context "jwt" do

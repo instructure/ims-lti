@@ -76,7 +76,7 @@ module IMS::LTI::Services
     end
 
     def reregistration?
-      @registration_request.is_a?(IMS::LTI::Models::Messages::ToolProxyReregistrationRequest)
+      @registration_request.is_a?(IMS::LTI::Models::Messages::ToolProxyUpdateRequest)
     end
 
 
