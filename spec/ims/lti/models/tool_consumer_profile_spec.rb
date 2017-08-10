@@ -48,7 +48,7 @@ module IMS::LTI::Models
 
     describe '#reregistration_capable?' do
       it 'must return true when the reregistration capability is present' do
-        subject.capability_offered = %w{ToolProxyReregistrationRequest}
+        subject.capability_offered = %w{ToolProxyUpdateRequest}
         expect(subject).to be_reregistration_capable
       end
 

@@ -1,10 +1,10 @@
 module IMS::LTI::Models::Messages
-  class ToolProxyReregistrationRequest < RequestMessage
+  class ToolProxyUpdateRequest < RequestMessage
 
     add_required_params :tc_profile_url, :launch_presentation_return_url
 
 
-    MESSAGE_TYPE = 'ToolProxyReregistrationRequest'
+    MESSAGE_TYPE = 'ToolProxyUpdateRequest'
 
     def initialize(attrs = {})
       super(attrs)
