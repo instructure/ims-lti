@@ -34,7 +34,7 @@ module IMS::LTI::Models
     end
 
     def reregistration_capable?
-      @capability_offered.include?(Messages::ToolProxyReregistrationRequest::MESSAGE_TYPE)
+      @capability_offered.include?(Messages::ToolProxyUpdateRequest::MESSAGE_TYPE)
     end
 
     def security_profile_by_name(security_profile_name:)

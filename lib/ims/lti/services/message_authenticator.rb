@@ -46,7 +46,7 @@ module IMS::LTI::Services
     end
 
     def signed_params
-      simple_oauth_header.signed_attributes.merge(params)
+      simple_oauth_header.signed_attributes.merge(@parsed_params)
     end
 
 
