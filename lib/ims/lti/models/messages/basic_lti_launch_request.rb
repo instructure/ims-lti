@@ -3,7 +3,8 @@ module IMS::LTI::Models::Messages
 
     add_required_params :resource_link_id
     add_recommended_params :context_id, :launch_presentation_return_url, :tool_consumer_instance_guid
-    add_optional_params :context_type, :role_scope_mentor, :user_image
+    add_optional_params :context_type, :role_scope_mentor, :user_image,
+                      :lis_outcome_service_url, :lis_person_sourced_id, :lis_result_sourcedid
     add_deprecated_params :context_title, :context_label, :resource_link_title, :resource_link_description,
                       :lis_person_name_given, :lis_person_name_family, :lis_person_name_full,
                       :lis_person_contact_email_primary, :user_image, :lis_person_sourcedid,
