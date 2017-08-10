@@ -149,14 +149,23 @@ module IMS::LTI::Models::Messages
           message.oauth_consumer_key = 'key'
 
           params = message.signed_post_params('secret')
-
           expect(params[:oauth_consumer_key]).to eq "key"
           expect(params[:oauth_signature_method]).to eq "HMAC-SHA1"
           expect(params[:oauth_version]).to eq "1.0"
-          expect(params['custom_user_id']).to eq "user_id"
+          expect(params[:custom_user_id]).to eq "user_id"
           expect(params.key?(:oauth_signature)).to eq true
           expect(params.key?(:oauth_timestamp)).to eq true
           expect(params.key?(:oauth_nonce)).to eq true
+        end
+
+        it "only includes the counsumer key once" do
+          message.custom_user_id = 'user_id'
+          message.launch_url = 'http://www.example.com'
+          message.oauth_consumer_key = 'key'
+
+          params = message.signed_post_params('secret')
+          expect(params[:oauth_consumer_key]).to eq "key"
+          expect(params).to_not include('oauth_consumer_key')
         end
 
         it "includes oauth_params" do
