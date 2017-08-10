@@ -148,7 +148,7 @@ module IMS::LTI::Models::Messages
     end
 
     def signed_post_params(secret)
-      message_params = { oauth_consumer_key: oauth_consumer_key }.merge(post_params)
+      message_params = oauth_params.merge(post_params)
       @message_authenticator = IMS::LTI::Services::MessageAuthenticator.new(launch_url, message_params, secret)
       @message_authenticator.signed_params
     end
