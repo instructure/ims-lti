@@ -6,7 +6,7 @@ module IMS::LTI::Errors
     def initialize(response: nil, assertion: nil, grant_type: nil)
       @response = response
       @assertion = assertion
-      @grant_type
+      @grant_type = grant_type
     end
 
   end
