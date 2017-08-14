@@ -57,6 +57,12 @@ module IMS::LTI::Services
         }
         body.merge!(@additional_params)
         response = connection.post(aud, body)
+        logger.debug('+++++++ Access Token Request +++++++')
+        logger.debug("aud: #{aud}")
+        logger.debug("grant_type: #{grant_type}")
+        logger.debug(assertion)
+        logger.debug(response.to_json)
+        logger.debut('++++++++++++++++++++++++++++++++++++')
         raise IMS::LTI::Errors::AuthenticationFailedError.new(response: response) unless response.success?
         @_response_time = Time.now
         JSON.parse(response.body)
