@@ -92,8 +92,13 @@ module IMS::LTI::Models
     end
 
     def from_json(json)
-      # JSON.parse(json.to_json) is a quick and dirty way to clone the json object passed in
-      data = json.is_a?(String) ? JSON.parse(URI.unescape(json)) : JSON.parse(URI.unescape(json.to_json))
+      json = json.to_json unless json.is_a?(String)
+      begin
+        data = JSON.parse(json)
+      rescue
+        data = JSON.parse(URI.unescape(json))
+      end
+
       if data.is_a? Array
         data.map { |hash| self.class.from_json(hash.to_json) }
       else

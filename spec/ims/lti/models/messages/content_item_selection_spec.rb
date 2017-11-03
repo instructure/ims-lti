@@ -33,6 +33,27 @@ module IMS::LTI::Models::Messages
         message = described_class.new content_items: content_item_container.to_json
         expect(message.content_items.first).to be_a IMS::LTI::Models::ContentItems::ContentItem
       end
+
+      it 'does not decode the contents of json' do
+        json_with_encoded_values = '{
+          "@context": "http://purl.imsglobal.org/ctx/lti/v1/ContentItem",
+            "@graph": [{
+              "@type": "LtiLinkItem",
+              "@id": "http://example.com/messages/launch",
+              "url": "http://example.com/messages/launch?some_custom_json=%7B%22field1%22%3A%7B%22field2%22%3A3%7D%7D",
+              "title": "Link Title",
+              "text": "Link Text",
+              "mediaType": "application/vnd.ims.lti.v1.ltilink",
+              "windowTarget": "blank",
+              "placementAdvice": {
+                "presentationDocumentTarget": "window"
+              }
+            }]
+          }'
+          message = described_class.new content_items: json_with_encoded_values
+          expect(message.content_items.first.url).to eq 'http://example.com/messages/launch?some_custom_json=%7B%22field1%22%3A%7B%22field2%22%3A3%7D%7D'
+      end
+
       it 'assigns content item without parsing' do
         message = described_class.new content_items: [content_item]
         expect(message.content_items).to eq [content_item]
