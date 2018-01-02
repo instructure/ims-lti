@@ -1,5 +1,5 @@
 module IMS
   module LTI
-    VERSION = "2.0.0.beta.27"
+    VERSION = "2.2.3"
   end
 end
