@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'faraday', '~> 0.8'
   spec.add_dependency 'faraday_middleware', '~> 0.8'
   spec.add_dependency 'json-jwt', '~> 1.7'
-  spec.add_dependency 'simple_oauth', '0.2'
+  spec.add_dependency 'simple_oauth', '~> 0.3.1'
 
   spec.add_development_dependency 'byebug', '~> 8.2'
   spec.add_development_dependency 'guard', '~> 2.13'
