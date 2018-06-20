@@ -1,10 +1,10 @@
 require 'active_model'
-require_relative 'concerns'
+require_relative '../concerns'
 
 module Ims::Lti::Models::Messages
   # Class represeting a content item selection request.
   class ContentItemSelectionRequest
-    include Concerns::SerializedParameters
+    include Ims::Lti::Models::Concerns::SerializedParameters
     attr_accessor :accept_copy_advice,
                   :accept_media_types,
                   :accept_multiple,

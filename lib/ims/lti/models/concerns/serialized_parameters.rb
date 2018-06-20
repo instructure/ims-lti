@@ -1,7 +1,8 @@
+require 'active_model'
 require 'active_support/concern'
 
 # Module providing model and serialization methods to messages.
-module Ims::Lti::Models::Messages::Concerns::SerializedParameters
+module Ims::Lti::Models::Concerns::SerializedParameters
   extend ActiveSupport::Concern
   include ActiveModel::Model
   include ActiveModel::Serialization

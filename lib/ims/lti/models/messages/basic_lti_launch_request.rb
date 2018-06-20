@@ -1,10 +1,10 @@
 require 'active_model'
-require_relative 'concerns'
+require_relative '../concerns'
 
 module Ims::Lti::Models::Messages
   # Class represeting a basic lti launch request.
   class BasicLtiLaunchRequest
-    include Concerns::SerializedParameters
+    include Ims::Lti::Models::Concerns::SerializedParameters
     attr_accessor :context_id,
                   :context_label,
                   :context_title,
