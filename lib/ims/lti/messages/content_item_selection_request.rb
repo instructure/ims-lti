@@ -1,16 +1,23 @@
 require 'active_model'
-require_relative '../concerns'
 
-module Ims::Lti::Models::Messages
+module Ims::Lti::Messages
   # Class represeting a content item selection request.
   class ContentItemSelectionRequest
-    include Ims::Lti::Models::Concerns::SerializedParameters
+    include ActiveModel::Model
+
+    REQUIRED_PARAMETERS = %i[
+      accept_media_types
+      accept_presentation_document_targets
+      content_item_return_url
+      lti_message_type
+      lti_version
+    ].freeze
+
+    validates_presence_of *REQUIRED_PARAMETERS
+    attr_accessor *REQUIRED_PARAMETERS
     attr_accessor :accept_copy_advice,
-                  :accept_media_types,
                   :accept_multiple,
-                  :accept_presentation_document_targets,
                   :accept_unsigned,
-                  :content_item_return_url,
                   :context_id,
                   :context_label,
                   :context_title,
@@ -23,8 +30,6 @@ module Ims::Lti::Models::Messages
                   :lis_person_name_full,
                   :lis_person_name_given,
                   :lis_person_sourcedid,
-                  :lti_message_type,
-                  :lti_version,
                   :role_scope_mentor,
                   :text,
                   :title,

@@ -1,4 +1,4 @@
-module Ims::Lti::Models::Messages
+module Ims::Lti::Messages
   RSpec.describe ContentItemSelection do
     let(:lti_msg) { 'hello' }
     let(:message) { ContentItemSelection.new }
@@ -18,18 +18,14 @@ module Ims::Lti::Models::Messages
       end
     end
 
-    describe '#parameters' do
-      it 'contains all available message parameters' do
-        expect(message.parameters.keys).to match_array [
-          :lti_message_type,
-          :lti_version,
-          :content_items,
-          :data,
-          :lti_msg,
-          :lti_log,
-          :lti_errormsg,
-          :lti_errorlog
-        ]
+    describe 'validations' do
+      it 'is not valid when missing required parameters' do
+        message.lti_message_type = nil
+        expect(message).to be_invalid
+      end
+
+      it 'is valid when all required parameters are present' do
+        expect(message).to be_valid
       end
     end
   end

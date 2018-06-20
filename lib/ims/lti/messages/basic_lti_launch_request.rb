@@ -1,10 +1,18 @@
 require 'active_model'
-require_relative '../concerns'
 
-module Ims::Lti::Models::Messages
+module Ims::Lti::Messages
   # Class represeting a basic lti launch request.
   class BasicLtiLaunchRequest
-    include Ims::Lti::Models::Concerns::SerializedParameters
+    include ActiveModel::Model
+
+    REQUIRED_PARAMETERS = %i[
+      resource_link_id
+      lti_version
+      lti_message_type
+    ].freeze
+
+    validates_presence_of *REQUIRED_PARAMETERS
+    attr_accessor *REQUIRED_PARAMETERS
     attr_accessor :context_id,
                   :context_label,
                   :context_title,
@@ -20,10 +28,7 @@ module Ims::Lti::Models::Messages
                   :lis_person_sourced_id,
                   :lis_person_sourcedid,
                   :lis_result_sourcedid,
-                  :lti_message_type,
-                  :lti_version,
                   :resource_link_description,
-                  :resource_link_id,
                   :resource_link_title,
                   :role_scope_mentor,
                   :tool_consumer_info_product_family_code,

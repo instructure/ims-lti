@@ -1,12 +1,15 @@
-require_relative '../concerns'
+require 'active_model'
 
-module Ims::Lti::Models::Messages
+module Ims::Lti::Messages
   # Class represeting a content item selection request.
   class ContentItemSelection
-    include Ims::Lti::Models::Concerns::SerializedParameters
-    attr_accessor :lti_message_type,
-                  :lti_version,
-                  :content_items,
+    include ActiveModel::Model
+
+    REQUIRED_PARAMETERS = %i[lti_message_type lti_version].freeze
+
+    validates_presence_of *REQUIRED_PARAMETERS
+    attr_accessor *REQUIRED_PARAMETERS
+    attr_accessor :content_items,
                   :data,
                   :lti_msg,
                   :lti_log,

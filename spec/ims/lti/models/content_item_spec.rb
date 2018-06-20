@@ -1,5 +1,3 @@
-require 'byebug'
-
 module Ims::Lti::Models
   RSpec.describe ContentItem do
     describe 'initialize' do
@@ -13,7 +11,8 @@ module Ims::Lti::Models
       it 'is valid if "icon" and "thumbnail" are instances of Image' do
         content_item = ContentItem.new(
           icon: Image.new,
-          thumbnail: Image.new
+          thumbnail: Image.new,
+          mediaType: 'text/html'
         )
         expect(content_item).to be_valid
       end
@@ -32,35 +31,22 @@ module Ims::Lti::Models
         expect(content_item).to be_invalid
       end
 
+      it 'is not valid if missing required parameters' do
+        expect(ContentItem.new).to be_invalid
+      end
+
+      it 'is valid if all required parameters are present' do
+        expect(ContentItem.new(mediaType: 'text/html')).to be_valid
+      end
+
       it 'gives a helpful message if content item is invalid' do
         content_item = ContentItem.new(
-          icon: Image.new
+          icon: Image.new,
+          thumbnail: 'https://www.image.com'
         )
         content_item.valid?
         expect(content_item.errors.messages[:thumbnail]).to match_array [
           'thumbnail must be an intance of Ims::Lti::Models::Image.'
-        ]
-      end
-    end
-
-    describe 'parameters' do
-      it 'contains all available message parameters' do
-        expect(ContentItem.new.parameters.keys).to match_array [
-          :type,
-          :id,
-          :url,
-          :title,
-          :mediaType,
-          :icon,
-          :thumbnail,
-          :text,
-          :custom,
-          :copyAdvice,
-          :expiresAt,
-          :presentationDocumentTarget,
-          :windowTarget,
-          :displayWidth,
-          :displayHeight
         ]
       end
     end
