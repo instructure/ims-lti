@@ -1,6 +1,7 @@
 require 'active_model'
 
 module Ims::Lti::Models
+  # Class represeting a Content-item
   class ContentItem
     include ActiveModel::Model
 
