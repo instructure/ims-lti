@@ -46,7 +46,7 @@ module Ims::Lti::Models
         )
         content_item.valid?
         expect(content_item.errors.messages[:thumbnail]).to match_array [
-          'thumbnail must be an intance of Ims::Lti::Models::Image.'
+          'thumbnail must be an intance of Ims::Lti::Models::Image'
         ]
       end
     end
