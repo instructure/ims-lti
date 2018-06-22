@@ -79,11 +79,11 @@ module Ims::Lti::Messages
         ]
       end
 
-      it 'verifies that "platform" is a Platform claim' do
-        message.platform = 'invalid-claim'
+      it 'verifies that "tool_platform" is a Platform claim' do
+        message.tool_platform = 'invalid-claim'
         message.validate
-        expect(message.errors.messages[:platform]).to match_array [
-          'platform must be an intance of Ims::Lti::Claims::Platform'
+        expect(message.errors.messages[:tool_platform]).to match_array [
+          'tool_platform must be an intance of Ims::Lti::Claims::Platform'
         ]
       end
 

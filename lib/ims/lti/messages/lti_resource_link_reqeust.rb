@@ -61,7 +61,7 @@ module Ims::Lti::Messages
                   :phone_number,
                   :phone_number_verified,
                   :picture,
-                  :platform,
+                  :tool_platform,
                   :preferred_username,
                   :profile,
                   :roles,
