@@ -19,7 +19,6 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'addressable', '~> 2.5', '>= 2.5.1'
-  spec.add_dependency 'builder', '~> 3.2'
   spec.add_dependency 'faraday', '~> 0.8'
   spec.add_dependency 'faraday_middleware', '~> 0.8'
   spec.add_dependency 'json-jwt', '~> 1.7'
