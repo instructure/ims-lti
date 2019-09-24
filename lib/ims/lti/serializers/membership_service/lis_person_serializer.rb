@@ -7,5 +7,6 @@ module IMS::LTI::Serializers::MembershipService
     set_attribute :result_sourced_id, key: :resultSourcedId
     set_attribute :sourced_id, key: :sourcedId
     set_attribute :user_id, key: :userId
+    set_attribute :sis_id, key: :sisId
   end
 end
