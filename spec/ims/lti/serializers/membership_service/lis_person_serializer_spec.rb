@@ -4,7 +4,7 @@ module IMS::LTI::Serializers::MembershipService
   describe LISPersonSerializer do
     it 'serializes the right set of attributes' do
       expected_attributes = [:id, :name, :img, :email, :family_name, :given_name,
-        :result_sourced_id, :sourced_id, :user_id]
+        :result_sourced_id, :sourced_id, :user_id, :sis_id]
       expect(LISPersonSerializer.attributes).to match_array expected_attributes
     end
 
@@ -99,4 +99,3 @@ module IMS::LTI::Serializers::MembershipService
     end
   end
 end
-

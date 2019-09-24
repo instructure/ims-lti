@@ -1,6 +1,6 @@
 module IMS::LTI::Models::MembershipService
   class LISPerson < Person
-    attr_reader :email, :result_sourced_id, :sourced_id, :user_id
+    attr_reader :email, :result_sourced_id, :sourced_id, :user_id, :sis_id
 
     def initialize(opts={})
       super(opts)
@@ -8,6 +8,7 @@ module IMS::LTI::Models::MembershipService
       @result_sourced_id = opts[:result_sourced_id]
       @sourced_id = opts[:sourced_id]
       @user_id = opts[:user_id]
+      @sis_id = opts[:sis_id]
     end
   end
 end
