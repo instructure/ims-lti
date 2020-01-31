@@ -170,7 +170,7 @@ module IMS::LTI
             end
             request.submissionDetails do |record|
               details(record)
-            end
+            end if has_details_data?
           end
         end
       end
