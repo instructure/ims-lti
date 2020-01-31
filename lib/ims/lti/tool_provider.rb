@@ -135,9 +135,9 @@ module IMS::LTI
                          :consumer_secret => @consumer_secret,
                          :lis_outcome_service_url => lis_outcome_service_url,
                          :lis_result_sourcedid =>lis_result_sourcedid)
-      
+
       extend_outcome_request(@outcome_requests.last)
     end
-    
+
   end
 end

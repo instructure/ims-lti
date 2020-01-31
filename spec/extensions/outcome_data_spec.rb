@@ -12,6 +12,7 @@ describe IMS::LTI::Extensions do
     @tp.accepts_outcome_data?.should == true
     @tp.accepts_outcome_text?.should == true
     @tp.accepts_outcome_url?.should == false
+    @tp.accepts_submitted_at?.should == false
     @tp.accepts_outcome_lti_launch_url?.should == false
   end
 
@@ -97,6 +98,13 @@ describe IMS::LTI::Extensions do
         mock_request(xml)
 
         @tp.post_extended_replace_result!(url: 'http://url')
+      end
+
+      it 'handles submitted_at' do
+        xml = result_xml % %{<submissionDetails><submittedAt>2020-01-01</submittedAt></submissionDetails>}
+        mock_request(xml)
+
+        @tp.post_extended_replace_result!(submitted_at: '2020-01-01')
       end
 
       it 'handles total_score' do
