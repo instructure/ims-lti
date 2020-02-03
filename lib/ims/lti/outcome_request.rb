@@ -168,6 +168,7 @@ module IMS::LTI
               end
               results(record)
             end
+            submission_details(request)
           end
         end
       end
@@ -182,12 +183,26 @@ module IMS::LTI
       !!score
     end
 
+    def has_details_data?
+      false
+    end
+
     def results(node)
       return unless has_result_data?
 
       node.result do |res|
         result_values(res)
       end
+    end
+
+    def submission_details(request)
+      return unless has_details_data?
+      request.submissionDetails do |record|
+        details(record)
+      end
+    end
+
+    def details(record)
     end
 
     def result_values(node)

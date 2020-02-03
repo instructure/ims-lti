@@ -67,6 +67,11 @@ module IMS::LTI
           accepted_outcome_types.member?("url")
         end
 
+        # check if the consumer accepts a submitted at date as outcome data
+        def accepts_submitted_at?
+          accepted_outcome_types.member?("submitted_at")
+        end
+
         def accepts_outcome_lti_launch_url?
           accepted_outcome_types.member?("lti_launch_url")
         end
@@ -76,7 +81,7 @@ module IMS::LTI
         end
 
         # POSTs the given score to the Tool Consumer with a replaceResult and
-        # adds the specified data. The data hash can have the keys "text", "cdata_text", "url", or "lti_launch_url"
+        # adds the specified data. The data hash can have the keys "text", "cdata_text", "url", "submitted_at" or "lti_launch_url"
         #
         # If both cdata_text and text are sent, cdata_text will be used
         #
@@ -93,7 +98,7 @@ module IMS::LTI
 
         # POSTs the given score to the Tool Consumer with a replaceResult and
         # adds the specified data. The options hash can have the keys
-        # :text, :cdata_text, :url, :lti_launch_url, :score, or :total_score
+        # :text, :cdata_text, :url, :submitted_at, :lti_launch_url, :score, or :total_score
         #
         # If both cdata_text and text are sent, cdata_text will be used
         # If both total_score and score are sent, total_score will be used
@@ -110,6 +115,7 @@ module IMS::LTI
           req.outcome_cdata_text = opts[:cdata_text]
           req.outcome_text = opts[:text]
           req.outcome_url = opts[:url]
+          req.submitted_at = opts[:submitted_at]
           req.outcome_lti_launch_url = opts[:lti_launch_url]
           req.total_score = opts[:total_score]
           req.post_replace_result!(opts[:score])
@@ -120,9 +126,9 @@ module IMS::LTI
         include IMS::LTI::Extensions::ExtensionBase
         include Base
 
-        OUTCOME_DATA_TYPES = %w{text url lti_launch_url}
+        OUTCOME_DATA_TYPES = %w{text url lti_launch_url submitted_at}
 
-        # a list of the outcome data types accepted, currently only 'url' and
+        # a list of the outcome data types accepted, currently only 'url', 'submitted_at' and
         # 'text' are valid
         #
         #    tc.outcome_data_values_accepted(['url', 'text'])
@@ -150,7 +156,7 @@ module IMS::LTI
         include IMS::LTI::Extensions::ExtensionBase
         include Base
 
-        attr_accessor :outcome_text, :outcome_url, :outcome_lti_launch_url, :outcome_cdata_text, :total_score
+        attr_accessor :outcome_text, :outcome_url, :submitted_at, :outcome_lti_launch_url, :outcome_cdata_text, :total_score
 
         def result_values(node)
           super
@@ -178,12 +184,23 @@ module IMS::LTI
           end
         end
 
+        def details(node)
+          super
+          return unless has_details_data?
+
+          node.submittedAt submitted_at
+        end
+
         def score
           total_score ? nil : @score
         end
 
         def has_result_data?
           !!outcome_text || !!outcome_url || !!outcome_lti_launch_url || !!outcome_cdata_text || !!total_score || super
+        end
+
+        def has_details_data?
+          !!submitted_at
         end
 
         def extention_process_xml(doc)

@@ -1,12 +1,6 @@
 language: ruby
 before_install:
-  - gem install bundler
+  - gem install bundler -v '~> 1.14'
 rvm:
-  - "1.9.3"
-  - "2.0.0"
-branches:
-  only:
-    - master
-    - 2.0.x
-    - 1.2.x
+  - 2.3
 script: bundle exec rspec spec
