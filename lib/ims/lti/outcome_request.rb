@@ -202,6 +202,9 @@ module IMS::LTI
       end
     end
 
+    def details(record)
+    end
+
     def result_values(node)
       if score
         node.resultScore do |res_score|
