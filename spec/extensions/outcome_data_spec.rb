@@ -20,7 +20,7 @@ describe IMS::LTI::Extensions do
     tc = IMS::LTI::ToolConsumer.new("hey", "ho")
     tc.extend IMS::LTI::Extensions::OutcomeData::ToolConsumer
     tc.support_outcome_data!
-    tc.outcome_data_values_accepted.should == 'text,url,lti_launch_url'
+    tc.outcome_data_values_accepted.should == 'text,url,lti_launch_url,submitted_at'
     tc.outcome_data_values_accepted = 'url,text'
     tc.outcome_data_values_accepted.should == 'url,text'
     tc.outcome_data_values_accepted = %w{text url}
@@ -101,7 +101,7 @@ describe IMS::LTI::Extensions do
       end
 
       it 'handles submitted_at' do
-        xml = result_xml % %{<submissionDetails><submittedAt>2020-01-01</submittedAt></submissionDetails>}
+        xml = submission_xml % %{<submittedAt>2020-01-01</submittedAt>}
         mock_request(xml)
 
         @tp.post_extended_replace_result!(submitted_at: '2020-01-01')
