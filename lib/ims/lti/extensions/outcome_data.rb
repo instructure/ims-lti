@@ -185,7 +185,6 @@ module IMS::LTI
         end
 
         def details(node)
-          super
           return unless has_details_data?
 
           node.submittedAt submitted_at
