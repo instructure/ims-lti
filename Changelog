@@ -1,3 +1,6 @@
+2020-02-03 Version 1.2.2
+    * Add support for submitted_at date
+
 2017-03-08 Version 1.2.0
     * Don't downcase roles
 
