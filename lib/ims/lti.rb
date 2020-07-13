@@ -15,5 +15,6 @@ module IMS
     require_relative 'lti/models'
     require_relative 'lti/serializers'
     require_relative 'lti/services'
+    require_relative 'lti/simple_oauth'
   end
 end
