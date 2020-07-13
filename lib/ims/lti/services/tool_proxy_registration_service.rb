@@ -19,7 +19,7 @@ module IMS::LTI::Services
     def register_tool_proxy(tool_proxy, reregistration_confirm_url = nil, shared_secret = nil)
       service = tool_consumer_profile.services_offered.find { |s| s.formats.include?('application/vnd.ims.lti.v2.toolproxy+json') && s.actions.include?('POST') }
 
-      SimpleOAuth::Header::ATTRIBUTE_KEYS << :body_hash unless SimpleOAuth::Header::ATTRIBUTE_KEYS.include? :body_hash
+      IMS::LTI::SimpleOAuth::Header::ATTRIBUTE_KEYS << :body_hash unless IMS::LTI::SimpleOAuth::Header::ATTRIBUTE_KEYS.include? :body_hash
       tool_proxy_json = tool_proxy.to_json
       body_hash = Digest::SHA1.base64digest tool_proxy_json
 

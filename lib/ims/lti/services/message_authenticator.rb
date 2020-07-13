@@ -27,7 +27,7 @@ module IMS::LTI::Services
 
     def simple_oauth_header
       @simple_oauth_header ||= begin
-        @simple_oauth_header = SimpleOAuth::Header.new(
+        @simple_oauth_header = IMS::LTI::SimpleOAuth::Header.new(
           :post, launch_url,
           @parsed_params,
           @options.merge(
@@ -67,7 +67,7 @@ module IMS::LTI::Services
     def parse_params(params)
       params.inject([{}, {}]) do |array, (k, v)|
         attr = k.to_s.sub('oauth_', '').to_sym
-        if SimpleOAuth::Header::ATTRIBUTE_KEYS.include?(attr)
+        if IMS::LTI::SimpleOAuth::Header::ATTRIBUTE_KEYS.include?(attr)
           array[0][attr] = v
         else
           array[1][k.to_sym] = v

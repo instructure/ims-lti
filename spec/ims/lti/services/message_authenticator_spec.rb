@@ -7,7 +7,7 @@ module IMS::LTI::Services
     let(:oauth_consumer_key) { 'key' }
     let (:secret) { "secret"}
     let (:signed_params) do
-      header = SimpleOAuth::Header.new(
+      header = IMS::LTI::SimpleOAuth::Header.new(
         :post,
         launch_url,
         params,
@@ -83,7 +83,7 @@ module IMS::LTI::Services
 
     describe '#simple_oauth_header' do
       it 'simple_oauth_header used' do
-        expect(subject.simple_oauth_header).to be_instance_of SimpleOAuth::Header
+        expect(subject.simple_oauth_header).to be_instance_of IMS::LTI::SimpleOAuth::Header
       end
     end
 
