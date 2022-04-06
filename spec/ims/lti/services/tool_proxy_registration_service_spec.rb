@@ -26,7 +26,7 @@ module IMS::LTI::Services
     end
 
     describe '#service_profiles' do
-      it 'maps the ToolConsumer.services_offered to rest service profiles' do
+      it 'maps the ToolConsumerProfile.services_offered to rest service profiles' do
         service_offered = []
         3.times { service_offered << IMS::LTI::Models::RestService.new }
         tcp = IMS::LTI::Models::ToolConsumerProfile.new(service_offered: service_offered)
