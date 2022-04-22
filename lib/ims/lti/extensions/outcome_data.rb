@@ -69,7 +69,8 @@ module IMS::LTI
 
         # check if the consumer accepts a submitted at date as outcome data
         def accepts_submitted_at?
-          accepted_outcome_types.member?("submitted_at")
+          accepted_outcome_types.member?("submitted_at") ||
+            @ext_params["ext_outcome_submission_submitted_at_accepted"] == "true"
         end
 
         def accepts_outcome_lti_launch_url?
@@ -80,8 +81,15 @@ module IMS::LTI
           !!@ext_params["outcome_result_total_score_accepted"]
         end
 
+        def accepts_needs_additional_review?
+          @ext_params["ext_outcome_submission_needs_additional_review_accepted"] == "true"
+        end
+
         # POSTs the given score to the Tool Consumer with a replaceResult and
-        # adds the specified data. The data hash can have the keys "text", "cdata_text", "url", "submitted_at" or "lti_launch_url"
+        # adds the specified data.
+        #
+        # The data hash can have the keys "text", "cdata_text", "url", "submitted_at"
+        # "needs_additional_review", or "lti_launch_url"
         #
         # If both cdata_text and text are sent, cdata_text will be used
         #
@@ -98,7 +106,8 @@ module IMS::LTI
 
         # POSTs the given score to the Tool Consumer with a replaceResult and
         # adds the specified data. The options hash can have the keys
-        # :text, :cdata_text, :url, :submitted_at, :lti_launch_url, :score, or :total_score
+        # :text, :cdata_text, :url, :submitted_at, :lti_launch_url, :score,
+        # :needs_additional_review, or :total_score
         #
         # If both cdata_text and text are sent, cdata_text will be used
         # If both total_score and score are sent, total_score will be used
@@ -116,6 +125,7 @@ module IMS::LTI
           req.outcome_text = opts[:text]
           req.outcome_url = opts[:url]
           req.submitted_at = opts[:submitted_at]
+          req.needs_additional_review = opts[:needs_additional_review]
           req.outcome_lti_launch_url = opts[:lti_launch_url]
           req.total_score = opts[:total_score]
           req.post_replace_result!(opts[:score])
@@ -156,7 +166,13 @@ module IMS::LTI
         include IMS::LTI::Extensions::ExtensionBase
         include Base
 
-        attr_accessor :outcome_text, :outcome_url, :submitted_at, :outcome_lti_launch_url, :outcome_cdata_text, :total_score
+        attr_accessor :outcome_text,
+                      :outcome_url,
+                      :submitted_at,
+                      :outcome_lti_launch_url,
+                      :outcome_cdata_text,
+                      :total_score,
+                      :needs_additional_review
 
         def result_values(node)
           super
@@ -188,7 +204,8 @@ module IMS::LTI
           super
           return unless has_details_data?
 
-          node.submittedAt submitted_at
+          node.submittedAt submitted_at if submitted_at
+          node.needsAdditionalReview if needs_additional_review
         end
 
         def score
@@ -200,7 +217,7 @@ module IMS::LTI
         end
 
         def has_details_data?
-          !!submitted_at
+          !!submitted_at || !!needs_additional_review
         end
 
         def extention_process_xml(doc)

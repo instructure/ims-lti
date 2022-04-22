@@ -107,6 +107,13 @@ describe IMS::LTI::Extensions do
         @tp.post_extended_replace_result!(submitted_at: '2020-01-01')
       end
 
+      it 'handles needs_additional_review' do
+        xml = submission_xml % %{<needsAdditionalReview/>}
+        mock_request(xml)
+
+        @tp.post_extended_replace_result!(needs_additional_review: true)
+      end
+
       it 'handles total_score' do
         xml = result_xml % %{<resultTotalScore><language>en</language><textString>13</textString></resultTotalScore>}
         mock_request(xml)
