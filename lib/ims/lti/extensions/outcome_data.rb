@@ -204,8 +204,8 @@ module IMS::LTI
           super
           return unless has_details_data?
 
-          node.submittedAt submitted_at
-          node.needsAdditionalReview 'test' if needs_additional_review
+          node.submittedAt submitted_at if submitted_at
+          node.needsAdditionalReview if needs_additional_review
         end
 
         def score
