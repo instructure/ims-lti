@@ -85,11 +85,15 @@ module IMS::LTI
           @ext_params["ext_outcome_submission_needs_additional_review_accepted"] == "true"
         end
 
+        def accepts_prioritize_non_tool_grade?
+          @ext_params["ext_outcome_submission_prioritize_non_tool_grade_accepted"] == "true"
+        end
+
         # POSTs the given score to the Tool Consumer with a replaceResult and
         # adds the specified data.
         #
         # The data hash can have the keys "text", "cdata_text", "url", "submitted_at"
-        # "needs_additional_review", or "lti_launch_url"
+        # "needs_additional_review", "prioritize_non_tool_grade", or "lti_launch_url"
         #
         # If both cdata_text and text are sent, cdata_text will be used
         #
@@ -126,6 +130,7 @@ module IMS::LTI
           req.outcome_url = opts[:url]
           req.submitted_at = opts[:submitted_at]
           req.needs_additional_review = opts[:needs_additional_review]
+          req.prioritize_non_tool_grade = opts[:prioritize_non_tool_grade]
           req.outcome_lti_launch_url = opts[:lti_launch_url]
           req.total_score = opts[:total_score]
           req.post_replace_result!(opts[:score])
@@ -172,7 +177,8 @@ module IMS::LTI
                       :outcome_lti_launch_url,
                       :outcome_cdata_text,
                       :total_score,
-                      :needs_additional_review
+                      :needs_additional_review,
+                      :prioritize_non_tool_grade
 
         def result_values(node)
           super
@@ -206,6 +212,7 @@ module IMS::LTI
 
           node.submittedAt submitted_at if submitted_at
           node.needsAdditionalReview if needs_additional_review
+          node.prioritizeNonToolGrade if prioritize_non_tool_grade
         end
 
         def score
@@ -217,7 +224,7 @@ module IMS::LTI
         end
 
         def has_details_data?
-          !!submitted_at || !!needs_additional_review
+          !!submitted_at || !!needs_additional_review || !!prioritize_non_tool_grade
         end
 
         def extention_process_xml(doc)

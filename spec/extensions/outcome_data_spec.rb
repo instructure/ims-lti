@@ -114,6 +114,13 @@ describe IMS::LTI::Extensions do
         @tp.post_extended_replace_result!(needs_additional_review: true)
       end
 
+      it 'handles prioritize_non_tool_grade' do
+        xml = submission_xml % %{<prioritizeNonToolGrade/>}
+        mock_request(xml)
+
+        @tp.post_extended_replace_result!(prioritize_non_tool_grade: true)
+      end
+
       it 'handles total_score' do
         xml = result_xml % %{<resultTotalScore><language>en</language><textString>13</textString></resultTotalScore>}
         mock_request(xml)
