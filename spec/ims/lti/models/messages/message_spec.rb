@@ -179,6 +179,26 @@ module IMS::LTI::Models::Messages
           expect(params[:oauth_callback]).to eq 'about:blank'
         end
 
+        it "converts newlines in query params to CRLFs to match what browsers do" do
+          message.custom_user_id = "abc\ndef"
+          message.launch_url = "http://www.exampAle.com"
+          message.oauth_consumer_key = "key"
+
+          expect(described_class).to \
+            receive(:convert_param_values_to_crlf_endings).and_call_original
+          expect(IMS::LTI::Services::MessageAuthenticator).to receive(:new).with(
+            "http://www.example.com",
+            {
+              'custom_user_id' => "abc\r\ndef",
+              "oauth_consumer_key" => "key",
+            },
+            "secret"
+          ).and_call_original
+
+          params = message.signed_post_params("secret")
+
+          expect(params[:custom_user_id]).to eq "abc\r\ndef"
+        end
       end
     end
 
@@ -352,6 +372,36 @@ module IMS::LTI::Models::Messages
 
     end
 
+    describe '.convert_param_values_to_crlf_endings' do
+      it "converts newlines in strings" do
+        expect(described_class.convert_param_values_to_crlf_endings(
+          foo: "abc\ndef\n\nghi",
+          bar: "def",
+          waz: "x\ny\n"
+        )).to eq(
+          foo: "abc\r\ndef\r\n\r\nghi",
+          bar: "def",
+          waz: "x\r\ny\r\n"
+        )
+      end
 
+      it "passes CRLF endings thru without change" do
+        hash = {waz: "x\r\n\r\ny\r\n"}
+        expect(described_class.convert_param_values_to_crlf_endings(hash)).to eq(hash)
+      end
+
+      it "converts mixed CR/LF/CRLF to all consistent CRLF" do
+        expect(described_class.convert_param_values_to_crlf_endings(
+          foo: "abc\r\r\n\rdef\n\nghi",
+        )).to eq(
+          foo: "abc\r\n\r\n\r\ndef\r\n\r\nghi",
+        )
+      end
+
+      it "ignores non-strings" do
+        hash = {waz: "x", foo: 123}
+        expect(described_class.convert_param_values_to_crlf_endings(hash)).to eq(hash)
+      end
+    end
   end
 end
