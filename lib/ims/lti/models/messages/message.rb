@@ -47,6 +47,19 @@ module IMS::LTI::Models::Messages
         @descendants || Set.new
       end
 
+      # For signature generation -- see usage in signed_post_params
+      def convert_param_values_to_crlf_endings(hash)
+        hash.transform_values do |val|
+          if val.is_a?(String)
+            # Convert to all newlines first, for consistency, just in case there
+            # is some weird mix of newlines & carriage returns in input
+            val.encode(universal_newline: true).encode(crlf_newline: true)
+          else
+            val
+          end
+        end
+      end
+
       private
 
       def add_params(instance_variable, param, *params)
@@ -148,7 +161,11 @@ module IMS::LTI::Models::Messages
     end
 
     def signed_post_params(secret)
-      message_params = oauth_params.merge(post_params)
+      # The params will be used in an HTML form, and browsers will always use
+      # newlines+carriage return line endings for submitted form data. The
+      # signature needs to match, and signature generation does not add carriage
+      # returns, so we ensure CRLF endings here.
+      message_params = self.class.convert_param_values_to_crlf_endings(oauth_params.merge(post_params))
       @message_authenticator = IMS::LTI::Services::MessageAuthenticator.new(launch_url, message_params, secret)
       @message_authenticator.signed_params
     end
