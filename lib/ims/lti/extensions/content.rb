@@ -96,67 +96,116 @@ module IMS::LTI
 
         #generates the return url for file submissions
         def file_content_return_url(url, text, content_type = nil)
-          url = CGI::escape(url)
-          text = CGI::escape(text)
-          content_type = CGI::escape(content_type) if content_type
 
-          return_url = "#{content_return_url}?return_type=file&url=#{url}&text=#{text}"
-          return_url = "#{return_url}&content_type=#{content_type}" if content_type
+          return_url = add_parameters(content_return_url, {
+            return_type: 'file',
+            url: url,
+            text: text
+          })
+
+          if content_type
+            return_url = add_parameters(return_url, {
+              content_type: content_type
+            })
+          end
 
           return return_url
         end
 
         #generates the return url for url submissions
         def url_content_return_url(url, title = nil, text = 'link', target = '_blank')
-          url = CGI::escape(url)
-          text = CGI::escape(text)
-          target = CGI::escape(target)
 
-          return_url = "#{content_return_url}?return_type=url&url=#{url}&text=#{text}&target=#{target}"
-          return_url = "#{return_url}&title=#{CGI::escape(title)}" if title
+          return_url = add_parameters(content_return_url, {
+            return_type: 'url',
+            url: url,
+            text: text,
+            target: target
+          })
+
+          if title
+            return_url = add_parameters(return_url, {
+              title:title
+            })
+          end
 
           return return_url
         end
 
         #generates the return url for lti launch submissions
         def lti_launch_content_return_url(url, text='link', title=nil)
-          url = CGI::escape(url)
-          text = CGI::escape(text)
 
-          return_url = "#{content_return_url}?return_type=lti_launch_url&url=#{url}&text=#{text}"
-          return_url = "#{return_url}&title=#{CGI::escape(title)}" if title
+          return_url = add_parameters(content_return_url, {
+            return_type: 'lti_launch_url',
+            url: url,
+            text: text
+          })
+
+          if title
+            return_url = add_parameters(return_url, {
+              title:title
+            })
+          end
 
           return return_url
         end
 
         #generates the return url for image submissions
         def image_content_return_url(url, width, height, alt = '')
-          url = CGI::escape(url)
-          width = CGI::escape(width.to_s)
-          height = CGI::escape(height.to_s)
-          alt = CGI::escape(alt)
 
-          "#{content_return_url}?return_type=image_url&url=#{url}&width=#{width}&height=#{height}&alt=#{alt}"
+          add_parameters(content_return_url, {
+            return_type: 'image_url',
+            url: url,
+            width: width.to_s,
+            height: height.to_s,
+            alt: alt
+          })
         end
 
         #generates the return url for iframe submissions
         def iframe_content_return_url(url, width, height, title = nil)
-          url = CGI::escape(url)
-          width = CGI::escape(width.to_s)
-          height = CGI::escape(height.to_s)
 
-          return_url = "#{content_return_url}?return_type=iframe&url=#{url}&width=#{width}&height=#{height}"
-          return_url = "#{return_url}&title=#{CGI::escape(title)}" if title
+          return_url = add_parameters(content_return_url, {
+            return_type: 'iframe',
+            url: url,
+            width: width.to_s,
+            height: height.to_s
+          })
+
+          if title
+            return_url = add_parameters(return_url, {
+              title:title
+            })
+          end
 
           return return_url
         end
 
         #generates the return url for oembed submissions
         def oembed_content_return_url(url, endpoint)
-          url = CGI::escape(url)
-          endpoint = CGI::escape(endpoint)
 
-          "#{content_return_url}?return_type=oembed&url=#{url}&endpoint=#{endpoint}"
+          add_parameters(content_return_url, {
+            return_type: 'oembed',
+            url: url,
+            endpoint: endpoint
+          })
+        end
+
+        private
+
+        # adds parameters to a url, with consideration for
+        # already existing parameters
+        def add_parameters(url, params)
+          parsed = URI.parse(url)
+          query = if parsed.query
+                    CGI.parse(parsed.query)
+                  else
+                    {}
+                  end
+
+          query = query.merge(params)
+
+          parsed.query = URI.encode_www_form(query)
+          parsed.to_s
         end
       end
 
