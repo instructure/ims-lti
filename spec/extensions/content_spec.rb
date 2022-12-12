@@ -5,7 +5,7 @@ describe IMS::LTI::Extensions do
     create_params
     @params['ext_content_intended_use'] = "homework"
     @params['ext_content_return_types'] = "file,url,lti_launch_url,image_url,iframe,oembed"
-    @params['ext_content_return_url'] = "http://example.com/content_return"
+    @params['ext_content_return_url'] = "http://example.com/content_return?extra_param=foo"
     @params['ext_content_file_extensions'] = 'txt,jpg'
     @tp = IMS::LTI::ToolProvider.new("hi", 'oi', @params)
     @tp.extend IMS::LTI::Extensions::Content::ToolProvider
@@ -48,60 +48,77 @@ describe IMS::LTI::Extensions do
     let(:alt) {"Alternate text"}
     let(:endpoint) {"http://endpoint.com"}
 
+    def url_params(url)
+      parsed = URI.parse(url)
+      return CGI.parse(parsed.query) if parsed&.query
+    end
+
     it "should generate a file return url" do
       return_url = @tp.file_content_return_url(url, text, content_type)
 
-      return_url.include?("return_type=file").should == true
-      return_url.include?("url=#{CGI::escape(url)}").should == true
-      return_url.include?("text=#{CGI::escape(text)}").should == true
-      return_url.include?("content_type=#{CGI::escape(content_type)}").should == true
+      return_params = url_params(return_url)
+
+      return_params["return_type"][0].should == "file"
+      return_params["url"][0].should == url
+      return_params["text"][0].should == text
+      return_params["content_type"][0].should == content_type
     end
 
     it "should generate a url return url" do
       return_url = @tp.url_content_return_url(url, title, text, '_blank')
 
-      return_url.include?("return_type=url").should == true
-      return_url.include?("url=#{CGI::escape(url)}").should == true
-      return_url.include?("title=#{CGI::escape(title)}").should == true
-      return_url.include?("text=#{CGI::escape(text)}").should == true
-      return_url.include?("target=_blank").should == true
+      return_params = url_params(return_url)
+
+      return_params["return_type"][0].should == "url"
+      return_params["url"][0].should == url
+      return_params["title"][0].should == title
+      return_params["text"][0].should == text
+      return_params["target"][0].should == "_blank"
     end
 
     it "should generate a lti launch return url" do
       return_url = @tp.lti_launch_content_return_url(url, text, title)
 
-      return_url.include?("return_type=lti_launch_url").should == true
-      return_url.include?("url=#{CGI::escape(url)}").should == true
-      return_url.include?("text=#{CGI::escape(text)}").should == true
-      return_url.include?("title=#{CGI::escape(title)}").should == true
+      return_params = url_params(return_url)
+
+      return_params["return_type"][0].should == "lti_launch_url"
+      return_params["url"][0].should == url
+      return_params["text"][0].should == text
+      return_params["title"][0].should == title
     end
 
     it "should generate a image return url" do
       return_url = @tp.image_content_return_url(url, width, height, alt)
 
-      return_url.include?("return_type=image_url").should == true
-      return_url.include?("url=#{CGI::escape(url)}").should == true
-      return_url.include?("width=#{width}").should == true
-      return_url.include?("height=#{height}").should == true
-      return_url.include?("alt=#{CGI::escape(alt)}").should == true
+      return_params = url_params(return_url)
+
+      return_params["return_type"][0].should == "image_url"
+      return_params["url"][0].should == url
+      return_params["width"][0].should == "#{width}"
+      return_params["height"][0].should == "#{height}"
+      return_params["alt"][0].should == alt
     end
 
     it "should generate an iframe return url" do
       return_url = @tp.iframe_content_return_url(url, width, height, title)
 
-      return_url.include?("return_type=iframe").should == true
-      return_url.include?("url=#{CGI::escape(url)}").should == true
-      return_url.include?("width=#{width}").should == true
-      return_url.include?("height=#{height}").should == true
-      return_url.include?("title=#{CGI::escape(title)}").should == true
+      return_params = url_params(return_url)
+
+      return_params["return_type"][0].should == "iframe"
+      return_params["url"][0].should == url
+      return_params["width"][0].should == "#{width}"
+      return_params["height"][0].should == "#{height}"
+      return_params["title"][0].should == title
     end
 
     it "should generate an oembed return url" do
       return_url = @tp.oembed_content_return_url(url, endpoint)
 
-      return_url.include?("return_type=oembed").should == true
-      return_url.include?("url=#{CGI::escape(url)}").should == true
-      return_url.include?("endpoint=#{CGI::escape(endpoint)}").should == true
+      return_params = url_params(return_url)
+
+      return_params["return_type"][0].should == "oembed"
+      return_params["url"][0].should == url
+      return_params["endpoint"][0].should == endpoint
     end
   end
 
