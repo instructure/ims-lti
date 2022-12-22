@@ -181,7 +181,7 @@ module IMS::LTI::Models::Messages
 
         it "converts newlines in query params to CRLFs to match what browsers do" do
           message.custom_user_id = "abc\ndef"
-          message.launch_url = "http://www.exampAle.com"
+          message.launch_url = "http://www.example.com"
           message.oauth_consumer_key = "key"
 
           expect(described_class).to \
