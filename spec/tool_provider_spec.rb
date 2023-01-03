@@ -16,8 +16,8 @@ describe IMS::LTI::ToolProvider do
     @tp.lti_errormsg = "user error message"
     @tp.lti_errorlog = "lms error log"
     @tp.lti_msg = "user message"
-    @tp.lti_log = "lms message"
-    @tp.build_return_url.should == @params['launch_presentation_return_url'] + "?lti_errormsg=user%20error%20message&lti_errorlog=lms%20error%20log&lti_msg=user%20message&lti_log=lms%20message"
+    @tp.lti_log = "lms message & stuff"
+    @tp.build_return_url.should == @params['launch_presentation_return_url'] + "?lti_errormsg=user+error+message&lti_errorlog=lms+error+log&lti_msg=user+message&lti_log=lms+message+%26+stuff"
   end
 
   it "should find the base role" do

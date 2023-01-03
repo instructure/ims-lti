@@ -47,3 +47,8 @@ def mock_request(expected_xml)
   @fake.stub(:body).and_return("<xml/>")
   @fake.should_receive(:post).with(@params['lis_outcome_service_url'], expected_xml, {'Content-Type' => 'application/xml'}).and_return(@fake)
 end
+
+RSpec.configure do |config|
+  config.expect_with(:rspec) { |c| c.syntax = %i[expect should] }
+  config.mock_with(:rspec) { |c| c.syntax = %i[expect should] }
+end
