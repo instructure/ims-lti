@@ -1,3 +1,5 @@
+require 'cgi'
+
 module IMS::LTI
 
   # Class for implementing an LTI Tool Provider
@@ -121,7 +123,7 @@ module IMS::LTI
       messages = []
       %w{lti_errormsg lti_errorlog lti_msg lti_log}.each do |m|
         if message = self.send(m)
-          messages << "#{m}=#{URI.escape(message)}"
+          messages << "#{m}=#{CGI.escape(message)}"
         end
       end
       q_string = messages.any? ? ("?" + messages.join("&")) : ''
