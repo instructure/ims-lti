@@ -4,7 +4,7 @@ pipeline {
   }
 
   stages {
-    stage("Generate build version") {
+    stage("Build Gem") {
       steps {
         sh 'echo "placeholder"'
       }
