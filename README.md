@@ -104,6 +104,7 @@ else
 end
 ```
 
+<<<<<<< HEAD
 You can see the error code documentation
 [here](http://www.imsglobal.org/gws/gwsv1p0/imsgws_baseProfv1p0.html#1639667).
 
@@ -111,6 +112,22 @@ You can see the error code documentation
 As a Tool Consumer your app will POST an OAuth-signed launch requests to TPs with the necessary
 [LTI launch data](http://www.imsglobal.org/LTI/v1p1/ltiIMGv1p1.html#_Toc319560465).
 This is covered in the [LTI security model](http://www.imsglobal.org/LTI/v1p1/ltiIMGv1p1.html#_Toc319560466)
+=======
+
+```ruby
+
+params = { user_id: '123', lti_message_type: IMS::LTI::Models::Messages::BasicLTILaunchRequest::MESSAGE_TYPE }
+
+header = SimpleOAuth::Header.new(:post, 'https://yoursite.com', params, consumer_key: oauth_consumer_key, consumer_secret: secret)
+
+signed_params = header.signed_attributes.merge(params)
+
+IMS::LTI::Services::MessageAuthenticator.new(launch_url, signed_params, secret)
+
+```
+
+## Contributing
+>>>>>>> 5f7e625 (Add example to be used by consumer (#155))
 
 Here is an example of a simple TC Sinatra app using this gem:
 [LTI Tool Consumer](https://github.com/instructure/lti_tool_consumer_example)
