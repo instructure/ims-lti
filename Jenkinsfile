@@ -1,11 +1,13 @@
 pipeline {
-    agent { label 'docker' }
+  agent {
+    label 'docker'
+  }
 
-    stages {
-        stage("Generate build version") {
-            steps {
-              sh 'echo "placeholder"'
-            }
-        }
+  stages {
+    stage("Generate build version") {
+      steps {
+        sh 'echo "placeholder"'
+      }
     }
+  }
 }
