@@ -41,6 +41,19 @@ return false if DateTime.strptime(request.request_parameters['oauth_timestamp'],
 
 ```
 
+
+```ruby
+
+params = { user_id: '123', lti_message_type: IMS::LTI::Models::Messages::BasicLTILaunchRequest::MESSAGE_TYPE }
+
+header = SimpleOAuth::Header.new(:post, 'https://yoursite.com', params, consumer_key: oauth_consumer_key, consumer_secret: secret)
+
+signed_params = header.signed_attributes.merge(params)
+
+IMS::LTI::Services::MessageAuthenticator.new(launch_url, signed_params, secret)
+
+```
+
 ## Contributing
 
 1. Fork it ( http://github.com/instructure/ims-lti/fork )
