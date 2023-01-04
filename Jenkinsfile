@@ -1,5 +1,4 @@
 pipeline {
-<<<<<<< HEAD
   agent { label 'docker' }
 
   stages {
@@ -42,15 +41,4 @@ pipeline {
       }
     }
   }
-=======
-    agent { label 'docker' }
-
-    stages {
-        stage("Generate build version") {
-            steps {
-              sh 'echo "placeholder"'
-            }
-        }
-    }
->>>>>>> a083bc7 (Create Jenkinsfile)
 }
