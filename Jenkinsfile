@@ -3,11 +3,11 @@ pipeline {
 
   stages {
     stage('Deploy') {
-      // when {
-      //   allOf {
-      //     expression { GIT_BRANCH == "master" }
-      //   }
-      // }
+      when {
+        allOf {
+          expression { GIT_BRANCH == "master" }
+        }
+      }
       steps {
         lock( // only one build enters the lock
           resource: "${env.JOB_NAME}" // use the job name as lock resource to make the mutual exclusion only for builds from the same branch/tag
