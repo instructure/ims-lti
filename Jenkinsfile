@@ -2,6 +2,27 @@ pipeline {
   agent { label 'docker' }
 
   stages {
+    stage('Test') {
+      matrix {
+        agent { label 'docker' }
+        axes {
+          axis {
+            name 'RUBY_VERSION'
+            values '2.7', '3.0'
+          }
+        }
+        stages {
+          stage('Build') {
+            steps {
+              timeout(10) {
+                sh "docker-compose build --pull --build-arg RUBY_VERSION=${RUBY_VERSION} app"
+                sh 'docker-compose run --rm app rspec --tag \\~slow'
+              }
+            }
+          }
+        }
+      }
+    }
     stage('Deploy') {
       when {
         allOf {
