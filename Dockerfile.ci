@@ -5,9 +5,6 @@ RUN apt-get update && apt-get install -y git
 
 RUN bash -lc "gem install bundler -v 2.2.32"
 
-ARG BUNDLE_GEMFILE
-ENV BUNDLE_GEMFILE $BUNDLE_GEMFILE
-
 WORKDIR /usr/src/app
 COPY . /usr/src/app
 RUN bash -lc "bundle install"
