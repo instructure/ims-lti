@@ -8,7 +8,7 @@ pipeline {
         axes {
           axis {
             name 'RUBY_VERSION'
-            values '2.7', '3.0'
+            values '2.7', '3.0', '3.1'
           }
         }
         stages {
