@@ -26,7 +26,7 @@ pipeline {
     stage('Deploy') {
       when {
         allOf {
-          expression { GIT_BRANCH == "master" }
+          expression { GIT_BRANCH == "1.2.x" }
         }
       }
       steps {
