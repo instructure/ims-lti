@@ -1,0 +1,10 @@
+ARG  RUBY_VERSION=2.7
+FROM ruby:${RUBY_VERSION}
+
+RUN apt-get update && apt-get install -y git
+
+RUN bash -lc "gem install bundler -v 2.2.32"
+
+WORKDIR /usr/src/app
+COPY . /usr/src/app
+RUN bash -lc "bundle install"
