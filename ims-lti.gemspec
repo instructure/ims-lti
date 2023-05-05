@@ -3,7 +3,7 @@ Gem::Specification.new do |s|
   s.version = "1.2.8"
 
   s.add_dependency 'builder', '>= 1.0', '< 4.0'
-  s.add_dependency 'oauth', '>= 0.4.5', '< 0.6'
+  s.add_dependency 'oauth', '>= 0.4.5'
   s.add_dependency 'rexml'
 
   s.add_development_dependency 'rspec', '~> 3.0', '> 3.0'
