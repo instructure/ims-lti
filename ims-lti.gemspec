@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = %q{ims-lti}
-  s.version = "1.2.8"
+  s.version = "1.2.9"
 
   s.add_dependency 'builder', '>= 1.0', '< 4.0'
   s.add_dependency 'oauth', '>= 0.4.5'
