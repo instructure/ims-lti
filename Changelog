@@ -1,5 +1,27 @@
+2023-05-30 Version 1.2.9
+    * Loosen version requirement for OAuth gem
+
+2023-01-03 Version 1.2.8
+    * Add Ruby 3.0 support by requiring rexml
+    * Fix URI encoding bug for queries with an ampersand `&`
+
+2022-12-13 Version 1.2.7
+    * Fix content return parameter encoding
+
+2022-04-26 Version 1.2.6
+    * Add support for prioritizeNonToolGrade
+    * Add support for needsAdditionalReview
+
 2020-02-03 Version 1.2.4
     * Add support for submittedAt date
+
+2020-02-03 Version 1.2.3 -- yanked
+
+2017-06-19 Version 1.2.2
+    * Explicitly require 'oauth' gem and specify version range
+
+2017-04-13 Version 1.2.1
+    * Remove date field from gemspec
 
 2017-03-08 Version 1.2.0
     * Don't downcase roles
