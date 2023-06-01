@@ -112,5 +112,18 @@ As a Tool Consumer your app will POST an OAuth-signed launch requests to TPs wit
 [LTI launch data](http://www.imsglobal.org/LTI/v1p1/ltiIMGv1p1.html#_Toc319560465).
 This is covered in the [LTI security model](http://www.imsglobal.org/LTI/v1p1/ltiIMGv1p1.html#_Toc319560466)
 
+```ruby
+
+params = { user_id: '123', lti_message_type: IMS::LTI::Models::Messages::BasicLTILaunchRequest::MESSAGE_TYPE }
+
+header = SimpleOAuth::Header.new(:post, 'https://yoursite.com', params, consumer_key: oauth_consumer_key, consumer_secret: secret)
+
+signed_params = header.signed_attributes.merge(params)
+
+IMS::LTI::Services::MessageAuthenticator.new(launch_url, signed_params, secret)
+
+```
+
+## Contributing
 Here is an example of a simple TC Sinatra app using this gem:
 [LTI Tool Consumer](https://github.com/instructure/lti_tool_consumer_example)

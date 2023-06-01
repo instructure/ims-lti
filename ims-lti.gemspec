@@ -1,6 +1,10 @@
+lib = File.expand_path('lib', __dir__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'ims/lti/version'
+
 Gem::Specification.new do |s|
   s.name = %q{ims-lti}
-  s.version = "1.2.9"
+  s.version = IMS::LTI::VERSION
 
   s.add_dependency 'builder', '>= 1.0', '< 4.0'
   s.add_dependency 'oauth', '>= 0.4.5'
