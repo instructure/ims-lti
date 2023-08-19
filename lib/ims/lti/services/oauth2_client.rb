@@ -11,7 +11,11 @@ module IMS::LTI::Services
 
     def connection
       @connection ||= Faraday.new base_url do |conn|
-        conn.authorization :Bearer, token
+        if Gem::Version.new(Faraday::VERSION) < Gem::Version.new('1.0')
+          conn.authorization :Bearer, token
+        else
+          conn.request :authorization, 'Bearer', token
+        end
       end
     end
   end

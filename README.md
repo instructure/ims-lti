@@ -6,9 +6,11 @@ LTI ruby implementation
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add these lines to your application's Gemfile:
 
     gem 'ims-lti'
+    # only necessary if using ToolProxyRegistrationService:
+    gem 'faraday-oauth' # or faraday_middleware if using Faraday < 2.0
 
 And then execute:
 

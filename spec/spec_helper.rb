@@ -2,7 +2,6 @@ require 'ims/lti'
 require 'ims/lis'
 require 'time'
 require 'timecop'
-require 'byebug'
 require 'serializable_helpers'
 require 'simple_oauth'
 
