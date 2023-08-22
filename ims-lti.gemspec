@@ -20,13 +20,11 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'addressable', '~> 2.5', '>= 2.5.1'
   spec.add_dependency 'builder', '~> 3.2'
-  spec.add_dependency 'faraday', '< 2.0'
-  spec.add_dependency 'faraday_middleware', '< 2.0'
+  spec.add_dependency 'faraday', '< 3.0'
   spec.add_dependency 'json-jwt', '~> 1.7'
   spec.add_dependency 'simple_oauth', '~> 0.3.1'
   spec.add_dependency 'rexml'
 
-  spec.add_development_dependency 'byebug', '~> 9.0'
   spec.add_development_dependency 'guard', '~> 2.13'
   spec.add_development_dependency 'guard-rspec', '~> 4.6'
   spec.add_development_dependency 'listen', '~> 3.0'
