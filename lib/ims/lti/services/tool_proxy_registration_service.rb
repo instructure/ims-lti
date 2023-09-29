@@ -32,12 +32,14 @@ module IMS::LTI::Services
       end
 
       conn = Faraday.new do |conn|
-        conn.request :oauth, {:consumer_key => consumer_key, :consumer_secret => consumer_secret, :body_hash => body_hash}
+        # conn.request :authorization, :oauth, {:consumer_key => consumer_key, :consumer_secret => consumer_secret, :body_hash => body_hash}
         conn.adapter :net_http
       end
 
+      new_url = URI::HTTPS.build(host: service.endpoint, query: URI.encode_www_form({:consumer_key => consumer_key, :consumer_secret => consumer_secret, :body_hash => body_hash}))
+
       response = conn.post do |req|
-        req.url service.endpoint
+        req.url new_url
         req.headers['Content-Type'] = 'application/vnd.ims.lti.v2.toolproxy+json'
         req.headers['VND-IMS-CONFIRM-URL'] = reregistration_confirm_url if reregistration_confirm_url
         req.body = tool_proxy_json

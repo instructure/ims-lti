@@ -4,7 +4,6 @@ require 'time'
 require 'timecop'
 require 'byebug'
 require 'serializable_helpers'
-require 'simple_oauth'
 
 def fixture(*file)
   File.new(File.join(File.expand_path("../fixtures", __FILE__), *file))

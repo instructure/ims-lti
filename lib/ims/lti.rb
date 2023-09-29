@@ -1,12 +1,10 @@
 require 'addressable/uri'
 require 'builder'
 require 'faraday'
-require 'faraday_middleware'
 require 'json'
 require 'json/jwt'
 require 'rexml/document'
 require 'securerandom'
-require 'simple_oauth'
 
 module IMS
   module LTI
