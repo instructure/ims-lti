@@ -17,7 +17,7 @@ module IMS::LTI::Models::ContentItems
     end
 
     def self.from_json(json)
-      data = json.is_a?(String) ? JSON.parse(json) : json
+      data = json.is_a?(String) ? MultiJson.load(json) : json
       case data['@type']
       when 'FileItem'
         FileItem.new.from_json(data)
