@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'addressable', '~> 2.5', '>= 2.5.1'
   spec.add_dependency 'builder', '~> 3.2'
   spec.add_dependency 'faraday', '< 3.0'
-  spec.add_dependency 'json-jwt', '~> 1.7'
+  spec.add_dependency 'json-jwt', '~> 1.16.6'
   spec.add_dependency 'simple_oauth', '~> 0.3.1'
   spec.add_dependency 'rexml'
 
