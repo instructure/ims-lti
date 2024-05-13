@@ -94,9 +94,9 @@ module IMS::LTI::Models
     def from_json(json)
       json = json.to_json unless json.is_a?(String)
       begin
-        data = JSON.parse(json)
+        data = MultiJson.load(json)
       rescue
-        data = JSON.parse(URI::DEFAULT_PARSER.unescape(json))
+        data = MultiJson.load(URI::DEFAULT_PARSER.unescape(json))
       end
 
       if data.is_a? Array

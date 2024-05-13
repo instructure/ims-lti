@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'json-jwt', '~> 1.16.6'
   spec.add_dependency 'simple_oauth', '~> 0.3.1'
   spec.add_dependency 'rexml'
+  spec.add_dependency 'multi_json', '~> 1.0'
 
   spec.add_development_dependency 'guard', '~> 2.13'
   spec.add_development_dependency 'guard-rspec', '~> 4.6'

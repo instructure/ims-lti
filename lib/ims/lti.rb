@@ -6,6 +6,7 @@ require 'json/jwt'
 require 'rexml/document'
 require 'securerandom'
 require 'simple_oauth'
+require 'multi_json'
 
 module IMS
   module LTI
