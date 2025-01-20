@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/instructure/ims-lti.svg?branch=2.1.x)](https://travis-ci.org/instructure/ims-lti)
 
-LTI ruby implementation
+Refer to the complete documentation at [Rubydoc]([url](https://www.rubydoc.info/gems/ims-lti/1.1.0)).
 
 ## Installation
 
