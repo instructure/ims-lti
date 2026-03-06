@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'builder', '~> 3.2'
   spec.add_dependency 'faraday', '< 3.0'
   spec.add_dependency 'json-jwt', '~> 1.17'
-  spec.add_dependency 'simple_oauth', '~> 0.3.1'
+  spec.add_dependency 'simple_oauth', '~> 0.3', '>= 0.3.1'
   spec.add_dependency 'rexml'
 
   spec.add_development_dependency 'guard', '~> 2.13'
