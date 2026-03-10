@@ -4,6 +4,8 @@
 
 LTI ruby implementation
 
+Refer to the complete documentation at [Rubydoc]([url](https://www.rubydoc.info/gems/ims-lti/1.1.0)).
+
 ## Installation
 
 Add these lines to your application's Gemfile:
