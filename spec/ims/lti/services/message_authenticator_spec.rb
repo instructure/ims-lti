@@ -36,6 +36,17 @@ module IMS::LTI::Services
         expect(authenticator.valid_signature?).to eq false
       end
 
+      it 'returns false for a missing signature' do
+        signed_params.delete(:oauth_signature)
+        authenticator = MessageAuthenticator.new(launch_url, signed_params, secret)
+        expect(authenticator.valid_signature?).to eq false
+      end
+
+      it 'returns false for a missing secret' do
+        authenticator = MessageAuthenticator.new(launch_url, signed_params, nil)
+        expect(authenticator.valid_signature?).to eq false
+      end
+
       context 'jwt' do
         let(:originating_domain) {'example.com'}
         let(:consumer_key) {'42'}
