@@ -14,7 +14,10 @@ module IMS::LTI::Services
 
 
     def valid_signature?
-       message.jwt ? valid_jwt? : simple_oauth_header.valid?(signature: signature)
+       return valid_jwt? if message.jwt
+       return false if signature.nil?
+
+       simple_oauth_header.valid?
     end
 
     def message
@@ -33,7 +36,8 @@ module IMS::LTI::Services
           @options.merge(
             {
               consumer_key: consumer_key,
-              consumer_secret: @secret
+              consumer_secret: @secret,
+              signature: signature
             }
           )
         )
